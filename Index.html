@@ -1,1 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Neon Pink Rain</title>
+  <style>
+    /* Reset */
+    html,body{height:100%;margin:0}
+    body{background:#000;overflow:hidden;font-family:system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial}
+    /* Canvas fills the screen */
+    canvas{display:block;position:fixed;inset:0}
+    /* Optional center content that sits above the canvas */
+    .center-content{position:relative;z-index:2;pointer-events:none;display:flex;align-items:center;justify-content:center;height:100%}
+    .title{color:#fff;opacity:0.06;font-size:48px;letter-spacing:8px;text-transform:uppercase}
+    /* Make sure any UI you add sits above the animation */
+    .ui{position:fixed;right:16px;top:16px;z-index:3;color:#fff;font-size:13px;background:rgba(255,255,255,0.03);backdrop-filter:blur(6px);padding:8px;border-radius:8px}
+    .ui input[type=range]{width:140px}
+  </style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+
+  <!-- optional content above the rain (change or remove) -->
+  <div class="center-content">
+    <div class="title">Neon Rain</div>
+  </div>
+
+  <!-- small UI to tweak effect (can be removed) -->
+  <div class="ui" aria-hidden="true">
+    <div>Lines: <span id="count">180</span></div>
+    <input id="countRange" type="range" min="30" max="500" value="180">
+    <div style="margin-top:6px">Speed: <span id="speedVal">1.0</span></div>
+    <input id="speedRange" type="range" min="0.2" max="4" step="0.1" value="1">
+  </div>
+
+  <script>
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d');
+
+    // Options (tweakable)
+    const colors = [ '255,20,147' ]; // hot pink rgb parts - you can add more like '255,0,150'
+    let LINE_COUNT = 180;        // starting number of lines
+    let GLOBAL_SPEED = 1.0;     // multiplier for speed
+
+    // Line class
+    class Line {
+      constructor(w,h){
+        this.reset(w,h,true);
+      }
+      reset(w,h,initial=false){
+        this.x = Math.random()*w;
+        // start above the screen a random amount for natural fall
+        this.y = initial ? Math.random()*-h : -Math.random()*50 - 10;
+        this.len = 6 + Math.random()*40; // length in px
+        this.width = 0.6 + Math.random()*1.5; // very thin lines
+        this.speed = (0.6 + Math.random()*1.6) * GLOBAL_SPEED;
+        this.alpha = 0.1 + Math.random()*0.9;
+        // slight tilt variation
+        this.tilt = (Math.random()-0.5) * 0.6;
+      }
+      step(dt,w,h){
+        this.y += this.speed * dt;
+        this.x += this.tilt * dt; // gentle horizontal drift
+        if(this.y - this.len > h + 30 || this.x < -50 || this.x > w + 50){
+          this.reset(w,h);
+        }
+      }
+      draw(ctx,color){
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y - this.len);
+        ctx.lineTo(this.x, this.y);
+        ctx.lineWidth = this.width;
+        ctx.globalAlpha = this.alpha;
+        ctx.strokeStyle = `rgba(${color},1)`;
+        ctx.stroke();
+      }
+    }
+
+    let lines = [];
+    let last = performance.now();
+
+    function fitCanvas(){
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+    }
+
+    function init(){
+      fitCanvas();
+      lines = [];
+      for(let i=0;i<LINE_COUNT;i++) lines.push(new Line(canvas.width, canvas.height));
+      last = performance.now();
+      requestAnimationFrame(loop);
+    }
+
+    // draw with glow
+    function loop(now){
+      const dt = (now - last) * 0.06; // scaled delta to tune feel
+      last = now;
+
+      // subtle trailing effect instead of clearing fully
+      ctx.fillStyle = 'rgba(0,0,0,0.18)';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+
+      // glow settings
+      ctx.lineCap = 'round';
+      ctx.shadowBlur = 18;
+      ctx.shadowColor = `rgba(${colors[0]},0.95)`; // matching glow color
+
+      for(let i=0;i<lines.length;i++){
+        const l = lines[i];
+        l.step(dt, canvas.width, canvas.height);
+        // draw brighter core first (thin)
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.strokeStyle = `rgba(${colors[0]},1)`;
+        ctx.lineWidth = l.width;
+        ctx.globalAlpha = l.alpha;
+        ctx.beginPath();
+        ctx.moveTo(l.x, l.y - l.len);
+        ctx.lineTo(l.x, l.y);
+        ctx.stroke();
+
+        // outer faint glow (draw again with more blur and lower alpha)
+        ctx.shadowBlur = 28;
+        ctx.globalAlpha = Math.min(0.45, l.alpha * 0.75);
+        ctx.lineWidth = l.width * 2.0;
+        ctx.beginPath();
+        ctx.moveTo(l.x, l.y - l.len);
+        ctx.lineTo(l.x, l.y);
+        ctx.stroke();
+        // reset shadowBlur for next
+        ctx.shadowBlur = 18;
+      }
+
+      // reset composite
+      ctx.globalCompositeOperation = 'source-over';
+
+      requestAnimationFrame(loop);
+    }
+
+    // UI wiring (optional)
+    const countRange = document.getElementById('countRange');
+    const speedRange = document.getElementById('speedRange');
+    const countLabel = document.getElementById('count');
+    const speedLabel = document.getElementById('speedVal');
+
+    countRange.addEventListener('input', (e)=>{
+      LINE_COUNT = parseInt(e.target.value,10);
+      countLabel.textContent = LINE_COUNT;
+      // rebuild lines array to match new count
+      const diff = LINE_COUNT - lines.length;
+      if(diff > 0){ for(let i=0;i<diff;i++) lines.push(new Line(canvas.width, canvas.height)); }
+      else if(diff < 0){ lines.splice(diff); }
+    });
+
+    speedRange.addEventListener('input', (e)=>{
+      GLOBAL_SPEED = parseFloat(e.target.value);
+      speedLabel.textContent = GLOBAL_SPEED.toFixed(1);
+      // update existing lines' speed proportionally
+      for(const l of lines) l.speed = (0.6 + Math.random()*1.6) * GLOBAL_SPEED;
+    });
+
+    // responsiveness
+    window.addEventListener('resize', ()=>{
+      fitCanvas();
+      // reposition existing lines within new bounds
+      for(const l of lines){ l.x = Math.random()*canvas.width; l.y = Math.random()*canvas.height; }
+    });
+
+    // start
+    init();
+  </script>
+</body>
+</html>
 
