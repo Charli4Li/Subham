@@ -1,179 +1,458 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Neon Pink Rain</title>
-  <style>
-    /* Reset */
-    html,body{height:100%;margin:0}
-    body{background:#000;overflow:hidden;font-family:system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial}
-    /* Canvas fills the screen */
-    canvas{display:block;position:fixed;inset:0}
-    /* Optional center content that sits above the canvas */
-    .center-content{position:relative;z-index:2;pointer-events:none;display:flex;align-items:center;justify-content:center;height:100%}
-    .title{color:#fff;opacity:0.06;font-size:48px;letter-spacing:8px;text-transform:uppercase}
-    /* Make sure any UI you add sits above the animation */
-    .ui{position:fixed;right:16px;top:16px;z-index:3;color:#fff;font-size:13px;background:rgba(255,255,255,0.03);backdrop-filter:blur(6px);padding:8px;border-radius:8px}
-    .ui input[type=range]{width:140px}
-  </style>
-</head>
-<body>
-  <canvas id="c"></canvas>
-
-  <!-- optional content above the rain (change or remove) -->
-  <div class="center-content">
-    <div class="title">Neon Rain</div>
-  </div>
-
-  <!-- small UI to tweak effect (can be removed) -->
-  <div class="ui" aria-hidden="true">
-    <div>Lines: <span id="count">180</span></div>
-    <input id="countRange" type="range" min="30" max="500" value="180">
-    <div style="margin-top:6px">Speed: <span id="speedVal">1.0</span></div>
-    <input id="speedRange" type="range" min="0.2" max="4" step="0.1" value="1">
-  </div>
-
-  <script>
-    const canvas = document.getElementById('c');
-    const ctx = canvas.getContext('2d');
-
-    // Options (tweakable)
-    const colors = [ '255,20,147' ]; // hot pink rgb parts - you can add more like '255,0,150'
-    let LINE_COUNT = 180;        // starting number of lines
-    let GLOBAL_SPEED = 1.0;     // multiplier for speed
-
-    // Line class
-    class Line {
-      constructor(w,h){
-        this.reset(w,h,true);
-      }
-      reset(w,h,initial=false){
-        this.x = Math.random()*w;
-        // start above the screen a random amount for natural fall
-        this.y = initial ? Math.random()*-h : -Math.random()*50 - 10;
-        this.len = 6 + Math.random()*40; // length in px
-        this.width = 0.6 + Math.random()*1.5; // very thin lines
-        this.speed = (0.6 + Math.random()*1.6) * GLOBAL_SPEED;
-        this.alpha = 0.1 + Math.random()*0.9;
-        // slight tilt variation
-        this.tilt = (Math.random()-0.5) * 0.6;
-      }
-      step(dt,w,h){
-        this.y += this.speed * dt;
-        this.x += this.tilt * dt; // gentle horizontal drift
-        if(this.y - this.len > h + 30 || this.x < -50 || this.x > w + 50){
-          this.reset(w,h);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subham Panda | Portfolio</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Define colors using CSS variables based on user request */
+        :root {
+            --primary-white: #FFFFFF;
+            --secondary-pink: #FF9DE3; /* Lighter Pink */
+            --accent-black: #000000;
+            --accent-coral: #FF8091; /* Coral Pink */
         }
-      }
-      draw(ctx,color){
-        ctx.beginPath();
-        ctx.moveTo(this.x, this.y - this.len);
-        ctx.lineTo(this.x, this.y);
-        ctx.lineWidth = this.width;
-        ctx.globalAlpha = this.alpha;
-        ctx.strokeStyle = `rgba(${color},1)`;
-        ctx.stroke();
-      }
-    }
 
-    let lines = [];
-    let last = performance.now();
+        /* Custom styles for the rain canvas and glowing text */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000000;
+            overflow-x: hidden; 
+        }
+        
+        #rainCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1; 
+            pointer-events: none;
+        }
 
-    function fitCanvas(){
-      const dpr = Math.max(1, window.devicePixelRatio || 1);
-      canvas.width = Math.floor(window.innerWidth * dpr);
-      canvas.height = Math.floor(window.innerHeight * dpr);
-      canvas.style.width = window.innerWidth + 'px';
-      canvas.style.height = window.innerHeight + 'px';
-      ctx.setTransform(dpr,0,0,dpr,0,0);
-    }
+        /* Sticky Top Bar Styling */
+        .topbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 50; /* Ensure it's above the rain and content */
+            background-color: var(--accent-black); /* Black background */
+            /* Added some transparency and blur for a sleek look */
+            background-color: rgba(0, 0, 0, 0.85); 
+            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 10px rgba(255, 157, 227, 0.2);
+        }
 
-    function init(){
-      fitCanvas();
-      lines = [];
-      for(let i=0;i<LINE_COUNT;i++) lines.push(new Line(canvas.width, canvas.height));
-      last = performance.now();
-      requestAnimationFrame(loop);
-    }
+        .top-nav-button {
+            /* Black background, Secondary Pink text */
+            background-color: var(--accent-black);
+            color: var(--secondary-pink); 
+            padding: 0.5rem 1.25rem;
+            border-radius: 0.5rem; /* rounded corner rectangle */
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
 
-    // draw with glow
-    function loop(now){
-      const dt = (now - last) * 0.06; // scaled delta to tune feel
-      last = now;
+        .top-nav-button:hover {
+            color: var(--primary-white); /* White text on hover */
+            background-color: var(--accent-black); /* Keep background black */
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Subtle white glow */
+        }
 
-      // subtle trailing effect instead of clearing fully
-      ctx.fillStyle = 'rgba(0,0,0,0.18)';
-      ctx.fillRect(0,0,canvas.width,canvas.height);
+        /* Hero content styling (Push down content for the fixed top bar) */
+        #hero-content {
+            padding-top: 6rem; /* Space for the top bar */
+            height: 100vh;
+            position: relative;
+            z-index: 10;
+            /* Primary color: White with subtle glow */
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 10px rgba(255, 255, 255, 0.3);
+        }
 
-      // glow settings
-      ctx.lineCap = 'round';
-      ctx.shadowBlur = 18;
-      ctx.shadowColor = `rgba(${colors[0]},0.95)`; // matching glow color
+        /* Portfolio Sections */
+        .portfolio-section {
+            position: relative;
+            z-index: 10;
+            min-height: 500px;
+            padding: 4rem 1rem;
+        }
 
-      for(let i=0;i<lines.length;i++){
-        const l = lines[i];
-        l.step(dt, canvas.width, canvas.height);
-        // draw brighter core first (thin)
-        ctx.globalCompositeOperation = 'lighter';
-        ctx.strokeStyle = `rgba(${colors[0]},1)`;
-        ctx.lineWidth = l.width;
-        ctx.globalAlpha = l.alpha;
-        ctx.beginPath();
-        ctx.moveTo(l.x, l.y - l.len);
-        ctx.lineTo(l.x, l.y);
-        ctx.stroke();
+        .project-card {
+            /* 70% Translucent black background */
+            background-color: rgba(20, 20, 20, 0.7); 
+            /* Border: Thicker (2px) and Coral Accent */
+            border: 2px solid var(--accent-coral); 
+            /* Shadow: Using Coral Accent */
+            box-shadow: 0 0 15px rgba(255, 128, 145, 0.4); 
+            border-radius: 0.75rem; 
+        }
+        
+        /* Style for the skill/contact translucent blocks */
+        .skill-block {
+             /* 70% Translucent black background */
+            background-color: rgba(20, 20, 20, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+            border-radius: 0.75rem; 
+        }
 
-        // outer faint glow (draw again with more blur and lower alpha)
-        ctx.shadowBlur = 28;
-        ctx.globalAlpha = Math.min(0.45, l.alpha * 0.75);
-        ctx.lineWidth = l.width * 2.0;
-        ctx.beginPath();
-        ctx.moveTo(l.x, l.y - l.len);
-        ctx.lineTo(l.x, l.y);
-        ctx.stroke();
-        // reset shadowBlur for next
-        ctx.shadowBlur = 18;
-      }
+        /* Project Button Styles */
+        .project-button {
+            background-color: var(--secondary-pink);
+            color: var(--accent-black); 
+            padding: 0.5rem 1.5rem;
+            border-radius: 9999px; 
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            transform: scale(1); 
+        }
+        
+        .project-button:hover {
+            transform: scale(1.08); 
+            background-color: var(--accent-coral); 
+            box-shadow: 0 4px 20px rgba(255, 157, 227, 0.6); 
+        }
 
-      // reset composite
-      ctx.globalCompositeOperation = 'source-over';
+        /* New Contact Footer Styling */
+        #contact-footer {
+            background-color: var(--secondary-pink); /* Secondary Pink Background */
+            color: var(--accent-black); /* Black text default */
+        }
+        
+        #contact-footer h3 {
+            color: var(--accent-black);
+            border-bottom-color: var(--accent-coral); /* Coral Divider */
+        }
 
-      requestAnimationFrame(loop);
-    }
+        #contact-footer a {
+            color: var(--accent-black);
+            transition: color 0.2s ease;
+        }
+        
+        #contact-footer a:hover {
+            color: var(--primary-white); /* White text on hover */
+        }
 
-    // UI wiring (optional)
-    const countRange = document.getElementById('countRange');
-    const speedRange = document.getElementById('speedRange');
-    const countLabel = document.getElementById('count');
-    const speedLabel = document.getElementById('speedVal');
+        /* Custom utility classes */
+        .text-secondary-pink { color: var(--secondary-pink); }
+        .text-accent-coral { color: var(--accent-coral); }
+        .icon-accent { color: var(--accent-black); }
 
-    countRange.addEventListener('input', (e)=>{
-      LINE_COUNT = parseInt(e.target.value,10);
-      countLabel.textContent = LINE_COUNT;
-      // rebuild lines array to match new count
-      const diff = LINE_COUNT - lines.length;
-      if(diff > 0){ for(let i=0;i<diff;i++) lines.push(new Line(canvas.width, canvas.height)); }
-      else if(diff < 0){ lines.splice(diff); }
-    });
+    </style>
+    <!-- Phosphor Icons for smooth SVG icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/umd/phosphor-icons-web.js"></script>
+</head>
+<body class="bg-black text-white antialiased">
 
-    speedRange.addEventListener('input', (e)=>{
-      GLOBAL_SPEED = parseFloat(e.target.value);
-      speedLabel.textContent = GLOBAL_SPEED.toFixed(1);
-      // update existing lines' speed proportionally
-      for(const l of lines) l.speed = (0.6 + Math.random()*1.6) * GLOBAL_SPEED;
-    });
+    <!-- Sticky Top Navigation Bar -->
+    <div class="topbar">
+        <nav class="max-w-6xl mx-auto flex justify-end space-x-4 p-4">
+            <a href="#projects" class="top-nav-button">Projects</a>
+            <a href="#skills" class="top-nav-button">Skills</a>
+            <a href="#about" class="top-nav-button">About & Contact</a>
+        </nav>
+    </div>
 
-    // responsiveness
-    window.addEventListener('resize', ()=>{
-      fitCanvas();
-      // reposition existing lines within new bounds
-      for(const l of lines){ l.x = Math.random()*canvas.width; l.y = Math.random()*canvas.height; }
-    });
+    <!-- Canvas for the Rainbow Rain Effect (Z-Index 1) -->
+    <canvas id="rainCanvas"></canvas>
 
-    // start
-    init();
-  </script>
+    <!-- Main Hero Section (Z-Index 10) -->
+    <div id="hero-content" class="flex flex-col justify-center items-center p-4">
+        
+        <!-- Header Section -->
+        <header class="text-center">
+            <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight text-white/90">
+                SUBHAM PANDA
+            </h1>
+            <!-- Secondary Accent: Lighter Pink -->
+            <p class="text-xl md:text-2xl font-light tracking-widest uppercase text-secondary-pink">
+                B.Design (Gaming) | Technical Artist
+            </p>
+        </header>
+
+        <!-- Scroll Indicator (Simple arrow) -->
+        <div class="absolute bottom-10 animate-bounce text-secondary-pink" style="filter: drop-shadow(0 0 5px var(--secondary-pink));">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Portfolio Content Sections -->
+
+    <!-- Projects Section -->
+    <section id="projects" class="portfolio-section max-w-6xl mx-auto">
+        <h2 class="text-4xl font-extrabold mb-12 text-center text-secondary-pink">PROJECT ARTIFACTS</h2>
+        
+        <!-- Top 4 projects in a grid -->
+        <div class="grid md:grid-cols-2 gap-8 mb-8">
+            
+            <!-- Project 1: Fast'N'Food -->
+            <div class="project-card p-6 rounded-xl transition duration-500 hover:scale-[1.02] transform">
+                <h3 class="text-2xl font-bold mb-2 text-white">Fast’N’Food Showcase</h3>
+                <p class="text-sm uppercase text-gray-300 mb-4">Technical Art & Texture Art</p>
+                <ul class="list-disc list-inside space-y-1 text-sm text-white/90">
+                    <li>Developed unique Post Process Shaders using HLSL and Blueprints on Unreal Engine 5.</li>
+                    <li>Created 12+ Post Process Shaders with modular nodes (Toon, Outline, Posterized, Pixelated).</li>
+                    <li>Textured Stylized Assets for Game Props and Food Items.</li>
+                </ul>
+                <div class="mt-6">
+                    <a href="https://artstation.com/subhampanda/fastnfood" target="_self" class="project-button">
+                        View Project <span class="ml-2">&rarr;</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Project 2: Post-Process Shaders Showcase -->
+            <div class="project-card p-6 rounded-xl transition duration-500 hover:scale-[1.02] transform">
+                <h3 class="text-2xl font-bold mb-2 text-white">Post-Process Shaders Showcase</h3>
+                <p class="text-sm uppercase text-gray-300 mb-4">HLSL & Technical Art</p>
+                <ul class="list-disc list-inside space-y-1 text-sm text-white/90">
+                    <li>Showcase of 12+ Post Process Shaders with modular nodes under different stylized art styles.</li>
+                    <li>Shaders include: Toon Shader, Outline Shader, Posterized Shader, Pixelated Shaders through Unreal.</li>
+                    <li>Creation of Material Functions and HLSL Codes for better Shader Volume functionality.</li>
+                </ul>
+                <div class="mt-6">
+                    <a href="https://artstation.com/subhampanda/shaders" target="_self" class="project-button">
+                        View Project <span class="ml-2">&rarr;</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Project 3: Road Rush -->
+            <div class="project-card p-6 rounded-xl transition duration-500 hover:scale-[1.02] transform">
+                <h3 class="text-2xl font-bold mb-2 text-white">Road Rush</h3>
+                <p class="text-sm uppercase text-gray-300 mb-4">3D Modelling & Texture Art</p>
+                <ul class="list-disc list-inside space-y-1 text-sm text-white/90">
+                    <li>Created stylized 3D assets for Vehicles and Cars.</li>
+                    <li>Textured 3D meshes for a stylized look in the Itch.io Game Build.</li>
+                    <li>Focus on creating game-ready assets for a complete pipeline.</li>
+                </ul>
+                <div class="mt-6">
+                    <a href="https://itch.io/subhampanda/roadrush" target="_self" class="project-button">
+                        View Project <span class="ml-2">&rarr;</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Project 4: Malorian 3516 -->
+            <div class="project-card p-6 rounded-xl transition duration-500 hover:scale-[1.02] transform">
+                <h3 class="text-2xl font-bold mb-2 text-white">Malorian 3516 (Cyberpunk 2077)</h3>
+                <p class="text-sm uppercase text-gray-300 mb-4">Hard Surface Modelling</p>
+                <ul class="list-disc list-inside space-y-1 text-sm text-white/90">
+                    <li>Developed a Combat Revolver 3D asset from scratch using Maya and 3D Substance Painter.</li>
+                    <li>Focus on texture painting for adding depth and boldness, matching the Cyberpunk aesthetic.</li>
+                </ul>
+                <div class="mt-6">
+                    <a href="https://artstation.com/subhampanda/malorian3516" target="_self" class="project-button">
+                        View Project <span class="ml-2">&rarr;</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Project 5: Stylized Nintendo Switch (Centered at the bottom) -->
+        <div class="flex justify-center">
+            <div class="project-card p-6 rounded-xl transition duration-500 hover:scale-[1.02] transform w-full md:w-1/2">
+                <h3 class="text-2xl font-bold mb-2 text-white">Stylized Nintendo Switch</h3>
+                <p class="text-sm uppercase text-gray-300 mb-4">3D Modelling (3DS Max)</p>
+                <ul class="list-disc list-inside space-y-1 text-sm text-white/90">
+                    <li>Game Ready 3D mesh created on 3DS Max.</li>
+                    <li>Demonstrated skill in the creation of modular 3D elements.</li>
+                </ul>
+                <div class="mt-6">
+                    <a href="https://artstation.com/subhampanda/nintendoswitch" target="_self" class="project-button">
+                        View Project <span class="ml-2">&rarr;</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Skills Section -->
+    <section id="skills" class="portfolio-section max-w-4xl mx-auto">
+        <h2 class="text-4xl font-extrabold mb-12 text-center text-secondary-pink">SKILLS & EXPERTISE</h2>
+        
+        <div class="flex flex-wrap justify-center gap-6">
+            
+            <div class="skill-block p-4 rounded-xl shadow-lg text-center w-40">
+                <p class="font-bold text-lg text-secondary-pink">Game Engines</p>
+                <p class="text-sm text-white/90">Unity, Unreal Engine 5</p>
+            </div>
+            <div class="skill-block p-4 rounded-xl shadow-lg text-center w-40">
+                <p class="font-bold text-lg text-secondary-pink">3D Softwares</p>
+                <p class="text-sm text-white/90">Maya, 3DS Max, Substance Painter, Blender</p>
+            </div>
+            <div class="skill-block p-4 rounded-xl shadow-lg text-center w-40">
+                <p class="font-bold text-lg text-secondary-pink">Technical Art</p>
+                <p class="text-sm text-white/90">Post-Process Shaders, HLSL</p>
+            </div>
+            <div class="skill-block p-4 rounded-xl shadow-lg text-center w-40">
+                <p class="font-bold text-lg text-secondary-pink">Design</p>
+                <p class="text-sm text-white/90">Level Design, Narrative Design</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Me Section -->
+    <section id="about" class="portfolio-section max-w-2xl mx-auto text-center">
+        <h2 class="text-4xl font-extrabold mb-8 text-secondary-pink">ABOUT ME</h2>
+        
+        <!-- About Me Block (Translucent) -->
+        <div class="skill-block p-8 rounded-xl space-y-4">
+            <p class="text-lg text-white/90">
+                I am Subham Panda, currently pursuing B.Design (Gaming) at Lovely Professional University. My passion lies in **Technical Art**, where I focus on developing unique visual solutions, primarily through post-process shaders, HLSL coding, and meticulous 3D asset creation. I am seeking opportunities for collaboration and growth in the game development pipeline.
+            </p>
+        </div>
+    </section>
+
+    <!-- Contact Footer (Bottom Bar in Secondary Pink) -->
+    <div id="contact-footer" class="w-full mt-16 p-8 relative z-20">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
+            
+            <!-- Left Column: Email & Phone -->
+            <div class="space-y-4 md:space-y-6 text-left">
+                <h3 class="text-2xl font-bold border-b-2 pb-2 mb-4">Get In Touch</h3>
+                
+                <!-- Email -->
+                <div class="flex items-center space-x-3 group">
+                    <!-- Icon SVG for Email -->
+                    <i class="ph ph-envelope-simple text-3xl icon-accent group-hover:text-primary-white transition duration-200"></i>
+                    <a href="mailto:artcharlie.exe@gmail.com" class="text-lg font-medium group-hover:text-primary-white transition duration-200">artcharlie.exe@gmail.com</a>
+                </div>
+                
+                <!-- Phone -->
+                <div class="flex items-center space-x-3 group">
+                    <!-- Icon SVG for Phone -->
+                    <i class="ph ph-phone text-3xl icon-accent group-hover:text-primary-white transition duration-200"></i>
+                    <a href="tel:+917735465010" class="text-lg font-medium group-hover:text-primary-white transition duration-200">+91 7735465010</a>
+                </div>
+            </div>
+
+            <!-- Right Column: LinkedIn & Artstation -->
+            <div class="space-y-4 md:space-y-6 text-left">
+                <h3 class="text-2xl font-bold border-b-2 pb-2 mb-4">Online Presence</h3>
+                
+                <!-- LinkedIn -->
+                <div class="flex items-center space-x-3 group">
+                    <!-- Icon SVG for LinkedIn -->
+                    <i class="ph ph-linkedin-logo text-3xl icon-accent group-hover:text-primary-white transition duration-200"></i>
+                    <a href="#" target="_blank" class="text-lg font-medium group-hover:text-primary-white transition duration-200">Subham Panda</a>
+                </div>
+                
+                <!-- Artstation -->
+                <div class="flex items-center space-x-3 group">
+                    <!-- Icon SVG for Palette (Artstation substitute) -->
+                    <i class="ph ph-palette text-3xl icon-accent group-hover:text-primary-white transition duration-200"></i>
+                    <a href="#" target="_blank" class="text-lg font-medium group-hover:text-primary-white transition duration-200">Artcharlie.exe</a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-8 pt-4 border-t border-accent-coral opacity-80">
+            &copy; 2024 Subham Panda.
+        </div>
+    </div>
+
+    <!-- JavaScript for the Rainbow Rain Effect -->
+    <script>
+        const canvas = document.getElementById('rainCanvas');
+        
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            let W, H;
+            let drops = [];
+            const maxDrops = 250; 
+
+            // Function to set canvas size and handle resizing
+            function resizeCanvas() {
+                W = window.innerWidth;
+                H = window.innerHeight;
+                canvas.width = W;
+                canvas.height = H;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Call resize immediately to ensure canvas dimensions are set on load
+            resizeCanvas(); 
+
+            // Drop class definition
+            class Drop {
+                constructor() {
+                    this.reset();
+                    this.y = Math.random() * H; 
+                }
+
+                reset() {
+                    this.x = Math.random() * W;
+                    this.y = -Math.random() * H * 0.1; 
+                    // Speed is 1/4th of original
+                    this.speed = (2 + Math.random() * 5) * 0.25; 
+                    this.length = 5 + Math.random() * 25; 
+                    this.alpha = 0.5 + Math.random() * 0.5; 
+                    this.hue = Math.random() * 360; // Start with a random hue
+                }
+
+                fall() {
+                    this.y += this.speed;
+                    // Slowly cycle the hue for the rainbow effect
+                    this.hue = (this.hue + 0.3) % 360; 
+                    if (this.y > H + this.length) {
+                        this.reset(); 
+                    }
+                }
+
+                draw() {
+                    // Set the color using HSL based on the drop's current hue
+                    ctx.strokeStyle = `hsla(${this.hue}, 100%, 50%, ${this.alpha})`; 
+                    // Changed from 1 to 0.5 for skinnier lines
+                    ctx.lineWidth = 0.5; 
+                    ctx.lineCap = 'round'; 
+                    
+                    // Draw the line
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(this.x, this.y + this.length);
+                    ctx.stroke();
+
+                    // Draw a brighter tip
+                    ctx.beginPath();
+                    ctx.fillStyle = `hsl(${this.hue}, 100%, 75%)`; // Brighter tip
+                    ctx.fillRect(this.x - 0.5, this.y, 1, 1);
+                }
+            }
+
+            // Initialize the drops
+            for (let i = 0; i < maxDrops; i++) {
+                drops.push(new Drop());
+            }
+
+            // Main animation loop
+            function animate() {
+                // Fading background effect: Draw a semi-transparent black rectangle over everything
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                ctx.fillRect(0, 0, W, H);
+
+                // Update and draw each drop
+                drops.forEach(drop => {
+                    drop.fall();
+                    drop.draw();
+                });
+
+                requestAnimationFrame(animate);
+            }
+
+            // Start the canvas when the window loads
+            window.onload = function() {
+                animate();
+            };
+        } else {
+            console.error("Canvas element 'rainCanvas' not found.");
+        }
+    </script>
+
 </body>
 </html>
-
