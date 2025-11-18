@@ -20,7 +20,6 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #000000;
             overflow-x: hidden; 
         }
         
@@ -34,42 +33,63 @@
 
         /* Sticky Top Bar Styling */
         .topbar {
-            position: fixed;
+            position: fixed; /* FIXED POSITIONING */
             top: 0;
             width: 100%;
-            z-index: 50; /* Ensure it's above the rain and content */
-            background-color: var(--accent-black); /* Black background */
-            /* Added some transparency and blur for a sleek look */
-            background-color: rgba(0, 0, 0, 0.85); 
-            backdrop-filter: blur(5px);
-            box-shadow: 0 2px 10px rgba(255, 157, 227, 0.2);
+            z-index: 50; 
+            background-color: var(--secondary-pink);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
         .top-nav-button {
-            /* Black background, Secondary Pink text */
+            /* Button is black, text is secondary pink, on pink background */
             background-color: var(--accent-black);
             color: var(--secondary-pink); 
             padding: 0.5rem 1.25rem;
-            border-radius: 0.5rem; /* rounded corner rectangle */
+            border-radius: 0.5rem; 
             font-weight: 600;
             transition: all 0.3s ease;
+            text-decoration: none;
         }
 
         .top-nav-button:hover {
-            color: var(--primary-white); /* White text on hover */
-            background-color: var(--accent-black); /* Keep background black */
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Subtle white glow */
+            /* Hover state remains the same for the button content */
+            color: var(--primary-white); 
+            background-color: var(--accent-black); 
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); 
         }
 
-        /* Hero content styling (Push down content for the fixed top bar) */
+        /* Hero content styling */
         #hero-content {
-            padding-top: 6rem; /* Space for the top bar */
+            padding-top: 6rem; 
             height: 100vh;
             position: relative;
             z-index: 10;
-            /* Primary color: White with subtle glow */
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 10px rgba(255, 255, 255, 0.3);
         }
+
+        /* Centered Nav Links/Buttons styles */
+        .hero-nav-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--secondary-pink);
+            transition: color 0.3s ease, transform 0.3s ease;
+            text-decoration: none;
+            filter: drop-shadow(0 0 4px rgba(255, 157, 227, 0.5));
+        }
+
+        .hero-nav-link:hover {
+            color: var(--primary-white);
+            transform: translateY(-4px) scale(1.1);
+            filter: drop-shadow(0 0 6px var(--primary-white));
+        }
+
+        .hero-nav-link i {
+            font-size: 2.5rem;
+            margin-bottom: 0.25rem;
+        }
+
 
         /* Portfolio Sections */
         .portfolio-section {
@@ -87,6 +107,9 @@
             /* Shadow: Using Coral Accent */
             box-shadow: 0 0 15px rgba(255, 128, 145, 0.4); 
             border-radius: 0.75rem; 
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         
         /* Style for the skill/contact translucent blocks */
@@ -109,23 +132,36 @@
             align-items: center;
             transition: all 0.3s ease;
             transform: scale(1); 
+            text-decoration: none;
         }
         
         .project-button:hover {
             transform: scale(1.08); 
             background-color: var(--accent-coral); 
             box-shadow: 0 4px 20px rgba(255, 157, 227, 0.6); 
+            color: var(--primary-white); /* Text to white on coral hover */
         }
 
-        /* New Contact Footer Styling */
+        /* Fix for Unicode Arrow Centering */
+        .arrow-icon {
+            margin-left: 0.5rem;
+            display: inline-block;
+            vertical-align: middle; 
+            margin-bottom: 1px; 
+            font-weight: 900; 
+            color: currentColor; 
+            transition: color 0.3s ease;
+        }
+
+        /* Contact Footer Styling - already Secondary Pink */
         #contact-footer {
-            background-color: var(--secondary-pink); /* Secondary Pink Background */
-            color: var(--accent-black); /* Black text default */
+            background-color: var(--secondary-pink); 
+            color: var(--accent-black); 
         }
         
         #contact-footer h3 {
             color: var(--accent-black);
-            border-bottom-color: var(--accent-coral); /* Coral Divider */
+            border-bottom-color: var(--accent-coral); 
         }
 
         #contact-footer a {
@@ -134,7 +170,7 @@
         }
         
         #contact-footer a:hover {
-            color: var(--primary-white); /* White text on hover */
+            color: var(--primary-white); 
         }
 
         /* Custom utility classes */
@@ -146,7 +182,7 @@
     <!-- Phosphor Icons for smooth SVG icons -->
     <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/umd/phosphor-icons-web.js"></script>
 </head>
-<body class="bg-black text-white antialiased">
+<body class="text-white antialiased">
 
     <!-- Sticky Top Navigation Bar -->
     <div class="topbar">
@@ -173,6 +209,22 @@
                 B.Design (Gaming) | Technical Artist
             </p>
         </header>
+        
+        <!-- Centered Navigation/Quick Links -->
+        <div class="mt-12 flex space-x-8">
+            <a href="#projects" class="hero-nav-link">
+                <i class="ph-bold ph-code text-4xl"></i>
+                <span class="text-sm font-semibold">Projects</span>
+            </a>
+            <a href="#skills" class="hero-nav-link">
+                <i class="ph-bold ph-gear-six text-4xl"></i>
+                <span class="text-sm font-semibold">Skills</span>
+            </a>
+            <a href="#about" class="hero-nav-link">
+                <i class="ph-bold ph-user-circle text-4xl"></i>
+                <span class="text-sm font-semibold">Contact</span>
+            </a>
+        </div>
 
         <!-- Scroll Indicator (Simple arrow) -->
         <div class="absolute bottom-10 animate-bounce text-secondary-pink" style="filter: drop-shadow(0 0 5px var(--secondary-pink));">
@@ -188,85 +240,101 @@
     <section id="projects" class="portfolio-section max-w-6xl mx-auto">
         <h2 class="text-4xl font-extrabold mb-12 text-center text-secondary-pink">PROJECT ARTIFACTS</h2>
         
-        <!-- Top 4 projects in a grid -->
+        <!-- ROW 1: Fast'N'Food and Shaders Showcase (Side-by-side) -->
         <div class="grid md:grid-cols-2 gap-8 mb-8">
             
             <!-- Project 1: Fast'N'Food -->
             <div class="project-card p-6 rounded-xl transition duration-500 hover:scale-[1.02] transform">
-                <h3 class="text-2xl font-bold mb-2 text-white">Fast’N’Food Showcase</h3>
-                <p class="text-sm uppercase text-gray-300 mb-4">Technical Art & Texture Art</p>
-                <ul class="list-disc list-inside space-y-1 text-sm text-white/90">
-                    <li>Developed unique Post Process Shaders using HLSL and Blueprints on Unreal Engine 5.</li>
-                    <li>Created 12+ Post Process Shaders with modular nodes (Toon, Outline, Posterized, Pixelated).</li>
-                    <li>Textured Stylized Assets for Game Props and Food Items.</li>
-                </ul>
+                <div>
+                    <h3 class="text-2xl font-bold mb-2 text-white">Fast’N’Food Showcase</h3>
+                    <p class="text-sm uppercase text-gray-300 mb-4">Technical Art & Texture Art</p>
+                    <ul class="list-disc list-inside space-y-1 text-sm text-white/90">
+                        <li>Developed unique Post Process Shaders using HLSL and Blueprints on Unreal Engine 5.</li>
+                        <li>Created 12+ Post Process Shaders with modular nodes (Toon, Outline, Posterized, Pixelated).</li>
+                        <li>Textured Stylized Assets for Game Props and Food Items.</li>
+                    </ul>
+                </div>
                 <div class="mt-6">
-                    <a href="https://artstation.com/subhampanda/fastnfood" target="_self" class="project-button">
-                        View Project <span class="ml-2">&rarr;</span>
+                    <a href="https://docs.google.com/presentation/d/1zor-x2IDyLBThWrv6ZLjsVA44IDvUjAdfcoTEa4GdOU/edit?usp=sharing" target="_self" class="project-button">
+                        View Project <span class="arrow-icon">➜</span>
                     </a>
                 </div>
             </div>
 
             <!-- Project 2: Post-Process Shaders Showcase -->
             <div class="project-card p-6 rounded-xl transition duration-500 hover:scale-[1.02] transform">
-                <h3 class="text-2xl font-bold mb-2 text-white">Post-Process Shaders Showcase</h3>
-                <p class="text-sm uppercase text-gray-300 mb-4">HLSL & Technical Art</p>
-                <ul class="list-disc list-inside space-y-1 text-sm text-white/90">
-                    <li>Showcase of 12+ Post Process Shaders with modular nodes under different stylized art styles.</li>
-                    <li>Shaders include: Toon Shader, Outline Shader, Posterized Shader, Pixelated Shaders through Unreal.</li>
-                    <li>Creation of Material Functions and HLSL Codes for better Shader Volume functionality.</li>
-                </ul>
+                <div>
+                    <h3 class="text-2xl font-bold mb-2 text-white">Post-Process Shaders Showcase</h3>
+                    <p class="text-sm uppercase text-gray-300 mb-4">HLSL & Technical Art</p>
+                    <ul class="list-disc list-inside space-y-1 text-sm text-white/90">
+                        <li>Showcase of 12+ Post Process Shaders with modular nodes under different stylized art styles.</li>
+                        <li>Shaders include: Toon Shader, Outline Shader, Posterized Shader, Pixelated Shaders through Unreal.</li>
+                        <li>Creation of Material Functions and HLSL Codes for better Shader Volume functionality.</li>
+                    </ul>
+                </div>
                 <div class="mt-6">
-                    <a href="https://artstation.com/subhampanda/shaders" target="_self" class="project-button">
-                        View Project <span class="ml-2">&rarr;</span>
+                    <a href="https://docs.google.com/presentation/d/1wW1diNIsfEuRFndMYDs5oWtjH2_nkr4aUaGCNr0zfyk/edit?usp=sharing" target="_self" class="project-button">
+                        View Project <span class="arrow-icon">➜</span>
                     </a>
                 </div>
             </div>
+            
+        </div>
+        
+        <!-- ROW 2: Road Rush and Malorian 3516 (Side-by-side) -->
+        <div class="grid md:grid-cols-2 gap-8 mb-8">
 
             <!-- Project 3: Road Rush -->
             <div class="project-card p-6 rounded-xl transition duration-500 hover:scale-[1.02] transform">
-                <h3 class="text-2xl font-bold mb-2 text-white">Road Rush</h3>
-                <p class="text-sm uppercase text-gray-300 mb-4">3D Modelling & Texture Art</p>
-                <ul class="list-disc list-inside space-y-1 text-sm text-white/90">
-                    <li>Created stylized 3D assets for Vehicles and Cars.</li>
-                    <li>Textured 3D meshes for a stylized look in the Itch.io Game Build.</li>
-                    <li>Focus on creating game-ready assets for a complete pipeline.</li>
-                </ul>
+                <div>
+                    <h3 class="text-2xl font-bold mb-2 text-white">Road Rush</h3>
+                    <p class="text-sm uppercase text-gray-300 mb-4">3D Modelling & Texture Art</p>
+                    <ul class="list-disc list-inside space-y-1 text-sm text-white/90">
+                        <li>Created stylized 3D assets for Vehicles and Cars.</li>
+                        <li>Textured 3D meshes for a stylized look in the Itch.io Game Build.</li>
+                        <li>Focus on creating game-ready assets for a complete pipeline.</li>
+                    </ul>
+                </div>
                 <div class="mt-6">
-                    <a href="https://itch.io/subhampanda/roadrush" target="_self" class="project-button">
-                        View Project <span class="ml-2">&rarr;</span>
+                    <a href="https://rrover.itch.io/road-rush" target="_self" class="project-button">
+                        View Project <span class="arrow-icon">➜</span>
                     </a>
                 </div>
             </div>
 
             <!-- Project 4: Malorian 3516 -->
             <div class="project-card p-6 rounded-xl transition duration-500 hover:scale-[1.02] transform">
-                <h3 class="text-2xl font-bold mb-2 text-white">Malorian 3516 (Cyberpunk 2077)</h3>
-                <p class="text-sm uppercase text-gray-300 mb-4">Hard Surface Modelling</p>
-                <ul class="list-disc list-inside space-y-1 text-sm text-white/90">
-                    <li>Developed a Combat Revolver 3D asset from scratch using Maya and 3D Substance Painter.</li>
-                    <li>Focus on texture painting for adding depth and boldness, matching the Cyberpunk aesthetic.</li>
-                </ul>
+                <div>
+                    <h3 class="text-2xl font-bold mb-2 text-white">Malorian 3516 (Cyberpunk 2077)</h3>
+                    <p class="text-sm uppercase text-gray-300 mb-4">Hard Surface Modelling</p>
+                    <ul class="list-disc list-inside space-y-1 text-sm text-white/90">
+                        <li>Developed a Combat Revolver 3D asset from scratch using Maya and 3D Substance Painter.</li>
+                        <li>Focus on texture painting for adding depth and boldness, matching the Cyberpunk aesthetic.</li>
+                    </ul>
+                </div>
                 <div class="mt-6">
-                    <a href="https://artstation.com/subhampanda/malorian3516" target="_self" class="project-button">
-                        View Project <span class="ml-2">&rarr;</span>
+                    <a href="https://www.artstation.com/artwork/dyLXNW" target="_self" class="project-button">
+                        View Project <span class="arrow-icon">➜</span>
                     </a>
                 </div>
             </div>
+            
         </div>
         
-        <!-- Project 5: Stylized Nintendo Switch (Centered at the bottom) -->
-        <div class="flex justify-center">
+        <!-- ROW 3: Stylized Nintendo Switch (Centered) -->
+        <div class="flex justify-center mb-8">
             <div class="project-card p-6 rounded-xl transition duration-500 hover:scale-[1.02] transform w-full md:w-1/2">
-                <h3 class="text-2xl font-bold mb-2 text-white">Stylized Nintendo Switch</h3>
-                <p class="text-sm uppercase text-gray-300 mb-4">3D Modelling (3DS Max)</p>
-                <ul class="list-disc list-inside space-y-1 text-sm text-white/90">
-                    <li>Game Ready 3D mesh created on 3DS Max.</li>
-                    <li>Demonstrated skill in the creation of modular 3D elements.</li>
-                </ul>
+                <div>
+                    <h3 class="text-2xl font-bold mb-2 text-white">Stylized Nintendo Switch</h3>
+                    <p class="text-sm uppercase text-gray-300 mb-4">3D Modelling (3DS Max)</p>
+                    <ul class="list-disc list-inside space-y-1 text-sm text-white/90">
+                        <li>Game Ready 3D mesh created on 3DS Max.</li>
+                        <li>Demonstrated skill in the creation of modular 3D elements.</li>
+                    </ul>
+                </div>
                 <div class="mt-6">
-                    <a href="https://artstation.com/subhampanda/nintendoswitch" target="_self" class="project-button">
-                        View Project <span class="ml-2">&rarr;</span>
+                    <a href="https://www.linkedin.com/posts/artcharlie4li_3dsmax-nintendoswitch-3dmodeling-activity-7319770677018771456-PSDl?utm_source=share&utm_medium=member_desktop&rcm=ACoAAD4NqcAB-_11aoyoLZt7Gtt0SMD7uv1EY9g" target="_self" class="project-button">
+                        View Project <span class="arrow-icon">➜</span>
                     </a>
                 </div>
             </div>
@@ -299,14 +367,26 @@
     </section>
 
     <!-- About Me Section -->
-    <section id="about" class="portfolio-section max-w-2xl mx-auto text-center">
-        <h2 class="text-4xl font-extrabold mb-8 text-secondary-pink">ABOUT ME</h2>
+    <section id="about" class="portfolio-section max-w-6xl mx-auto">
+        <h2 class="text-4xl font-extrabold mb-8 text-center text-secondary-pink">ABOUT ME</h2>
         
-        <!-- About Me Block (Translucent) -->
-        <div class="skill-block p-8 rounded-xl space-y-4">
-            <p class="text-lg text-white/90">
-                I am Subham Panda, currently pursuing B.Design (Gaming) at Lovely Professional University. My passion lies in **Technical Art**, where I focus on developing unique visual solutions, primarily through post-process shaders, HLSL coding, and meticulous 3D asset creation. I am seeking opportunities for collaboration and growth in the game development pipeline.
-            </p>
+        <div class="grid md:grid-cols-2 gap-8 items-start">
+            
+            <!-- Left Column: Description (Left Aligned) -->
+            <div class="skill-block p-8 rounded-xl space-y-4 col-span-1">
+                <p class="text-lg text-white/90 text-left">
+                    I am Subham Panda, currently pursuing B.Design (Gaming) at Lovely Professional University. My passion lies in **Technical Art**, where I focus on developing unique visual solutions, primarily through post-process shaders, HLSL coding, and meticulous 3D asset creation. I am seeking opportunities for collaboration and growth in the game development pipeline.
+                </p>
+            </div>
+
+            <!-- Right Column: Image Placeholder (Vertical, Rounded, Translucent) -->
+            <div class="col-span-1 flex justify-center">
+                <div id="image-placeholder" class="skill-block p-4 rounded-xl flex items-center justify-center w-full max-w-xs" style="height: 100%;">
+                    <p class="text-secondary-pink text-center text-sm font-semibold italic">
+                        Paste Image URL Here (e.g., Profile Picture)
+                    </p>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -314,41 +394,49 @@
     <div id="contact-footer" class="w-full mt-16 p-8 relative z-20">
         <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
             
-            <!-- Left Column: Email & Phone -->
+            <!-- Left Column: Contacts (Renamed) -->
             <div class="space-y-4 md:space-y-6 text-left">
-                <h3 class="text-2xl font-bold border-b-2 pb-2 mb-4">Get In Touch</h3>
+                <h3 class="text-2xl font-bold border-b-2 pb-2 mb-4">Contacts</h3>
                 
                 <!-- Email -->
                 <div class="flex items-center space-x-3 group">
                     <!-- Icon SVG for Email -->
                     <i class="ph ph-envelope-simple text-3xl icon-accent group-hover:text-primary-white transition duration-200"></i>
-                    <a href="mailto:artcharlie.exe@gmail.com" class="text-lg font-medium group-hover:text-primary-white transition duration-200">artcharlie.exe@gmail.com</a>
+                    <a href="mailto:artcharlie.exe@gmail.com" class="text-lg font-medium group-hover:text-primary-white transition duration-200">
+                        ✉ artcharlie.exe@gmail.com
+                    </a>
                 </div>
                 
                 <!-- Phone -->
                 <div class="flex items-center space-x-3 group">
                     <!-- Icon SVG for Phone -->
                     <i class="ph ph-phone text-3xl icon-accent group-hover:text-primary-white transition duration-200"></i>
-                    <a href="tel:+917735465010" class="text-lg font-medium group-hover:text-primary-white transition duration-200">+91 7735465010</a>
+                    <a href="tel:+917735465010" class="text-lg font-medium group-hover:text-primary-white transition duration-200">
+                        ☎ +91 7735465010
+                    </a>
                 </div>
             </div>
 
-            <!-- Right Column: LinkedIn & Artstation -->
+            <!-- Right Column: Socials (Renamed) -->
             <div class="space-y-4 md:space-y-6 text-left">
-                <h3 class="text-2xl font-bold border-b-2 pb-2 mb-4">Online Presence</h3>
+                <h3 class="text-2xl font-bold border-b-2 pb-2 mb-4">Socials</h3>
                 
                 <!-- LinkedIn -->
                 <div class="flex items-center space-x-3 group">
                     <!-- Icon SVG for LinkedIn -->
                     <i class="ph ph-linkedin-logo text-3xl icon-accent group-hover:text-primary-white transition duration-200"></i>
-                    <a href="#" target="_blank" class="text-lg font-medium group-hover:text-primary-white transition duration-200">Subham Panda</a>
+                    <a href="https://www.linkedin.com/in/artcharlie4li/" target="_blank" class="text-lg font-medium group-hover:text-primary-white transition duration-200">
+                        **LinkedIn:** Subham Panda
+                    </a>
                 </div>
                 
                 <!-- Artstation -->
                 <div class="flex items-center space-x-3 group">
                     <!-- Icon SVG for Palette (Artstation substitute) -->
                     <i class="ph ph-palette text-3xl icon-accent group-hover:text-primary-white transition duration-200"></i>
-                    <a href="#" target="_blank" class="text-lg font-medium group-hover:text-primary-white transition duration-200">Artcharlie.exe</a>
+                    <a href="https://www.artstation.com/artcharlie_exe" target="_blank" class="text-lg font-medium group-hover:text-primary-white transition duration-200">
+                        **Artstation:** Artcharlie.exe
+                    </a>
                 </div>
             </div>
         </div>
