@@ -31,9 +31,9 @@
             pointer-events: none;
         }
 
-        /* Sticky Top Bar Styling */
+        /* Top Bar Styling - Scrolls off-screen */
         .topbar {
-            position: fixed; /* FIXED POSITIONING */
+            position: relative;
             top: 0;
             width: 100%;
             z-index: 50; 
@@ -42,7 +42,6 @@
         }
 
         .top-nav-button {
-            /* Button is black, text is secondary pink, on pink background */
             background-color: var(--accent-black);
             color: var(--secondary-pink); 
             padding: 0.5rem 1.25rem;
@@ -50,10 +49,10 @@
             font-weight: 600;
             transition: all 0.3s ease;
             text-decoration: none;
+            cursor: pointer; /* Ensure buttons look clickable */
         }
 
         .top-nav-button:hover {
-            /* Hover state remains the same for the button content */
             color: var(--primary-white); 
             background-color: var(--accent-black); 
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); 
@@ -68,29 +67,6 @@
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 10px rgba(255, 255, 255, 0.3);
         }
 
-        /* Centered Nav Links/Buttons styles */
-        .hero-nav-link {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--secondary-pink);
-            transition: color 0.3s ease, transform 0.3s ease;
-            text-decoration: none;
-            filter: drop-shadow(0 0 4px rgba(255, 157, 227, 0.5));
-        }
-
-        .hero-nav-link:hover {
-            color: var(--primary-white);
-            transform: translateY(-4px) scale(1.1);
-            filter: drop-shadow(0 0 6px var(--primary-white));
-        }
-
-        .hero-nav-link i {
-            font-size: 2.5rem;
-            margin-bottom: 0.25rem;
-        }
-
-
         /* Portfolio Sections */
         .portfolio-section {
             position: relative;
@@ -98,13 +74,26 @@
             min-height: 500px;
             padding: 4rem 1rem;
         }
+        
+        /* NEW FIX: Invisible Anchors for precise scrolling */
+        .scroll-anchor {
+            display: block;
+            position: relative;
+            top: -4rem; 
+            visibility: hidden;
+            height: 0;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Specific anchor adjustment for Softwares section to ensure clearance */
+        #softwares-anchor {
+            top: -10rem; 
+        }
 
         .project-card {
-            /* 70% Translucent black background */
             background-color: rgba(20, 20, 20, 0.7); 
-            /* Border: Thicker (2px) and Coral Accent */
             border: 2px solid var(--accent-coral); 
-            /* Shadow: Using Coral Accent */
             box-shadow: 0 0 15px rgba(255, 128, 145, 0.4); 
             border-radius: 0.75rem; 
             display: flex;
@@ -112,13 +101,27 @@
             justify-content: space-between;
         }
         
-        /* Style for the skill/contact translucent blocks */
+        /* General translucent skill/software block styles */
         .skill-block {
-             /* 70% Translucent black background */
             background-color: rgba(20, 20, 20, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
             border-radius: 0.75rem; 
+        }
+
+        /* Specific style for Technical Focus horizontal bars */
+        .tech-focus-bar {
+            background-color: rgba(20, 20, 20, 0.7); 
+            border: 1px solid var(--accent-coral); 
+            border-radius: 9999px; /* Fully rounded horizontal box */
+            padding: 0.75rem 1.5rem;
+            margin: 0.5rem 0;
+            text-align: left; /* Left align text */
+            transition: transform 0.2s;
+        }
+        .tech-focus-bar:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(255, 157, 227, 0.4);
         }
 
         /* Project Button Styles */
@@ -139,7 +142,7 @@
             transform: scale(1.08); 
             background-color: var(--accent-coral); 
             box-shadow: 0 4px 20px rgba(255, 157, 227, 0.6); 
-            color: var(--primary-white); /* Text to white on coral hover */
+            color: var(--primary-white); 
         }
 
         /* Fix for Unicode Arrow Centering */
@@ -153,7 +156,101 @@
             transition: color 0.3s ease;
         }
 
-        /* Contact Footer Styling - already Secondary Pink */
+        /* Software Grid Specific Styles to make blocks uniform and spaced */
+        .software-grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 1rem; 
+        }
+        
+        /* Ensures blocks have a consistent, shorter height (Rectangular shape) */
+        .software-block {
+            padding: 1rem; 
+            margin: 0;
+            border-radius: 0.75rem; 
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Explicitly set min/max height to enforce uniformity and shorten the rectangle */
+            min-height: 150px; 
+            height: 100%;
+        }
+
+        .software-block ul {
+            /* Adjust spacing for tighter list layout */
+            list-style-position: outside; 
+            padding-left: 1.25rem; 
+            margin-top: 0.5rem; /* Reduced margin */
+            line-height: 1.25; /* Tighter line spacing */
+        }
+        
+        .software-block ul li {
+            margin-bottom: 0.25rem; /* Tighter space between list items */
+        }
+
+        /* Mobile adjustment for software grid to ensure single column layout */
+        @media (max-width: 640px) {
+            .software-grid-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+        
+        /* --- Scroll-to-Top Button Styles --- */
+        #scrollToTopBtn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 100;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            background-color: var(--secondary-pink);
+            color: var(--accent-black);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0; 
+            visibility: hidden; 
+            /* Added transform transition for smooth sliding entry/exit */
+            transition: opacity 0.5s ease-in-out, 
+                        background-color 0.3s, 
+                        color 0.3s, 
+                        transform 0.5s ease-in-out; 
+            transform: translateY(100%); 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        #scrollToTopBtn.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0); /* Smooth slide in */
+        }
+        
+        /* FIX: Class for smooth slide-out */
+        #scrollToTopBtn.hidden-transition {
+            opacity: 0;
+            transform: translateY(100%); /* Smooth slide out to bottom */
+        }
+
+        #scrollToTopBtn:hover {
+            background-color: var(--primary-white); /* Pink turns white */
+            color: var(--secondary-pink); /* Arrow color changes */
+            transform: translateY(-5px) scale(1.1); /* Pop-out effect */
+            box-shadow: 0 0 20px var(--primary-white);
+        }
+
+        #scrollToTopBtn .arrow-up {
+            font-size: 2rem; 
+            line-height: 1;
+            font-weight: 900; 
+            display: block;
+        }
+
+
+        /* Contact Footer Styling */
         #contact-footer {
             background-color: var(--secondary-pink); 
             color: var(--accent-black); 
@@ -178,18 +275,59 @@
         .text-accent-coral { color: var(--accent-coral); }
         .icon-accent { color: var(--accent-black); }
 
+        /* Match height logic for about section */
+        /* Use CSS Grid for the parent to ensure column stretch behavior */
+        .about-content-wrapper {
+            display: grid;
+            grid-template-columns: 1fr; /* Default single column for mobile */
+            gap: 1rem; 
+            width: 100%;
+        }
+        @media (min-width: 768px) {
+             .about-content-wrapper {
+                grid-template-columns: 1fr 1fr; /* Two equal columns on desktop */
+                align-items: stretch; /* Crucial for vertical alignment */
+            }
+        }
+        /* Ensure inner blocks take up the full column height and have matching min-height */
+        .about-content-wrapper > div {
+            min-height: 300px; /* Base minimum height */
+            height: 100%;
+        }
+        /* Image container specific styling */
+        .about-image-container {
+             /* Set a minimum height for the image container to ensure matching height with text block */
+            min-height: 300px; 
+            /* Inner styling for image placement/fit */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* Hide anything spilling over */
+            border-radius: 0.75rem;
+            padding: 0;
+        }
+        /* Style for the actual image element */
+        .about-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures image fills the container without distortion */
+            border-radius: 0.75rem; /* Match parent container rounding */
+        }
+
     </style>
     <!-- Phosphor Icons for smooth SVG icons -->
     <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/umd/phosphor-icons-web.js"></script>
 </head>
 <body class="text-white antialiased">
 
-    <!-- Sticky Top Navigation Bar -->
-    <div class="topbar">
-        <nav class="max-w-6xl mx-auto flex justify-end space-x-4 p-4">
-            <a href="#projects" class="top-nav-button">Projects</a>
-            <a href="#skills" class="top-nav-button">Skills</a>
-            <a href="#about" class="top-nav-button">About & Contact</a>
+    <!-- Top Navigation Bar (Now scrolls off-screen) -->
+    <div class="topbar" id="topbar-nav">
+        <nav id="top-nav" class="max-w-6xl mx-auto flex justify-center space-x-4 p-4">
+            <a href="#projects-anchor" class="top-nav-button">Projects</a>
+            <a href="#skills-anchor" class="top-nav-button">Skills</a>
+            <a href="#softwares-anchor" class="top-nav-button">Softwares</a>
+            <a href="#about-anchor" class="top-nav-button">About</a>
+            <a href="#contact-anchor" class="top-nav-button">Contact</a>
         </nav>
     </div>
 
@@ -204,28 +342,12 @@
             <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight text-white/90">
                 SUBHAM PANDA
             </h1>
-            <!-- Secondary Accent: Lighter Pink -->
+            <!-- Secondary Accent: Lighter Pink - Updated Titles with pipe -->
             <p class="text-xl md:text-2xl font-light tracking-widest uppercase text-secondary-pink">
-                B.Design (Gaming) | Technical Artist
+                LEVEL DESIGNER | 3D ARTIST | TECHNICAL ARTIST
             </p>
         </header>
         
-        <!-- Centered Navigation/Quick Links -->
-        <div class="mt-12 flex space-x-8">
-            <a href="#projects" class="hero-nav-link">
-                <i class="ph-bold ph-code text-4xl"></i>
-                <span class="text-sm font-semibold">Projects</span>
-            </a>
-            <a href="#skills" class="hero-nav-link">
-                <i class="ph-bold ph-gear-six text-4xl"></i>
-                <span class="text-sm font-semibold">Skills</span>
-            </a>
-            <a href="#about" class="hero-nav-link">
-                <i class="ph-bold ph-user-circle text-4xl"></i>
-                <span class="text-sm font-semibold">Contact</span>
-            </a>
-        </div>
-
         <!-- Scroll Indicator (Simple arrow) -->
         <div class="absolute bottom-10 animate-bounce text-secondary-pink" style="filter: drop-shadow(0 0 5px var(--secondary-pink));">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -238,6 +360,9 @@
 
     <!-- Projects Section -->
     <section id="projects" class="portfolio-section max-w-6xl mx-auto">
+        <!-- Anchor Target -->
+        <div id="projects-anchor" class="scroll-anchor"></div> 
+        
         <h2 class="text-4xl font-extrabold mb-12 text-center text-secondary-pink">PROJECT ARTIFACTS</h2>
         
         <!-- ROW 1: Fast'N'Food and Shaders Showcase (Side-by-side) -->
@@ -333,7 +458,7 @@
                     </ul>
                 </div>
                 <div class="mt-6">
-                    <a href="https://www.linkedin.com/posts/artcharlie4li_3dsmax-nintendoswitch-3dmodeling-activity-7319770677018771456-PSDl?utm_source=share&utm_medium=member_desktop&rcm=ACoAAD4NqcAB-_11aoyoLZt7Gtt0SMD7uv1EY9g" target="_self" class="project-button">
+                    <a href="https://www.linkedin.com/posts/artcharlie4li_3dsmax-nintendoswitch-3dmodeling-activity-7319770677018771456-PSDl?utm_source=share&utm_medium=member_desktop&rcm=ACoAAD4NqcAB-_11aoyoLZt7Gtt0SMD3uv1EY9g" target="_self" class="project-button">
                         View Project <span class="arrow-icon">➜</span>
                     </a>
                 </div>
@@ -341,56 +466,128 @@
         </div>
     </section>
     
-    <!-- Skills Section -->
-    <section id="skills" class="portfolio-section max-w-4xl mx-auto">
-        <h2 class="text-4xl font-extrabold mb-12 text-center text-secondary-pink">SKILLS & EXPERTISE</h2>
-        
-        <div class="flex flex-wrap justify-center gap-6">
+    <!-- Skills Section: Now separated into Technical Focus and Software Proficiencies -->
+    <section id="skills" class="portfolio-section max-w-6xl mx-auto">
+        <!-- New Anchor Target for Skills -->
+        <div id="skills-anchor" class="scroll-anchor"></div>
+
+        <!-- Merged and Centered Title -->
+        <h2 class="text-4xl font-extrabold mb-12 text-center text-secondary-pink">TECHNICAL SKILLS</h2>
+
+        <!-- 1. Technical Focus Areas (Horizontal Bars, Left Aligned) -->
+        <div class="max-w-4xl mx-auto mb-8">
             
-            <div class="skill-block p-4 rounded-xl shadow-lg text-center w-40">
-                <p class="font-bold text-lg text-secondary-pink">Game Engines</p>
-                <p class="text-sm text-white/90">Unity, Unreal Engine 5</p>
+            <div class="space-y-3">
+                
+                <div class="tech-focus-bar text-white/90">
+                    <b class="text-secondary-pink">Technical Art:</b> Good Knowledge of Post-Process Shaders and basic HLSL Learning for Shader Creation.
+                </div>
+
+                <div class="tech-focus-bar text-white/90">
+                    <b class="text-secondary-pink">3D Art:</b> Familiarity with 3D art in game development Pipeline.
+                </div>
+
+                <div class="tech-focus-bar text-white/90">
+                    <b class="text-secondary-pink">Level Design:</b> Proficient with core principles of level design and Well Acquainted with video games.
+                </div>
+
+                <div class="tech-focus-bar text-white/90">
+                    <b class="text-secondary-pink">Key Art:</b> Thorough with game key art creation and analytical about game art.
+                </div>
+
+                <div class="tech-focus-bar text-white/90">
+                    <b class="text-secondary-pink">3D Sculpting:</b> Well-Versed in Sculpting for game art in game development pipeline.
+                </div>
+
             </div>
-            <div class="skill-block p-4 rounded-xl shadow-lg text-center w-40">
-                <p class="font-bold text-lg text-secondary-pink">3D Softwares</p>
-                <p class="text-sm text-white/90">Maya, 3DS Max, Substance Painter, Blender</p>
-            </div>
-            <div class="skill-block p-4 rounded-xl shadow-lg text-center w-40">
-                <p class="font-bold text-lg text-secondary-pink">Technical Art</p>
-                <p class="text-sm text-white/90">Post-Process Shaders, HLSL</p>
-            </div>
-            <div class="skill-block p-4 rounded-xl shadow-lg text-center w-40">
-                <p class="font-bold text-lg text-secondary-pink">Design</p>
-                <p class="text-sm text-white/90">Level Design, Narrative Design</p>
+        </div>
+
+        <!-- NEW HEADING ADDED HERE -->
+        <!-- New Anchor Target for Softwares - Increased offset for better clearance -->
+        <div id="softwares-anchor" class="scroll-anchor" style="top: -10rem;"></div> 
+        <h2 class="text-4xl font-extrabold mb-8 text-center text-secondary-pink max-w-4xl mx-auto">SOFTWARE PROFICIENCIES</h2>
+
+
+        <!-- 2. Software Proficiencies (Horizontal Boxes, 2x2 Grid, uniform size, now shorter) -->
+        <!-- Adjusted max-w-md container for symmetry and compactness -->
+        <div class="max-w-md mx-auto">
+            
+            <div class="software-grid-container w-full">
+
+                <!-- Game Engines -->
+                <div class="software-block skill-block bg-opacity-70 border-r border-b">
+                    <p class="font-bold text-lg text-secondary-pink mb-2 border-b border-white/30 w-full pb-1 text-center">Game Engines</p>
+                    <ul class="text-sm text-white/90 list-disc text-left w-full pl-6">
+                        <li><b>Unity</b></li>
+                        <li><b>Unreal Engine 5</b></li>
+                    </ul>
+                </div>
+
+                <!-- 3D Softwares -->
+                <div class="software-block skill-block bg-opacity-70 border-b">
+                    <p class="font-bold text-lg text-secondary-pink mb-2 border-b border-white/30 w-full pb-1 text-center">3D Softwares</p>
+                    <ul class="text-sm text-white/90 list-disc text-left w-full pl-6">
+                        <li><b>Maya</b></li>
+                        <li><b>3DS Max</b></li>
+                        <li><b>3D Substance Painter</b></li>
+                        <li><b>Blender</b></li>
+                    </ul>
+                </div>
+
+                <!-- Art Softwares -->
+                <div class="software-block skill-block bg-opacity-70 border-r">
+                    <p class="font-bold text-lg text-secondary-pink mb-2 border-b border-white/30 w-full pb-1 text-center">Art Softwares</p>
+                    <ul class="text-sm text-white/90 list-disc text-left w-full pl-6">
+                        <li><b>Adobe Photoshop</b></li>
+                        <li><b>Adobe Illustrator</b></li>
+                    </ul>
+                </div>
+                
+                <!-- SCM Softwares -->
+                <div class="software-block skill-block bg-opacity-70">
+                    <p class="font-bold text-lg text-secondary-pink mb-2 border-b border-white/30 w-full pb-1 text-center">SCM Softwares</p>
+                    <ul class="text-sm text-white/90 list-disc text-left w-full pl-6">
+                        <li><b>GitHub</b></li>
+                        <li><b>GitLab</b></li>
+                        <li><b>Unity Version Control</b></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- About Me Section -->
     <section id="about" class="portfolio-section max-w-6xl mx-auto">
+        <!-- New Anchor Target for About -->
+        <div id="about-anchor" class="scroll-anchor"></div> 
+
         <h2 class="text-4xl font-extrabold mb-8 text-center text-secondary-pink">ABOUT ME</h2>
         
-        <div class="grid md:grid-cols-2 gap-8 items-start">
+        <!-- Centered About Me Text Block and Side-by-Side Image Placeholder -->
+        <div class="about-content-wrapper mx-auto max-w-4xl flex flex-col md:flex-row">
             
-            <!-- Left Column: Description (Left Aligned) -->
-            <div class="skill-block p-8 rounded-xl space-y-4 col-span-1">
-                <p class="text-lg text-white/90 text-left">
-                    I am Subham Panda, currently pursuing B.Design (Gaming) at Lovely Professional University. My passion lies in **Technical Art**, where I focus on developing unique visual solutions, primarily through post-process shaders, HLSL coding, and meticulous 3D asset creation. I am seeking opportunities for collaboration and growth in the game development pipeline.
+            <!-- Left Column: Description (Justified Text) -->
+            <div class="skill-block p-8 rounded-xl space-y-4 col-span-1 flex items-center justify-center min-h-[300px]">
+                <!-- text-justify ensures uniform line length -->
+                <p class="text-lg text-white/90 text-justify">
+                    I am Subham, and I am a Level Designer, 3D Artist, and Technical Artist who combines creative design with strong technical skills to build immersive game environments and stylized visuals. I specialize in crafting engaging levels, creating optimized 3D assets, and developing post-process shaders using Unreal Engine 5, Blueprints, and HLSL. With experience across multiple game engines and 3D tools, I focus on delivering polished, gameplay-driven results that enhance the player experience.
                 </p>
             </div>
 
             <!-- Right Column: Image Placeholder (Vertical, Rounded, Translucent) -->
-            <div class="col-span-1 flex justify-center">
-                <div id="image-placeholder" class="skill-block p-4 rounded-xl flex items-center justify-center w-full max-w-xs" style="height: 100%;">
-                    <p class="text-secondary-pink text-center text-sm font-semibold italic">
-                        Paste Image URL Here (e.g., Profile Picture)
-                    </p>
-                </div>
+            <div class="col-span-1 flex items-center justify-center about-image-container min-h-[300px]">
+                <!-- Replaced text placeholder with the actual image tag -->
+                <img src="https://github.com/Charli4Li/Subham/blob/a92851cbe970547a2b6537fc984d23b86b3f3c18/SFSS.png?raw=true" 
+                     alt="Profile Picture" 
+                     class="w-full h-full object-cover rounded-xl"
+                     onerror="this.onerror=null; this.src='https://placehold.co/400x400/141414/FF9DE3?text=Profile+Image+Not+Found';">
             </div>
         </div>
     </section>
 
     <!-- Contact Footer (Bottom Bar in Secondary Pink) -->
+    <!-- NEW ANCHOR FOR CONTACT LINK -->
+    <div id="contact-anchor" class="scroll-anchor"></div> 
     <div id="contact-footer" class="w-full mt-16 p-8 relative z-20">
         <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
             
@@ -426,7 +623,7 @@
                     <!-- Icon SVG for LinkedIn -->
                     <i class="ph ph-linkedin-logo text-3xl icon-accent group-hover:text-primary-white transition duration-200"></i>
                     <a href="https://www.linkedin.com/in/artcharlie4li/" target="_blank" class="text-lg font-medium group-hover:text-primary-white transition duration-200">
-                        **LinkedIn:** Subham Panda
+                        <b>LinkedIn:</b> Subham Panda
                     </a>
                 </div>
                 
@@ -435,7 +632,7 @@
                     <!-- Icon SVG for Palette (Artstation substitute) -->
                     <i class="ph ph-palette text-3xl icon-accent group-hover:text-primary-white transition duration-200"></i>
                     <a href="https://www.artstation.com/artcharlie_exe" target="_blank" class="text-lg font-medium group-hover:text-primary-white transition duration-200">
-                        **Artstation:** Artcharlie.exe
+                        <b>Artstation:</b> Artcharlie.exe
                     </a>
                 </div>
             </div>
@@ -445,8 +642,14 @@
         </div>
     </div>
 
-    <!-- JavaScript for the Rainbow Rain Effect -->
+    <!-- Scroll to Top Button -->
+    <button id="scrollToTopBtn" aria-label="Scroll to top">
+        <span class="arrow-up">⬆</span>
+    </button>
+
+    <!-- JavaScript for the Rainbow Rain Effect & Smooth Scrolling -->
     <script>
+        // --- RAIN EFFECT LOGIC ---
         const canvas = document.getElementById('rainCanvas');
         
         if (canvas) {
@@ -455,7 +658,6 @@
             let drops = [];
             const maxDrops = 250; 
 
-            // Function to set canvas size and handle resizing
             function resizeCanvas() {
                 W = window.innerWidth;
                 H = window.innerHeight;
@@ -463,11 +665,8 @@
                 canvas.height = H;
             }
             window.addEventListener('resize', resizeCanvas);
-            
-            // Call resize immediately to ensure canvas dimensions are set on load
             resizeCanvas(); 
 
-            // Drop class definition
             class Drop {
                 constructor() {
                     this.reset();
@@ -477,16 +676,14 @@
                 reset() {
                     this.x = Math.random() * W;
                     this.y = -Math.random() * H * 0.1; 
-                    // Speed is 1/4th of original
                     this.speed = (2 + Math.random() * 5) * 0.25; 
                     this.length = 5 + Math.random() * 25; 
                     this.alpha = 0.5 + Math.random() * 0.5; 
-                    this.hue = Math.random() * 360; // Start with a random hue
+                    this.hue = Math.random() * 360; 
                 }
 
                 fall() {
                     this.y += this.speed;
-                    // Slowly cycle the hue for the rainbow effect
                     this.hue = (this.hue + 0.3) % 360; 
                     if (this.y > H + this.length) {
                         this.reset(); 
@@ -494,37 +691,29 @@
                 }
 
                 draw() {
-                    // Set the color using HSL based on the drop's current hue
                     ctx.strokeStyle = `hsla(${this.hue}, 100%, 50%, ${this.alpha})`; 
-                    // Changed from 1 to 0.5 for skinnier lines
                     ctx.lineWidth = 0.5; 
                     ctx.lineCap = 'round'; 
                     
-                    // Draw the line
                     ctx.beginPath();
                     ctx.moveTo(this.x, this.y);
                     ctx.lineTo(this.x, this.y + this.length);
                     ctx.stroke();
 
-                    // Draw a brighter tip
                     ctx.beginPath();
-                    ctx.fillStyle = `hsl(${this.hue}, 100%, 75%)`; // Brighter tip
+                    ctx.fillStyle = `hsl(${this.hue}, 100%, 75%)`; 
                     ctx.fillRect(this.x - 0.5, this.y, 1, 1);
                 }
             }
 
-            // Initialize the drops
             for (let i = 0; i < maxDrops; i++) {
                 drops.push(new Drop());
             }
 
-            // Main animation loop
             function animate() {
-                // Fading background effect: Draw a semi-transparent black rectangle over everything
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
                 ctx.fillRect(0, 0, W, H);
 
-                // Update and draw each drop
                 drops.forEach(drop => {
                     drop.fall();
                     drop.draw();
@@ -533,13 +722,86 @@
                 requestAnimationFrame(animate);
             }
 
-            // Start the canvas when the window loads
             window.onload = function() {
                 animate();
             };
         } else {
             console.error("Canvas element 'rainCanvas' not found.");
         }
+        
+        // --- SMOOTH SCROLLING LOGIC (Vanilla JS) ---
+
+        function smoothScroll(targetElement) {
+            const targetTop = targetElement.getBoundingClientRect().top;
+            const startPosition = window.pageYOffset;
+            const distance = targetTop; 
+            const duration = 700; 
+            let startTime = null;
+
+            function step(currentTime) {
+                if (startTime === null) startTime = currentTime;
+                const timeElapsed = currentTime - startTime;
+                const progress = Math.min(1, timeElapsed / duration);
+                
+                const easeOutQuad = t => t * (2 - t);
+                const easedProgress = easeOutQuad(progress);
+                
+                window.scrollTo({
+                    top: startPosition + distance * easedProgress,
+                    left: 0,
+                    behavior: 'auto'
+                });
+
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            }
+
+            window.requestAnimationFrame(step);
+        }
+
+        // Attach smooth scroll listener to navigation buttons
+        document.getElementById('top-nav').addEventListener('click', function(e) {
+            const targetLink = e.target.closest('.top-nav-button');
+            if (targetLink) {
+                e.preventDefault();
+                const targetId = targetLink.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+
+                if (targetElement) {
+                    smoothScroll(targetElement);
+                }
+            }
+        });
+
+        // --- SCROLL-TO-TOP BUTTON LOGIC ---
+        const topbar = document.getElementById('topbar-nav');
+        const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+        
+        // Scroll handler to show/hide button
+        window.addEventListener('scroll', function() {
+            const topbarBottom = topbar.getBoundingClientRect().bottom;
+            
+            if (topbarBottom < 0) {
+                // Show: Slide in smoothly
+                scrollToTopBtn.classList.remove('hidden-transition');
+                scrollToTopBtn.classList.add('visible');
+            } else {
+                // Hide: Slide out smoothly
+                scrollToTopBtn.classList.add('hidden-transition');
+                scrollToTopBtn.classList.remove('visible');
+            }
+        });
+        
+        // Scroll to top functionality
+        scrollToTopBtn.addEventListener('click', function() {
+             // Smoothly scroll to the very top of the page (Y=0)
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
     </script>
 
 </body>
