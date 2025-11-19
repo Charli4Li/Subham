@@ -42,10 +42,10 @@
             top: 0;
             width: 100%;
             z-index: 50; 
-            /* 70% Translucent Secondary Pink */
             background-color: rgba(255, 157, 227, 0.7);
             backdrop-filter: blur(10px); /* Glassmorphism effect */
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            /* Updated box-shadow for white neon glow */
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3), 0 2px 10px rgba(0, 0, 0, 0.2);
             /* Rounded bottom corners */
             border-radius: 0 0 1.5rem 1.5rem;
         }
@@ -59,12 +59,14 @@
             transition: all 0.3s ease;
             text-decoration: none;
             cursor: pointer; /* Ensure buttons look clickable */
+            /* Subtle glow for buttons too */
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
         }
 
         .top-nav-button:hover {
             color: var(--primary-white); 
             background-color: var(--accent-black); 
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); 
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); 
         }
 
         /* Hero content styling */
@@ -103,18 +105,25 @@
         .project-card {
             background-color: rgba(20, 20, 20, 0.7); 
             border: 2px solid var(--accent-coral); 
-            box-shadow: 0 0 15px rgba(255, 128, 145, 0.4); 
+            /* Enhanced white outer glow */
+            box-shadow: 0 0 15px rgba(255, 128, 145, 0.4), 0 0 10px rgba(255, 255, 255, 0.15); 
             border-radius: 0.75rem; 
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .project-card:hover {
+             box-shadow: 0 0 25px rgba(255, 128, 145, 0.6), 0 0 15px rgba(255, 255, 255, 0.3);
         }
         
         /* General translucent skill/software block styles */
         .skill-block {
             background-color: rgba(20, 20, 20, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+            /* Enhanced white outer glow */
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
             border-radius: 0.75rem; 
         }
 
@@ -126,11 +135,13 @@
             padding: 0.75rem 1.5rem;
             margin: 0.5rem 0;
             text-align: left; /* Left align text */
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
+            /* Enhanced white outer glow */
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.1); 
         }
         .tech-focus-bar:hover {
             transform: scale(1.02);
-            box-shadow: 0 0 15px rgba(255, 157, 227, 0.4);
+            box-shadow: 0 0 20px rgba(255, 157, 227, 0.5), 0 0 10px rgba(255, 255, 255, 0.3);
         }
 
         /* Project Button Styles */
@@ -177,7 +188,8 @@
             padding: 1rem; 
             margin: 0;
             border-radius: 0.75rem; 
-            box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+            /* Enhanced white outer glow */
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.2); 
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -265,6 +277,8 @@
             color: var(--accent-black); 
             /* Rounded top corners */
             border-radius: 1.5rem 1.5rem 0 0;
+            /* Enhanced white outer glow for top edge */
+            box-shadow: 0 -4px 20px rgba(255, 255, 255, 0.3); 
         }
         
         #contact-footer h3 {
@@ -316,6 +330,8 @@
             overflow: hidden; /* Hide anything spilling over */
             border-radius: 0.75rem;
             padding: 0;
+            /* Add glow to image container too */
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
         }
         /* Style for the actual image element */
         .about-image-container img {
@@ -346,7 +362,6 @@
     </div>
 
     <!-- Main Hero Section (Z-Index 10) -->
-    <!-- Added pb-32 (padding-bottom) to visually shift the center content upwards by adding space below it -->
     <div id="hero-content" class="flex flex-col justify-center items-center p-4 pb-32">
         
         <!-- Header Section -->
@@ -770,7 +785,8 @@
             class TronLine {
                 constructor() {
                     this.pathPoints = []; 
-                    this.maxPoints = 100; // Longer trails for impact
+                    // Increase max points to make trails longer (doubled from 100 to 200)
+                    this.maxPoints = 200; 
                     
                     // Trail Geometry
                     this.geometry = new THREE.BufferGeometry();
