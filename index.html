@@ -6,6 +6,8 @@
     <title>Subham Panda | Portfolio</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         /* Define colors using CSS variables based on user request */
         :root {
@@ -15,7 +17,7 @@
             --accent-coral: #FF8091; /* Coral Pink */
         }
 
-        /* Custom styles for the rain canvas and glowing text */
+        /* Custom styles for the animation canvas and glowing text */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         
         body {
@@ -23,12 +25,15 @@
             overflow-x: hidden; 
         }
         
-        #rainCanvas {
+        #canvas-container {
             position: fixed;
             top: 0;
             left: 0;
-            z-index: 1; 
-            pointer-events: none;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* Lowest index */
+            pointer-events: none; /* Let clicks pass through */
+            background-color: #000000; /* Pitch black background */
         }
 
         /* Top Bar Styling - Scrolls off-screen */
@@ -37,8 +42,12 @@
             top: 0;
             width: 100%;
             z-index: 50; 
-            background-color: var(--secondary-pink);
+            /* 70% Translucent Secondary Pink */
+            background-color: rgba(255, 157, 227, 0.7);
+            backdrop-filter: blur(10px); /* Glassmorphism effect */
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            /* Rounded bottom corners */
+            border-radius: 0 0 1.5rem 1.5rem;
         }
 
         .top-nav-button {
@@ -254,6 +263,8 @@
         #contact-footer {
             background-color: var(--secondary-pink); 
             color: var(--accent-black); 
+            /* Rounded top corners */
+            border-radius: 1.5rem 1.5rem 0 0;
         }
         
         #contact-footer h3 {
@@ -313,12 +324,15 @@
             object-fit: cover; /* Ensures image fills the container without distortion */
             border-radius: 0.75rem; /* Match parent container rounding */
         }
-
+        
     </style>
     <!-- Phosphor Icons for smooth SVG icons -->
     <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/umd/phosphor-icons-web.js"></script>
 </head>
 <body class="text-white antialiased">
+    
+    <!-- 3D Background Canvas (Z-Index 1) -->
+    <div id="canvas-container"></div>
 
     <!-- Top Navigation Bar (Now scrolls off-screen) -->
     <div class="topbar" id="topbar-nav">
@@ -331,11 +345,9 @@
         </nav>
     </div>
 
-    <!-- Canvas for the Rainbow Rain Effect (Z-Index 1) -->
-    <canvas id="rainCanvas"></canvas>
-
     <!-- Main Hero Section (Z-Index 10) -->
-    <div id="hero-content" class="flex flex-col justify-center items-center p-4">
+    <!-- Added pb-32 (padding-bottom) to visually shift the center content upwards by adding space below it -->
+    <div id="hero-content" class="flex flex-col justify-center items-center p-4 pb-32">
         
         <!-- Header Section -->
         <header class="text-center">
@@ -441,6 +453,7 @@
                     <a href="https://www.artstation.com/artwork/dyLXNW" target="_self" class="project-button">
                         View Project <span class="arrow-icon">➜</span>
                     </a>
+                    <a href="https://www.artstation.com/artcharlie_exe" target="_blank"></a>
                 </div>
             </div>
             
@@ -458,7 +471,7 @@
                     </ul>
                 </div>
                 <div class="mt-6">
-                    <a href="https://www.linkedin.com/posts/artcharlie4li_3dsmax-nintendoswitch-3dmodeling-activity-7319770677018771456-PSDl?utm_source=share&utm_medium=member_desktop&rcm=ACoAAD4NqcAB-_11aoyoLZt7Gtt0SMD3uv1EY9g" target="_self" class="project-button">
+                    <a href="https://www.linkedin.com/posts/artcharlie4li_3dsmax-nintendoswitch-3dmodeling-activity-7319770677018771456-PSDl?utm_source=share&utm_medium=member_desktop&rcm=ACoAAD4NqcAB-_11aoyoLZt7Gtt0SMD7uv1EY9g" target="_self" class="project-button">
                         View Project <span class="arrow-icon">➜</span>
                     </a>
                 </div>
@@ -472,10 +485,10 @@
         <div id="skills-anchor" class="scroll-anchor"></div>
 
         <!-- Merged and Centered Title -->
-        <h2 class="text-4xl font-extrabold mb-12 text-center text-secondary-pink">TECHNICAL SKILLS</h2>
+        <h2 class="text-4xl font-extrabold mb-8 text-center text-secondary-pink">TECHNICAL SKILLS</h2>
 
         <!-- 1. Technical Focus Areas (Horizontal Bars, Left Aligned) -->
-        <div class="max-w-4xl mx-auto mb-8">
+        <div class="max-w-4xl mx-auto mb-16">
             
             <div class="space-y-3">
                 
@@ -570,7 +583,7 @@
             <div class="skill-block p-8 rounded-xl space-y-4 col-span-1 flex items-center justify-center min-h-[300px]">
                 <!-- text-justify ensures uniform line length -->
                 <p class="text-lg text-white/90 text-justify">
-                    I am Subham, and I am a Level Designer, 3D Artist, and Technical Artist who combines creative design with strong technical skills to build immersive game environments and stylized visuals. I specialize in crafting engaging levels, creating optimized 3D assets, and developing post-process shaders using Unreal Engine 5, Blueprints, and HLSL. With experience across multiple game engines and 3D tools, I focus on delivering polished, gameplay-driven results that enhance the player experience.
+                    I am Subham, and I am a <b>Level Designer</b>, <b>3D Artist</b>, | <b>Technical Artist</b> who combines creative design with strong technical skills to build immersive game environments and stylized visuals. I specialize in crafting engaging levels, creating optimized 3D assets, | developing post-process shaders using Unreal Engine 5, Blueprints, | HLSL. With experience across multiple game engines and 3D tools, I focus on delivering polished, gameplay-driven results that enhance the player experience.
                 </p>
             </div>
 
@@ -647,90 +660,329 @@
         <span class="arrow-up">⬆</span>
     </button>
 
-    <!-- JavaScript for the Rainbow Rain Effect & Smooth Scrolling -->
+    <!-- JavaScript for the Tron-Like Animation & Smooth Scrolling -->
     <script>
-        // --- RAIN EFFECT LOGIC ---
-        const canvas = document.getElementById('rainCanvas');
-        
-        if (canvas) {
-            const ctx = canvas.getContext('2d');
-            let W, H;
-            let drops = [];
-            const maxDrops = 250; 
+        // --- THREE.JS TRON ANIMATION LOGIC ---
+        // Wrap in a function to wait for THREE to load
+        function initTronAnimation() {
+            if (typeof THREE === 'undefined') return;
 
-            function resizeCanvas() {
-                W = window.innerWidth;
-                H = window.innerHeight;
-                canvas.width = W;
-                canvas.height = H;
+            const container = document.getElementById('canvas-container');
+            if (!container) {
+                 console.error("Canvas container 'canvas-container' not found.");
+                 return;
             }
-            window.addEventListener('resize', resizeCanvas);
-            resizeCanvas(); 
 
-            class Drop {
+            // 1. Scene Setup
+            const scene = new THREE.Scene();
+            // Add subtle fog to hide spawn/despawn edges
+            scene.fog = new THREE.FogExp2(0x000000, 0.02); 
+
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            
+            // SET CAMERA FOR TOP-DOWN 2D VIEW
+            // Positioned straight up, looking straight down
+            camera.position.set(0, 60, 0); 
+            camera.lookAt(0, 0, 0); 
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            // 2. Grid Helper (The "Floor")
+            // Increased grid size for the top-down view
+            const gridHelper = new THREE.GridHelper(400, 100, 0x222222, 0x111111);
+            scene.add(gridHelper);
+            
+            // Global set to track occupied grid cells "x,z"
+            const occupiedSquares = new Set();
+
+            // 3. Tron Lines (Light Cycles)
+            const lines = [];
+            const LINE_COUNT = 150; // Further increased density as requested
+            const BOUNDS = 80; // Bounds in both X and Z
+            const SPEED_BASE = 0.1; // SLOWER SPEED as requested
+
+            // Colors from palette - Initialized inside function to avoid ReferenceError
+            const pinkColor = new THREE.Color(0xFF9DE3);
+            const coralColor = new THREE.Color(0xFF8091);
+            const purpleColor = new THREE.Color(0x9D00FF); // Replaced Gold with Purple
+            const orangeColor = new THREE.Color(0xFFA500);
+            const tealColor = new THREE.Color(0x008080);
+            const whiteColor = new THREE.Color(0xFFFFFF); 
+            
+            // Array for random color selection
+            const colorPalette = [pinkColor, coralColor, purpleColor, orangeColor, tealColor, whiteColor];
+
+            
+            // Glow Sprite Texture creation (simple gradient)
+            function createGlowTexture() {
+                const canvas = document.createElement('canvas');
+                canvas.width = 32;
+                canvas.height = 32;
+                const context = canvas.getContext('2d');
+                const gradient = context.createRadialGradient(16, 16, 0, 16, 16, 16);
+                gradient.addColorStop(0, 'rgba(255,255,255,1)');
+                gradient.addColorStop(0.2, 'rgba(255,255,255,0.8)');
+                gradient.addColorStop(0.5, 'rgba(255,255,255,0.2)');
+                gradient.addColorStop(1, 'rgba(0,0,0,0)');
+                context.fillStyle = gradient;
+                context.fillRect(0, 0, 32, 32);
+                const texture = new THREE.CanvasTexture(canvas);
+                return texture;
+            }
+            const glowTexture = createGlowTexture();
+            const glowMaterial = new THREE.SpriteMaterial({ map: glowTexture, color: 0xffffff, transparent: true, opacity: 0.9 });
+
+
+            // Custom Shader Material for fading trails
+            // Re-creating material inside loop for unique colors, or using uniform update?
+            // Better to use vertex colors or separate materials.
+            // For simplicity, let's just make a function to generate material with color
+            function createTrailMaterial(colorVal) {
+                return new THREE.ShaderMaterial({
+                    uniforms: {
+                        color: { value: colorVal }
+                    },
+                    vertexShader: `
+                        attribute float alpha;
+                        varying float vAlpha;
+                        void main() {
+                            vAlpha = alpha;
+                            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                        }
+                    `,
+                    fragmentShader: `
+                        uniform vec3 color;
+                        varying float vAlpha;
+                        void main() {
+                            gl_FragColor = vec4(color, vAlpha);
+                        }
+                    `,
+                    transparent: true,
+                    depthTest: false,
+                    blending: THREE.AdditiveBlending,
+                    linewidth: 2 // Note: WebGL linewidth support is limited, often 1px
+                });
+            }
+
+
+            class TronLine {
                 constructor() {
+                    this.pathPoints = []; 
+                    this.maxPoints = 100; // Longer trails for impact
+                    
+                    // Trail Geometry
+                    this.geometry = new THREE.BufferGeometry();
+                    this.positions = new Float32Array(this.maxPoints * 3);
+                    this.alphas = new Float32Array(this.maxPoints);
+                    
+                    this.geometry.setAttribute('position', new THREE.BufferAttribute(this.positions, 3));
+                    this.geometry.setAttribute('alpha', new THREE.BufferAttribute(this.alphas, 1));
+                    
+                    // Create unique material instance for color variation
+                    const randomColor = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+                    this.material = createTrailMaterial(randomColor);
+                    
+                    this.mesh = new THREE.Line(this.geometry, this.material);
+                    this.mesh.frustumCulled = false;
+                    this.mesh.position.y = 0.1; // LIFT UP TO AVOID Z-FIGHTING
+                    scene.add(this.mesh);
+
+                    // Glow Sprite Head (Pulsating Front)
+                    this.headSprite = new THREE.Sprite(glowMaterial.clone());
+                    this.headSprite.scale.set(2, 2, 1); // Bigger glow
+                    this.headSprite.position.y = 0.2; // Slightly higher
+                    scene.add(this.headSprite);
+                    
+                    this.dying = false; // State for fading out
+
                     this.reset();
-                    this.y = Math.random() * H; 
                 }
 
                 reset() {
-                    this.x = Math.random() * W;
-                    this.y = -Math.random() * H * 0.1; 
-                    this.speed = (2 + Math.random() * 5) * 0.25; 
-                    this.length = 5 + Math.random() * 25; 
-                    this.alpha = 0.5 + Math.random() * 0.5; 
-                    this.hue = Math.random() * 360; 
-                }
-
-                fall() {
-                    this.y += this.speed;
-                    this.hue = (this.hue + 0.3) % 360; 
-                    if (this.y > H + this.length) {
-                        this.reset(); 
-                    }
-                }
-
-                draw() {
-                    ctx.strokeStyle = `hsla(${this.hue}, 100%, 50%, ${this.alpha})`; 
-                    ctx.lineWidth = 0.5; 
-                    ctx.lineCap = 'round'; 
+                    this.active = true;
+                    this.dying = false;
                     
-                    ctx.beginPath();
-                    ctx.moveTo(this.x, this.y);
-                    ctx.lineTo(this.x, this.y + this.length);
-                    ctx.stroke();
+                    // Try to find a valid start position
+                    let attempts = 0;
+                    let valid = false;
+                    while(!valid && attempts < 10) {
+                         this.x = Math.floor((Math.random() - 0.5) * 2 * BOUNDS); 
+                         this.z = Math.floor((Math.random() - 0.5) * 2 * BOUNDS);
+                         
+                         if (!occupiedSquares.has(`${this.x},${this.z}`)) {
+                             valid = true;
+                         }
+                         attempts++;
+                    }
+                    
+                    this.speed = SPEED_BASE + Math.random() * 0.1;
+                    
+                    // 0=North(-z), 1=East(+x), 2=South(+z), 3=West(-x)
+                    this.dir = Math.floor(Math.random() * 4);
+                    this.turnTimer = Math.random() * 50;
+                    this.pulseOffset = Math.random() * 100;
 
-                    ctx.beginPath();
-                    ctx.fillStyle = `hsl(${this.hue}, 100%, 75%)`; 
-                    ctx.fillRect(this.x - 0.5, this.y, 1, 1);
+                    this.pathPoints = [];
+                    // Initialize with a single point
+                    this.pathPoints.push(new THREE.Vector3(this.x, 0, this.z));
+                    occupiedSquares.add(`${this.x},${this.z}`); // Mark start
+                    
+                    // Reset head
+                    this.headSprite.position.set(this.x, 0.2, this.z);
+                    this.headSprite.visible = true;
+                }
+                
+                die() {
+                    this.dying = true;
+                    this.headSprite.visible = false; // Hide head immediately
+                    // Don't reset immediately, let update() shrink the trail
+                }
+
+                update() {
+                    if (!this.active) return;
+
+                    // If dying, we just shorten the trail from the tail
+                    if (this.dying) {
+                        if (this.pathPoints.length > 0) {
+                            // Remove tail from grid
+                            const p = this.pathPoints.shift();
+                            if(p) occupiedSquares.delete(`${Math.round(p.x)},${Math.round(p.z)}`);
+                            this.updateGeometry();
+                        } else {
+                            // Fully gone, respawn
+                            this.reset();
+                        }
+                        return;
+                    }
+
+                    // 1. Movement & Collision Logic
+                    // Calculate NEXT integer position
+                    // We move continuously, but check collisions on integer boundaries
+                    let currentHead = this.pathPoints[this.pathPoints.length - 1];
+                    let nextX = currentHead.x;
+                    let nextZ = currentHead.z;
+                    
+                    // Determine "next tile" based on direction
+                    if (this.dir === 0) nextZ -= this.speed;
+                    else if (this.dir === 1) nextX += this.speed;
+                    else if (this.dir === 2) nextZ += this.speed;
+                    else if (this.dir === 3) nextX -= this.speed;
+                    
+                    // Check if we have crossed into a NEW grid cell
+                    const currentGridX = Math.round(currentHead.x);
+                    const currentGridZ = Math.round(currentHead.z);
+                    const nextGridX = Math.round(nextX);
+                    const nextGridZ = Math.round(nextZ);
+                    
+                    if (currentGridX !== nextGridX || currentGridZ !== nextGridZ) {
+                        // We are entering a new cell. Check if occupied.
+                        if (occupiedSquares.has(`${nextGridX},${nextGridZ}`) || 
+                            Math.abs(nextGridX) > BOUNDS || Math.abs(nextGridZ) > BOUNDS) {
+                            // Collision or Out of bounds!
+                            this.die();
+                            return;
+                        }
+                        // Claim new cell
+                        occupiedSquares.add(`${nextGridX},${nextGridZ}`);
+                    }
+
+                    // Move is valid, update geometry
+                    // Add new point
+                    this.pathPoints.push(new THREE.Vector3(nextX, 0, nextZ));
+                    
+                    // Limit length
+                    if (this.pathPoints.length > this.maxPoints) {
+                        const p = this.pathPoints.shift();
+                        if(p) occupiedSquares.delete(`${Math.round(p.x)},${Math.round(p.z)}`); // Free up tail
+                    }
+                    
+                    // Update Head Position
+                    const newHead = this.pathPoints[this.pathPoints.length - 1];
+                    this.headSprite.position.set(newHead.x, 0.2, newHead.z);
+
+                    // Pulse Effect on Head
+                    const scale = 2.5 + Math.sin(Date.now() * 0.01 + this.pulseOffset) * 0.5;
+                    this.headSprite.scale.set(scale, scale, 1);
+
+                    // 2. Random Turn Logic
+                    this.turnTimer--;
+                    if (this.turnTimer <= 0) {
+                        // Turn 90 deg
+                        const r = Math.random();
+                        if(r < 0.2) this.dir = (this.dir + 1) % 4; // Right
+                        else if(r < 0.4) this.dir = (this.dir + 3) % 4; // Left
+                        
+                        this.turnTimer = 20 + Math.random() * 40;
+                    }
+
+                    // 4. Update Geometry attributes
+                    this.updateGeometry();
+                }
+
+                updateGeometry() {
+                    const count = this.pathPoints.length;
+                    let idx = 0;
+                    
+                    // We want the head (last point) to be alpha 1, tail (first point) to be alpha 0
+                    for(let i=0; i<count; i++) {
+                        this.positions[idx*3] = this.pathPoints[i].x;
+                        this.positions[idx*3+1] = this.pathPoints[i].y;
+                        this.positions[idx*3+2] = this.pathPoints[i].z;
+                        
+                        // Smooth fade out for residue effect
+                        let alpha = i / (count - 1);
+                        if (count <= 1) alpha = 0;
+                        this.alphas[idx] = alpha;
+                        
+                        idx++;
+                    }
+                    
+                    // Clear remaining buffer
+                    for(let i=count; i<this.maxPoints; i++) {
+                         this.alphas[i] = 0;
+                    }
+                    
+                    this.geometry.attributes.position.needsUpdate = true;
+                    this.geometry.attributes.alpha.needsUpdate = true;
+                    this.geometry.setDrawRange(0, count);
                 }
             }
 
-            for (let i = 0; i < maxDrops; i++) {
-                drops.push(new Drop());
+            // Init lines
+            for (let i = 0; i < LINE_COUNT; i++) {
+                lines.push(new TronLine());
             }
 
+            // Animation Loop
             function animate() {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-                ctx.fillRect(0, 0, W, H);
-
-                drops.forEach(drop => {
-                    drop.fall();
-                    drop.draw();
-                });
-
                 requestAnimationFrame(animate);
+                lines.forEach(line => line.update());
+                renderer.render(scene, camera);
             }
 
-            window.onload = function() {
-                animate();
-            };
-        } else {
-            console.error("Canvas element 'rainCanvas' not found.");
+            // Resize Handler
+            window.addEventListener('resize', () => {
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+                renderer.setSize(width, height);
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+            });
+
+            animate();
         }
         
-        // --- SMOOTH SCROLLING LOGIC (Vanilla JS) ---
+        // Initialize Three.js logic on load or immediately if ready
+        if (document.readyState === 'complete') {
+            initTronAnimation();
+        } else {
+            window.addEventListener('load', initTronAnimation);
+        }
 
+        
+        // --- SMOOTH SCROLLING LOGIC (Vanilla JS) ---
         function smoothScroll(targetElement) {
             const targetTop = targetElement.getBoundingClientRect().top;
             const startPosition = window.pageYOffset;
@@ -801,7 +1053,7 @@
                 behavior: 'smooth'
             });
         });
-
+        
     </script>
 
 </body>
