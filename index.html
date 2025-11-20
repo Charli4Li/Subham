@@ -57,7 +57,7 @@
         /* --- Job Title Glass Box --- */
         .job-title-box {
             display: inline-block;
-            padding: 0.75rem 2rem;
+            padding: 0.75rem 1.5rem;
             margin-top: 1.5rem;
             background-color: rgba(20, 20, 20, 0.2); 
             backdrop-filter: blur(6px); 
@@ -65,11 +65,21 @@
             border: 1px solid rgba(255, 157, 227, 0.5);
             border-radius: 9999px; /* Fully Rounded */
             
+            /* Ensure it fits on mobile */
+            max-width: 90vw;
+            width: fit-content;
+            
             box-shadow: 
                 -4px 4px 8px rgba(0, 255, 255, 0.2),  
                  4px 4px 8px rgba(255, 0, 255, 0.2),  
                  0 0 25px rgba(255, 157, 227, 0.15),
                  inset 0 0 30px rgba(255, 255, 255, 0.08);
+        }
+        
+        @media (min-width: 768px) {
+            .job-title-box {
+                padding: 0.75rem 2rem;
+            }
         }
         
         /* --- Section Title Bars --- */
@@ -473,16 +483,19 @@
     </div>
 
     <!-- Main Hero Section (Z-Index 10) -->
-    <div id="hero-content" class="flex flex-col justify-center items-center p-4 pb-32">
+    <div id="hero-content" class="flex flex-col justify-center items-center p-4 pb-32 w-full">
         
         <!-- Header Section -->
-        <header class="text-center">
+        <header class="text-center flex flex-col items-center max-w-full">
             <!-- Name with stained glass effect -->
-            <h1 id="name-title" class="text-6xl md:text-8xl font-extrabold tracking-tight stained-glass-text" style="position: relative; z-index: 20; display: inline-block;">SUBHAM PANDA</h1>
+            <!-- Added responsive text sizing: text-5xl (mobile) -> sm:text-6xl -> md:text-8xl -->
+            <h1 id="name-title" class="text-5xl sm:text-6xl md:text-8xl font-extrabold tracking-tight stained-glass-text text-center break-words max-w-full px-2" style="position: relative; z-index: 20; display: inline-block;">SUBHAM PANDA</h1>
             
             <!-- Job Title Glass Box -->
-            <div class="job-title-box" id="job-title-container">
-                <p class="text-xl md:text-2xl font-light tracking-widest uppercase text-secondary-pink" style="margin: 0;">
+            <div class="job-title-box mx-auto" id="job-title-container">
+                <!-- Added responsive text sizing for job titles: text-xs (mobile) -> sm:text-sm -> md:text-2xl -->
+                <!-- Added text-center and whitespace controls to ensure alignment on mobile -->
+                <p class="text-xs sm:text-sm md:text-2xl font-light tracking-widest uppercase text-secondary-pink text-center whitespace-normal md:whitespace-nowrap" style="margin: 0;">
                     LEVEL DESIGNER | 3D ARTIST | TECHNICAL ARTIST
                 </p>
             </div>
