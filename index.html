@@ -84,13 +84,14 @@
             cursor: default;
             /* Slow fall transition (1.5s) when class is removed */
             transition: transform 1.5s ease-out;
+            /* Prevent layout shift */
+            vertical-align: middle;
         }
 
         .name-char.lifted {
-            /* Fast lift transition (0.2s) when hovered */
+            /* Fast lift transition (0.1s) when hovered */
             transform: translateY(-25px);
-            transition: transform 0.2s ease-out;
-            /* Removed color change/glow */
+            transition: transform 0.1s ease-out;
         }
 
 
@@ -367,8 +368,8 @@
 </head>
 <body class="text-white antialiased">
     
-    <!-- 3D Background Canvas (Z-Index 1) -->
-    <div id="canvas-container"></div>
+    <!-- Interactive Dot Grid Canvas (Z-Index 1) -->
+    <canvas id="canvas-container"></canvas>
 
     <!-- Top Navigation Bar (Now scrolls off-screen) -->
     <div class="topbar" id="topbar-nav">
@@ -387,9 +388,7 @@
         <!-- Header Section -->
         <header class="text-center">
             <!-- Added ID for JS targeting of letters -->
-            <h1 id="name-title" class="text-6xl md:text-8xl font-extrabold tracking-tight text-white/90">
-                SUBHAM PANDA
-            </h1>
+            <h1 id="name-title" class="text-6xl md:text-8xl font-extrabold tracking-tight text-white/90">SUBHAM PANDA</h1>
             <!-- Secondary Accent: Lighter Pink - Updated Titles with pipe -->
             <p class="text-xl md:text-2xl font-light tracking-widest uppercase text-secondary-pink">
                 LEVEL DESIGNER | 3D ARTIST | TECHNICAL ARTIST
@@ -616,19 +615,18 @@
         <div class="about-content-wrapper mx-auto max-w-4xl flex flex-col md:flex-row">
             
             <!-- Left Column: Description (Justified Text) -->
-            <div class="about-text-block skill-block p-8 rounded-xl space-y-4 flex items-center justify-center min-h-[300px]">
-                <!-- text-justify ensures uniform line length -->
+            <div class="about-text-block skill-block p-8 rounded-xl space-y-4 flex items-center justify-center">
                 <p class="text-lg text-white/90 text-justify">
                     I am Subham, and I am a <b>Level Designer</b>, <b>3D Artist</b>, and <b>Technical Artist</b> who combines creative design with strong technical skills to build immersive game environments and stylized visuals. I specialize in crafting engaging levels, creating optimized 3D assets, and developing post-process shaders using Unreal Engine 5, Blueprints, and HLSL. With experience across multiple game engines and 3D tools, I focus on delivering polished, gameplay-driven results that enhance the player experience.
                 </p>
             </div>
 
             <!-- Right Column: Image Placeholder (Vertical, Rounded, Translucent) -->
-            <div class="col-span-1 flex items-center justify-center about-image-container min-h-[300px]">
+            <div class="about-image-container">
                 <!-- Replaced text placeholder with the actual image tag -->
                 <img src="https://github.com/Charli4Li/Subham/blob/a92851cbe970547a2b6537fc984d23b86b3f3c18/SFSS.png?raw=true" 
                      alt="Profile Picture" 
-                     class="w-full h-full object-cover rounded-xl"
+                     class="w-full h-full object-cover"
                      onerror="this.onerror=null; this.src='https://placehold.co/400x400/141414/FF9DE3?text=Profile+Image+Not+Found';">
             </div>
         </div>
@@ -696,324 +694,186 @@
         <span class="arrow-up">⬆</span>
     </button>
 
-    <!-- JavaScript for the Tron-Like Animation & Smooth Scrolling -->
+    <!-- JavaScript for the Background & Smooth Scrolling -->
     <script>
-        // --- THREE.JS TRON ANIMATION LOGIC ---
-        // Wrap in a function to wait for THREE to load
-        function initTronAnimation() {
-            if (typeof THREE === 'undefined') return;
+        // --- INTERACTIVE NEON DOT GRID BACKGROUND ---
+        function initDotGrid() {
+            const canvas = document.getElementById('canvas-container');
+            if (!canvas) return;
 
-            const container = document.getElementById('canvas-container');
-            if (!container) {
-                 console.error("Canvas container 'canvas-container' not found.");
-                 return;
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            
+            // Mouse state
+            let mouseX = -1000;
+            let mouseY = -1000;
+            let timer = 0;
+
+            // Grid configuration
+            const GRID_SPACING = 30;
+            const FADE_SPEED = 0.03; 
+            const LIGHT_RADIUS = 550; // 450px outer limit
+            const INNER_RADIUS = 250; // 150px inner fade-in limit (the ring)
+            const REPEL_RADIUS = 400; 
+            const CONNECT_DISTANCE = 50; // Distance to connect dots
+            
+            // Store dot states
+            let dots = [];
+
+            function resize() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+                createDots();
             }
 
-            // 1. Scene Setup
-            const scene = new THREE.Scene();
-            // Add subtle fog to hide spawn/despawn edges
-            scene.fog = new THREE.FogExp2(0x000000, 0.02); 
-
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            
-            // SET CAMERA FOR TOP-DOWN 2D VIEW
-            // Positioned straight up, looking straight down
-            camera.position.set(0, 60, 0); 
-            camera.lookAt(0, 0, 0); 
-
-            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            container.appendChild(renderer.domElement);
-
-            // 2. Grid Helper (The "Floor")
-            // Increased grid size for the top-down view
-            const gridHelper = new THREE.GridHelper(400, 100, 0x222222, 0x111111);
-            scene.add(gridHelper);
-            
-            // Global set to track occupied grid cells "x,z"
-            const occupiedSquares = new Set();
-
-            // 3. Tron Lines (Light Cycles)
-            const lines = [];
-            const LINE_COUNT = 150; // Further increased density as requested
-            const BOUNDS = 80; // Bounds in both X and Z
-            const SPEED_BASE = 0.1; // SLOWER SPEED as requested
-
-            // Colors from palette - Initialized inside function to avoid ReferenceError
-            const pinkColor = new THREE.Color(0xFF9DE3);
-            const coralColor = new THREE.Color(0xFF8091);
-            
-            // ONLY PINK color for lines
-            const colorPalette = [pinkColor];
-
-            
-            // Glow Sprite Texture creation (simple gradient)
-            function createGlowTexture() {
-                const canvas = document.createElement('canvas');
-                canvas.width = 32;
-                canvas.height = 32;
-                const context = canvas.getContext('2d');
-                const gradient = context.createRadialGradient(16, 16, 0, 16, 16, 16);
-                gradient.addColorStop(0, 'rgba(255,255,255,1)');
-                gradient.addColorStop(0.2, 'rgba(255,255,255,0.8)');
-                gradient.addColorStop(0.5, 'rgba(255,255,255,0.2)');
-                gradient.addColorStop(1, 'rgba(0,0,0,0)');
-                context.fillStyle = gradient;
-                context.fillRect(0, 0, 32, 32);
-                const texture = new THREE.CanvasTexture(canvas);
-                return texture;
-            }
-            const glowTexture = createGlowTexture();
-            // Use pink color for head glow material
-            const glowMaterial = new THREE.SpriteMaterial({ map: glowTexture, color: 0xFF9DE3, transparent: true, opacity: 0.9 });
-
-
-            // Custom Shader Material for fading trails
-            // Re-creating material inside loop for unique colors, or using uniform update?
-            // Better to use vertex colors or separate materials.
-            // For simplicity, let's just make a function to generate material with color
-            function createTrailMaterial(colorVal) {
-                return new THREE.ShaderMaterial({
-                    uniforms: {
-                        color: { value: colorVal }
-                    },
-                    vertexShader: `
-                        attribute float alpha;
-                        varying float vAlpha;
-                        void main() {
-                            vAlpha = alpha;
-                            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-                        }
-                    `,
-                    fragmentShader: `
-                        uniform vec3 color;
-                        varying float vAlpha;
-                        void main() {
-                            gl_FragColor = vec4(color, vAlpha);
-                        }
-                    `,
-                    transparent: true,
-                    depthTest: false,
-                    blending: THREE.AdditiveBlending,
-                    linewidth: 2 // Note: WebGL linewidth support is limited, often 1px
-                });
-            }
-
-
-            class TronLine {
-                constructor() {
-                    this.pathPoints = []; 
-                    // Increase max points to make trails longer (doubled from 100 to 200)
-                    this.maxPoints = 200; 
-                    
-                    // Trail Geometry
-                    this.geometry = new THREE.BufferGeometry();
-                    this.positions = new Float32Array(this.maxPoints * 3);
-                    this.alphas = new Float32Array(this.maxPoints);
-                    
-                    this.geometry.setAttribute('position', new THREE.BufferAttribute(this.positions, 3));
-                    this.geometry.setAttribute('alpha', new THREE.BufferAttribute(this.alphas, 1));
-                    
-                    // Create unique material instance for color variation
-                    const randomColor = colorPalette[Math.floor(Math.random() * colorPalette.length)];
-                    this.material = createTrailMaterial(randomColor);
-                    
-                    this.mesh = new THREE.Line(this.geometry, this.material);
-                    this.mesh.frustumCulled = false;
-                    this.mesh.position.y = 0.1; // LIFT UP TO AVOID Z-FIGHTING
-                    scene.add(this.mesh);
-
-                    // Glow Sprite Head (Pulsating Front)
-                    this.headSprite = new THREE.Sprite(glowMaterial.clone());
-                    this.headSprite.scale.set(2, 2, 1); // Bigger glow
-                    this.headSprite.position.y = 0.2; // Slightly higher
-                    scene.add(this.headSprite);
-                    
-                    this.dying = false; // State for fading out
-
-                    this.reset();
-                }
-
-                reset() {
-                    this.active = true;
-                    this.dying = false;
-                    
-                    // Try to find a valid start position
-                    let attempts = 0;
-                    let valid = false;
-                    while(!valid && attempts < 10) {
-                         this.x = Math.floor((Math.random() - 0.5) * 2 * BOUNDS); 
-                         this.z = Math.floor((Math.random() - 0.5) * 2 * BOUNDS);
-                         
-                         if (!occupiedSquares.has(`${this.x},${this.z}`)) {
-                             valid = true;
-                         }
-                         attempts++;
-                    }
-                    
-                    this.speed = SPEED_BASE + Math.random() * 0.1;
-                    
-                    // 0=North(-z), 1=East(+x), 2=South(+z), 3=West(-x)
-                    this.dir = Math.floor(Math.random() * 4);
-                    this.turnTimer = Math.random() * 50;
-                    this.pulseOffset = Math.random() * 100;
-
-                    this.pathPoints = [];
-                    // Initialize with a single point
-                    this.pathPoints.push(new THREE.Vector3(this.x, 0, this.z));
-                    occupiedSquares.add(`${this.x},${this.z}`); // Mark start
-                    
-                    // Reset head
-                    this.headSprite.position.set(this.x, 0.2, this.z);
-                    this.headSprite.visible = true;
-                }
+            function createDots() {
+                dots = [];
+                const cols = Math.ceil(width / GRID_SPACING);
+                const rows = Math.ceil(height / GRID_SPACING);
                 
-                die() {
-                    this.dying = true;
-                    this.headSprite.visible = false; // Hide head immediately
-                    // Don't reset immediately, let update() shrink the trail
-                }
+                const pinkHex = getComputedStyle(document.documentElement).getPropertyValue('--secondary-pink').trim();
 
-                update() {
-                    if (!this.active) return;
-
-                    // If dying, we just shorten the trail from the tail
-                    if (this.dying) {
-                        if (this.pathPoints.length > 0) {
-                            // Remove tail from grid
-                            const p = this.pathPoints.shift();
-                            if(p) occupiedSquares.delete(`${Math.round(p.x)},${Math.round(p.z)}`);
-                            this.updateGeometry();
-                        } else {
-                            // Fully gone, respawn
-                            this.reset();
-                        }
-                        return;
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        // All dots are now pink
+                        dots.push({
+                            originX: c * GRID_SPACING,
+                            originY: r * GRID_SPACING,
+                            x: c * GRID_SPACING,
+                            y: r * GRID_SPACING,
+                            alpha: 0,
+                            color: pinkHex,
+                            glowColor: 'rgba(255, 157, 227, 0.8)',
+                            baseColor: '255, 157, 227'
+                        });
                     }
-
-                    // 1. Movement & Collision Logic
-                    // Calculate NEXT integer position
-                    // We move continuously, but check collisions on integer boundaries
-                    let currentHead = this.pathPoints[this.pathPoints.length - 1];
-                    let nextX = currentHead.x;
-                    let nextZ = currentHead.z;
-                    
-                    // Determine "next tile" based on direction
-                    if (this.dir === 0) nextZ -= this.speed;
-                    else if (this.dir === 1) nextX += this.speed;
-                    else if (this.dir === 2) nextZ += this.speed;
-                    else if (this.dir === 3) nextX -= this.speed;
-                    
-                    // Check if we have crossed into a NEW grid cell
-                    const currentGridX = Math.round(currentHead.x);
-                    const currentGridZ = Math.round(currentHead.z);
-                    const nextGridX = Math.round(nextX);
-                    const nextGridZ = Math.round(nextZ);
-                    
-                    if (currentGridX !== nextGridX || currentGridZ !== nextGridZ) {
-                        // We are entering a new cell. Check if occupied.
-                        if (occupiedSquares.has(`${nextGridX},${nextGridZ}`) || 
-                            Math.abs(nextGridX) > BOUNDS || Math.abs(nextGridZ) > BOUNDS) {
-                            // Collision or Out of bounds!
-                            this.die();
-                            return;
-                        }
-                        // Claim new cell
-                        occupiedSquares.add(`${nextGridX},${nextGridZ}`);
-                    }
-
-                    // Move is valid, update geometry
-                    // Add new point
-                    this.pathPoints.push(new THREE.Vector3(nextX, 0, nextZ));
-                    
-                    // Limit length
-                    if (this.pathPoints.length > this.maxPoints) {
-                        const p = this.pathPoints.shift();
-                        if(p) occupiedSquares.delete(`${Math.round(p.x)},${Math.round(p.z)}`); // Free up tail
-                    }
-                    
-                    // Update Head Position
-                    const newHead = this.pathPoints[this.pathPoints.length - 1];
-                    this.headSprite.position.set(newHead.x, 0.2, newHead.z);
-
-                    // Pulse Effect on Head
-                    const scale = 2.5 + Math.sin(Date.now() * 0.01 + this.pulseOffset) * 0.5;
-                    this.headSprite.scale.set(scale, scale, 1);
-
-                    // 2. Random Turn Logic
-                    this.turnTimer--;
-                    if (this.turnTimer <= 0) {
-                        // Turn 90 deg
-                        const r = Math.random();
-                        if(r < 0.2) this.dir = (this.dir + 1) % 4; // Right
-                        else if(r < 0.4) this.dir = (this.dir + 3) % 4; // Left
-                        
-                        this.turnTimer = 20 + Math.random() * 40;
-                    }
-
-                    // 4. Update Geometry attributes
-                    this.updateGeometry();
-                }
-
-                updateGeometry() {
-                    const count = this.pathPoints.length;
-                    let idx = 0;
-                    
-                    // We want the head (last point) to be alpha 1, tail (first point) to be alpha 0
-                    for(let i=0; i<count; i++) {
-                        this.positions[idx*3] = this.pathPoints[i].x;
-                        this.positions[idx*3+1] = this.pathPoints[i].y;
-                        this.positions[idx*3+2] = this.pathPoints[i].z;
-                        
-                        // Smooth fade out for residue effect
-                        let alpha = i / (count - 1);
-                        if (count <= 1) alpha = 0;
-                        this.alphas[idx] = alpha;
-                        
-                        idx++;
-                    }
-                    
-                    // Clear remaining buffer
-                    for(let i=count; i<this.maxPoints; i++) {
-                         this.alphas[i] = 0;
-                    }
-                    
-                    this.geometry.attributes.position.needsUpdate = true;
-                    this.geometry.attributes.alpha.needsUpdate = true;
-                    this.geometry.setDrawRange(0, count);
                 }
             }
 
-            // Init lines
-            for (let i = 0; i < LINE_COUNT; i++) {
-                lines.push(new TronLine());
-            }
-
-            // Animation Loop
-            function animate() {
-                requestAnimationFrame(animate);
-                lines.forEach(line => line.update());
-                renderer.render(scene, camera);
-            }
-
-            // Resize Handler
-            window.addEventListener('resize', () => {
-                const width = window.innerWidth;
-                const height = window.innerHeight;
-                renderer.setSize(width, height);
-                camera.aspect = width / height;
-                camera.updateProjectionMatrix();
+            // Mouse tracking
+            window.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+            
+            // Touch tracking
+            window.addEventListener('touchmove', (e) => {
+                if(e.touches.length > 0) {
+                    mouseX = e.touches[0].clientX;
+                    mouseY = e.touches[0].clientY;
+                }
             });
 
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                timer += 0.01; // Slower time increment
+
+                for (let dot of dots) {
+                    // Calculate distance to mouse
+                    const dx = mouseX - dot.x;
+                    const dy = mouseY - dot.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+
+                    // --- INTERACTION LOGIC ---
+                    
+                    // 1. "Jelly" Drift (Sine wave based on time and position)
+                    const driftX = Math.sin(timer + dot.originY * 0.05) * 5; 
+                    const driftY = Math.cos(timer + dot.originX * 0.05) * 5; 
+                    
+                    let targetX = dot.originX + driftX;
+                    let targetY = dot.originY + driftY;
+
+                    // 2. Repel Effect (Mouse Only)
+                    if (dist < REPEL_RADIUS) {
+                        const angle = Math.atan2(dy, dx);
+                        const force = (REPEL_RADIUS - dist) / REPEL_RADIUS;
+                        const repelDist = force * 20; 
+                        
+                        const repelTargetX = targetX - Math.cos(angle) * repelDist;
+                        const repelTargetY = targetY - Math.sin(angle) * repelDist;
+                        
+                        dot.x += (repelTargetX - dot.x) * 0.1;
+                        dot.y += (repelTargetY - dot.y) * 0.1;
+                    } else {
+                        // Return to drifting/warped origin
+                        dot.x += (targetX - dot.x) * 0.1;
+                        dot.y += (targetY - dot.y) * 0.1;
+                    }
+
+                    // 3. Ring Light Up & Fade
+                    if (dist < LIGHT_RADIUS) {
+                        let targetAlpha = 0;
+                        
+                        // Ring logic:
+                        if (dist < INNER_RADIUS) {
+                            // Fade IN from center (0 to 1)
+                            targetAlpha = dist / INNER_RADIUS;
+                        } else {
+                            // Fade OUT to edge (1 to 0)
+                            targetAlpha = 1 - ((dist - INNER_RADIUS) / (LIGHT_RADIUS - INNER_RADIUS));
+                        }
+                        // Ensure valid alpha
+                        targetAlpha = Math.max(0, Math.min(1, targetAlpha));
+                        
+                        dot.alpha += (targetAlpha - dot.alpha) * 0.1;
+                    } else {
+                        dot.alpha -= FADE_SPEED;
+                        if (dot.alpha < 0) dot.alpha = 0;
+                    }
+                }
+                
+                // 4. Draw Connections & Dots (Only for visible dots)
+                const visibleDots = dots.filter(d => d.alpha > 0.05);
+                
+                // Draw Connections
+                ctx.lineWidth = 0.5;
+                for (let i = 0; i < visibleDots.length; i++) {
+                    const dotA = visibleDots[i];
+                    
+                    // Check neighbors
+                    for (let j = i + 1; j < visibleDots.length; j++) {
+                        const dotB = visibleDots[j];
+                        const dx = dotA.x - dotB.x;
+                        const dy = dotA.y - dotB.y;
+                        const dist = Math.sqrt(dx*dx + dy*dy);
+                        
+                        if (dist < CONNECT_DISTANCE) {
+                            const lineAlpha = (1 - (dist / CONNECT_DISTANCE)) * Math.min(dotA.alpha, dotB.alpha) * 0.6;
+                            if (lineAlpha > 0.05) {
+                                ctx.beginPath();
+                                ctx.strokeStyle = `rgba(255, 157, 227, ${lineAlpha})`;
+                                ctx.moveTo(dotA.x, dotA.y);
+                                ctx.lineTo(dotB.x, dotB.y);
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                }
+
+                // Draw Dots
+                for (let dot of visibleDots) {
+                     ctx.beginPath();
+                     const radius = 1.5 + (dot.alpha * 2.0); 
+                     ctx.fillStyle = `rgba(255, 157, 227, ${dot.alpha})`;
+                     ctx.shadowColor = 'rgba(255, 157, 227, 0.8)';
+                     ctx.shadowBlur = 10 * dot.alpha; 
+                     ctx.arc(dot.x, dot.y, radius, 0, Math.PI * 2);
+                     ctx.fill();
+                     ctx.shadowBlur = 0;
+                }
+
+                requestAnimationFrame(animate);
+            }
+            
+            window.addEventListener('resize', resize);
+            resize();
             animate();
         }
-        
-        // Initialize Three.js logic on load or immediately if ready
-        if (document.readyState === 'complete') {
-            initTronAnimation();
-        } else {
-            window.addEventListener('load', initTronAnimation);
-        }
+
+        window.addEventListener('load', initDotGrid);
+
 
         // --- SMOOTH SCROLLING LOGIC (Vanilla JS) ---
         function smoothScroll(targetElement) {
@@ -1041,11 +901,9 @@
                     window.requestAnimationFrame(step);
                 }
             }
-
             window.requestAnimationFrame(step);
         }
 
-        // Attach smooth scroll listener to navigation buttons
         document.getElementById('top-nav').addEventListener('click', function(e) {
             const targetLink = e.target.closest('.top-nav-button');
             if (targetLink) {
@@ -1063,31 +921,33 @@
         const topbar = document.getElementById('topbar-nav');
         const scrollToTopBtn = document.getElementById('scrollToTopBtn');
         
-        // Scroll handler to show/hide button
-        window.addEventListener('scroll', function() {
-            const topbarBottom = topbar.getBoundingClientRect().bottom;
-            
-            if (topbarBottom < 0) {
-                // Show: Slide in smoothly
-                scrollToTopBtn.classList.remove('hidden-transition');
-                scrollToTopBtn.classList.add('visible');
-            } else {
-                // Hide: Slide out smoothly
-                scrollToTopBtn.classList.add('hidden-transition');
-                scrollToTopBtn.classList.remove('visible');
-            }
-        });
-        
-        // Scroll to top functionality
-        scrollToTopBtn.addEventListener('click', function() {
-             // Smoothly scroll to the very top of the page (Y=0)
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
+        if (topbar && scrollToTopBtn) {
+            // Scroll handler to show/hide button
+            window.addEventListener('scroll', function() {
+                const topbarBottom = topbar.getBoundingClientRect().bottom;
+                
+                if (topbarBottom < 0) {
+                    // Show: Slide in smoothly
+                    scrollToTopBtn.classList.remove('hidden-transition');
+                    scrollToTopBtn.classList.add('visible');
+                } else {
+                    // Hide: Slide out smoothly
+                    scrollToTopBtn.classList.add('hidden-transition');
+                    scrollToTopBtn.classList.remove('visible');
+                }
             });
-        });
+            
+            // Scroll to top functionality
+            scrollToTopBtn.addEventListener('click', function() {
+                // Smoothly scroll to the very top of the page (Y=0)
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
 
-        // --- NAME HOVER ANIMATION LOGIC ---
+        // --- NAME HOVER ANIMATION LOGIC (CHAINED) ---
         const nameTitle = document.getElementById('name-title');
         if (nameTitle) {
             const text = nameTitle.innerText;
@@ -1096,14 +956,31 @@
                 return `<span class="name-char">${char}</span>`;
             }).join('');
 
-            const chars = nameTitle.querySelectorAll('.name-char');
-            chars.forEach(char => {
+            const chars = Array.from(nameTitle.querySelectorAll('.name-char'));
+            
+            chars.forEach((char, index) => {
+                // Mouse Enter: Calculate distance and lift neighbors
                 char.addEventListener('mouseenter', () => {
-                    char.classList.add('lifted');
+                    chars.forEach((c, i) => {
+                        const distance = Math.abs(index - i);
+                        // Gaussian-like falloff: Closer letters lift more
+                        let lift = 0;
+                        if (distance === 0) lift = -35;       // Target: Highest
+                        else if (distance === 1) lift = -20;  // Neighbors: High
+                        else if (distance === 2) lift = -10;  // Next: Medium
+                        
+                        if (lift !== 0) {
+                            c.style.transform = `translateY(${lift}px)`;
+                        } else {
+                            c.style.transform = 'translateY(0)';
+                        }
+                    });
                 });
+            });
 
-                char.addEventListener('mouseleave', () => {
-                    char.classList.remove('lifted');
+            nameTitle.addEventListener('mouseleave', () => {
+                chars.forEach(c => {
+                    c.style.transform = 'translateY(0)';
                 });
             });
         }
