@@ -42,10 +42,9 @@
             top: 0;
             width: 100%;
             z-index: 50; 
-            background-color: rgba(255, 157, 227, 0.7);
-            backdrop-filter: blur(10px); /* Glassmorphism effect */
-            /* Updated box-shadow for white neon glow */
-            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3), 0 2px 10px rgba(0, 0, 0, 0.2);
+            background-color: var(--secondary-pink);
+            /* Pink Glow instead of white */
+            box-shadow: 0 4px 20px rgba(255, 157, 227, 0.5), 0 2px 10px rgba(0, 0, 0, 0.2);
             /* Rounded bottom corners */
             border-radius: 0 0 1.5rem 1.5rem;
         }
@@ -58,15 +57,16 @@
             font-weight: 600;
             transition: all 0.3s ease;
             text-decoration: none;
-            cursor: pointer; /* Ensure buttons look clickable */
-            /* Subtle glow for buttons too */
-            box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+            cursor: pointer; 
+            /* Subtle pink glow for buttons */
+            box-shadow: 0 0 5px rgba(255, 157, 227, 0.2);
         }
 
         .top-nav-button:hover {
             color: var(--primary-white); 
             background-color: var(--accent-black); 
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); 
+            /* Stronger pink glow on hover */
+            box-shadow: 0 0 15px rgba(255, 157, 227, 0.8); 
         }
 
         /* Hero content styling */
@@ -77,6 +77,22 @@
             z-index: 10;
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 10px rgba(255, 255, 255, 0.3);
         }
+
+        /* --- Name Letter Animation Styles --- */
+        .name-char {
+            display: inline-block;
+            cursor: default;
+            /* Slow fall transition (1.5s) when class is removed */
+            transition: transform 1.5s ease-out;
+        }
+
+        .name-char.lifted {
+            /* Fast lift transition (0.2s) when hovered */
+            transform: translateY(-25px);
+            transition: transform 0.2s ease-out;
+            /* Removed color change/glow */
+        }
+
 
         /* Portfolio Sections */
         .portfolio-section {
@@ -104,9 +120,10 @@
 
         .project-card {
             background-color: rgba(20, 20, 20, 0.7); 
-            border: 2px solid var(--accent-coral); 
-            /* Enhanced white outer glow */
-            box-shadow: 0 0 15px rgba(255, 128, 145, 0.4), 0 0 10px rgba(255, 255, 255, 0.15); 
+            /* Border: Secondary Pink */
+            border: 2px solid var(--secondary-pink); 
+            /* Pink outer glow */
+            box-shadow: 0 0 15px rgba(255, 157, 227, 0.4), 0 0 10px rgba(255, 157, 227, 0.2); 
             border-radius: 0.75rem; 
             display: flex;
             flex-direction: column;
@@ -115,33 +132,37 @@
         }
         
         .project-card:hover {
-             box-shadow: 0 0 25px rgba(255, 128, 145, 0.6), 0 0 15px rgba(255, 255, 255, 0.3);
+             /* Enhanced pink glow on hover */
+             box-shadow: 0 0 25px rgba(255, 157, 227, 0.7), 0 0 15px rgba(255, 157, 227, 0.4);
         }
         
         /* General translucent skill/software block styles */
         .skill-block {
             background-color: rgba(20, 20, 20, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            /* Enhanced white outer glow */
-            box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+            /* Border: Secondary Pink */
+            border: 1px solid var(--secondary-pink);
+            /* Pink outer glow */
+            box-shadow: 0 0 12px rgba(255, 157, 227, 0.3);
             border-radius: 0.75rem; 
         }
 
         /* Specific style for Technical Focus horizontal bars */
         .tech-focus-bar {
             background-color: rgba(20, 20, 20, 0.7); 
-            border: 1px solid var(--accent-coral); 
-            border-radius: 9999px; /* Fully rounded horizontal box */
+            /* Border: Secondary Pink */
+            border: 1px solid var(--secondary-pink); 
+            border-radius: 9999px; 
             padding: 0.75rem 1.5rem;
             margin: 0.5rem 0;
-            text-align: left; /* Left align text */
+            text-align: left; 
             transition: transform 0.2s, box-shadow 0.2s;
-            /* Enhanced white outer glow */
-            box-shadow: 0 0 8px rgba(255, 255, 255, 0.1); 
+            /* Pink outer glow */
+            box-shadow: 0 0 8px rgba(255, 157, 227, 0.2); 
         }
         .tech-focus-bar:hover {
             transform: scale(1.02);
-            box-shadow: 0 0 20px rgba(255, 157, 227, 0.5), 0 0 10px rgba(255, 255, 255, 0.3);
+            /* Enhanced pink glow on hover */
+            box-shadow: 0 0 20px rgba(255, 157, 227, 0.6), 0 0 10px rgba(255, 157, 227, 0.4);
         }
 
         /* Project Button Styles */
@@ -161,7 +182,8 @@
         .project-button:hover {
             transform: scale(1.08); 
             background-color: var(--accent-coral); 
-            box-shadow: 0 4px 20px rgba(255, 157, 227, 0.6); 
+            /* Pink shadow on hover */
+            box-shadow: 0 4px 20px rgba(255, 157, 227, 0.8); 
             color: var(--primary-white); 
         }
 
@@ -188,29 +210,28 @@
             padding: 1rem; 
             margin: 0;
             border-radius: 0.75rem; 
-            /* Enhanced white outer glow */
-            box-shadow: 0 0 12px rgba(255, 255, 255, 0.2); 
+            /* Border and Glow: Pink */
+            border: 1px solid var(--secondary-pink);
+            box-shadow: 0 0 12px rgba(255, 157, 227, 0.3); 
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* Explicitly set min/max height to enforce uniformity and shorten the rectangle */
             min-height: 150px; 
             height: 100%;
+            background-color: rgba(20, 20, 20, 0.7);
         }
 
         .software-block ul {
-            /* Adjust spacing for tighter list layout */
             list-style-position: outside; 
             padding-left: 1.25rem; 
-            margin-top: 0.5rem; /* Reduced margin */
-            line-height: 1.25; /* Tighter line spacing */
+            margin-top: 0.5rem; 
+            line-height: 1.25; 
         }
         
         .software-block ul li {
-            margin-bottom: 0.25rem; /* Tighter space between list items */
+            margin-bottom: 0.25rem; 
         }
 
-        /* Mobile adjustment for software grid to ensure single column layout */
         @media (max-width: 640px) {
             .software-grid-container {
                 grid-template-columns: 1fr;
@@ -235,7 +256,6 @@
             justify-content: center;
             opacity: 0; 
             visibility: hidden; 
-            /* Added transform transition for smooth sliding entry/exit */
             transition: opacity 0.5s ease-in-out, 
                         background-color 0.3s, 
                         color 0.3s, 
@@ -260,7 +280,8 @@
             background-color: var(--primary-white); /* Pink turns white */
             color: var(--secondary-pink); /* Arrow color changes */
             transform: translateY(-5px) scale(1.1); /* Pop-out effect */
-            box-shadow: 0 0 20px var(--primary-white);
+            /* Pink glow on hover */
+            box-shadow: 0 0 20px rgba(255, 157, 227, 0.8);
         }
 
         #scrollToTopBtn .arrow-up {
@@ -277,8 +298,8 @@
             color: var(--accent-black); 
             /* Rounded top corners */
             border-radius: 1.5rem 1.5rem 0 0;
-            /* Enhanced white outer glow for top edge */
-            box-shadow: 0 -4px 20px rgba(255, 255, 255, 0.3); 
+            /* Pink outer glow for top edge */
+            box-shadow: 0 -4px 20px rgba(255, 157, 227, 0.4); 
         }
         
         #contact-footer h3 {
@@ -301,44 +322,43 @@
         .icon-accent { color: var(--accent-black); }
 
         /* Match height logic for about section */
-        /* Use CSS Grid for the parent to ensure column stretch behavior */
         .about-content-wrapper {
-            display: grid;
-            grid-template-columns: 1fr; /* Default single column for mobile */
+            display: flex;
+            flex-direction: column;
             gap: 1rem; 
             width: 100%;
         }
         @media (min-width: 768px) {
              .about-content-wrapper {
-                grid-template-columns: 1fr 1fr; /* Two equal columns on desktop */
-                align-items: stretch; /* Crucial for vertical alignment */
+                flex-direction: row;
+                align-items: stretch; 
+            }
+            .about-content-wrapper > div {
+                flex: 1; /* Equal width */
             }
         }
-        /* Ensure inner blocks take up the full column height and have matching min-height */
-        .about-content-wrapper > div {
-            min-height: 300px; /* Base minimum height */
-            height: 100%;
-        }
-        /* Image container specific styling */
+        
+        .about-text-block,
         .about-image-container {
-             /* Set a minimum height for the image container to ensure matching height with text block */
+            height: 100%; 
             min-height: 300px; 
-            /* Inner styling for image placement/fit */
+            border: 1px solid var(--secondary-pink);
+            box-shadow: 0 0 12px rgba(255, 157, 227, 0.3);
+        }
+
+        .about-image-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden; /* Hide anything spilling over */
+            overflow: hidden; 
             border-radius: 0.75rem;
             padding: 0;
-            /* Add glow to image container too */
-            box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
         }
-        /* Style for the actual image element */
         .about-image-container img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Ensures image fills the container without distortion */
-            border-radius: 0.75rem; /* Match parent container rounding */
+            object-fit: cover; 
+            border-radius: 0.75rem; 
         }
         
     </style>
@@ -366,7 +386,8 @@
         
         <!-- Header Section -->
         <header class="text-center">
-            <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight text-white/90">
+            <!-- Added ID for JS targeting of letters -->
+            <h1 id="name-title" class="text-6xl md:text-8xl font-extrabold tracking-tight text-white/90">
                 SUBHAM PANDA
             </h1>
             <!-- Secondary Accent: Lighter Pink - Updated Titles with pipe -->
@@ -595,10 +616,10 @@
         <div class="about-content-wrapper mx-auto max-w-4xl flex flex-col md:flex-row">
             
             <!-- Left Column: Description (Justified Text) -->
-            <div class="skill-block p-8 rounded-xl space-y-4 col-span-1 flex items-center justify-center min-h-[300px]">
+            <div class="about-text-block skill-block p-8 rounded-xl space-y-4 flex items-center justify-center min-h-[300px]">
                 <!-- text-justify ensures uniform line length -->
                 <p class="text-lg text-white/90 text-justify">
-                    I am Subham, and I am a <b>Level Designer</b>, <b>3D Artist</b>, | <b>Technical Artist</b> who combines creative design with strong technical skills to build immersive game environments and stylized visuals. I specialize in crafting engaging levels, creating optimized 3D assets, | developing post-process shaders using Unreal Engine 5, Blueprints, | HLSL. With experience across multiple game engines and 3D tools, I focus on delivering polished, gameplay-driven results that enhance the player experience.
+                    I am Subham, and I am a <b>Level Designer</b>, <b>3D Artist</b>, and <b>Technical Artist</b> who combines creative design with strong technical skills to build immersive game environments and stylized visuals. I specialize in crafting engaging levels, creating optimized 3D assets, and developing post-process shaders using Unreal Engine 5, Blueprints, and HLSL. With experience across multiple game engines and 3D tools, I focus on delivering polished, gameplay-driven results that enhance the player experience.
                 </p>
             </div>
 
@@ -721,13 +742,9 @@
             // Colors from palette - Initialized inside function to avoid ReferenceError
             const pinkColor = new THREE.Color(0xFF9DE3);
             const coralColor = new THREE.Color(0xFF8091);
-            const purpleColor = new THREE.Color(0x9D00FF); // Replaced Gold with Purple
-            const orangeColor = new THREE.Color(0xFFA500);
-            const tealColor = new THREE.Color(0x008080);
-            const whiteColor = new THREE.Color(0xFFFFFF); 
             
-            // Array for random color selection
-            const colorPalette = [pinkColor, coralColor, purpleColor, orangeColor, tealColor, whiteColor];
+            // ONLY PINK color for lines
+            const colorPalette = [pinkColor];
 
             
             // Glow Sprite Texture creation (simple gradient)
@@ -747,7 +764,8 @@
                 return texture;
             }
             const glowTexture = createGlowTexture();
-            const glowMaterial = new THREE.SpriteMaterial({ map: glowTexture, color: 0xffffff, transparent: true, opacity: 0.9 });
+            // Use pink color for head glow material
+            const glowMaterial = new THREE.SpriteMaterial({ map: glowTexture, color: 0xFF9DE3, transparent: true, opacity: 0.9 });
 
 
             // Custom Shader Material for fading trails
@@ -997,7 +1015,6 @@
             window.addEventListener('load', initTronAnimation);
         }
 
-        
         // --- SMOOTH SCROLLING LOGIC (Vanilla JS) ---
         function smoothScroll(targetElement) {
             const targetTop = targetElement.getBoundingClientRect().top;
@@ -1069,8 +1086,27 @@
                 behavior: 'smooth'
             });
         });
-        
-    </script>
 
+        // --- NAME HOVER ANIMATION LOGIC ---
+        const nameTitle = document.getElementById('name-title');
+        if (nameTitle) {
+            const text = nameTitle.innerText;
+            nameTitle.innerHTML = text.split('').map(char => {
+                if(char === ' ') return '<span class="name-char" style="display:inline-block; width:0.3em;">&nbsp;</span>';
+                return `<span class="name-char">${char}</span>`;
+            }).join('');
+
+            const chars = nameTitle.querySelectorAll('.name-char');
+            chars.forEach(char => {
+                char.addEventListener('mouseenter', () => {
+                    char.classList.add('lifted');
+                });
+
+                char.addEventListener('mouseleave', () => {
+                    char.classList.remove('lifted');
+                });
+            });
+        }
+    </script>
 </body>
 </html>
