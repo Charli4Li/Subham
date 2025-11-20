@@ -36,22 +36,77 @@
             background-color: #000000; /* Pitch black background */
         }
 
-        /* --- LIQUID GLASS STYLE (Shared Base) --- */
+        /* --- LIQUID GLASS STYLE (High Transparency) --- */
         .liquid-glass {
             background-color: rgba(20, 20, 20, 0.2) !important; 
-            backdrop-filter: blur(16px); 
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 157, 227, 0.4); 
+            backdrop-filter: blur(6px); 
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 157, 227, 0.5); 
             border-radius: 0.75rem;
             
-            /* Chromatic Aberration + Glow */
+            /* Intense Chromatic Aberration + Glow */
             box-shadow: 
-                -2px 0 6px rgba(0, 255, 255, 0.15),  
-                 2px 0 6px rgba(255, 0, 255, 0.15),  
-                 0 0 20px rgba(255, 157, 227, 0.15),
-                 inset 0 0 20px rgba(255, 255, 255, 0.05);
+                -4px 0 8px rgba(0, 255, 255, 0.2),  
+                 4px 0 8px rgba(255, 0, 255, 0.2),  
+                 0 0 25px rgba(255, 157, 227, 0.15),
+                 inset 0 0 30px rgba(255, 255, 255, 0.08);
             
             transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s;
+        }
+
+        /* --- Job Title Glass Box --- */
+        .job-title-box {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            margin-top: 1.5rem;
+            background-color: rgba(20, 20, 20, 0.2); 
+            backdrop-filter: blur(6px); 
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 157, 227, 0.5);
+            border-radius: 9999px; /* Fully Rounded */
+            
+            box-shadow: 
+                -4px 4px 8px rgba(0, 255, 255, 0.2),  
+                 4px 4px 8px rgba(255, 0, 255, 0.2),  
+                 0 0 25px rgba(255, 157, 227, 0.15),
+                 inset 0 0 30px rgba(255, 255, 255, 0.08);
+        }
+        
+        /* --- Section Title Bars --- */
+        .section-title-bar {
+            width: 100vw;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            margin-bottom: 3rem;
+            padding: 1.5rem 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+            background-color: rgba(20, 20, 20, 0.2); 
+            backdrop-filter: blur(6px); 
+            -webkit-backdrop-filter: blur(6px);
+            
+            border-top: 1px solid rgba(255, 157, 227, 0.5);
+            border-bottom: 1px solid rgba(255, 157, 227, 0.5);
+            
+            box-shadow: 
+                0 -4px 8px rgba(0, 255, 255, 0.15),
+                0 4px 8px rgba(255, 0, 255, 0.15),
+                0 0 25px rgba(255, 157, 227, 0.15),
+                inset 0 0 30px rgba(255, 255, 255, 0.08);
+        }
+
+        /* --- Whiter Stained Glass Text --- */
+        .stained-glass-text {
+            color: rgba(255, 255, 255, 0.92);
+            text-shadow: 
+                0 0 10px rgba(255, 255, 255, 0.6),
+                0 0 20px rgba(255, 157, 227, 0.4),
+                0 0 40px rgba(255, 157, 227, 0.2);
         }
 
         /* Top Bar Styling */
@@ -60,23 +115,17 @@
             top: 0;
             width: 100%;
             z-index: 50; 
-            
-            /* Liquid Glass Properties */
             background-color: rgba(20, 20, 20, 0.2); 
-            backdrop-filter: blur(16px); 
-            -webkit-backdrop-filter: blur(16px);
-            
-            /* Border - Pink, remove top border */
-            border: 1px solid rgba(255, 157, 227, 0.4);
+            backdrop-filter: blur(6px); 
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 157, 227, 0.5);
             border-top: none;
             border-radius: 0 0 1.5rem 1.5rem;
-
-            /* Chromatic Shadow pointing down */
             box-shadow: 
-                -2px 4px 6px rgba(0, 255, 255, 0.15),  
-                 2px 4px 6px rgba(255, 0, 255, 0.15),  
+                -3px 4px 8px rgba(0, 255, 255, 0.2),  
+                 3px 4px 8px rgba(255, 0, 255, 0.2),  
                  0 4px 20px rgba(255, 157, 227, 0.3),
-                 inset 0 -10px 20px rgba(255, 255, 255, 0.05);
+                 inset 0 -10px 25px rgba(255, 255, 255, 0.08);
         }
 
         .top-nav-button {
@@ -103,7 +152,6 @@
             height: 100vh;
             position: relative;
             z-index: 10;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 10px rgba(255, 255, 255, 0.3);
         }
 
         /* --- Name Letter Animation Styles --- */
@@ -152,10 +200,10 @@
              transform: scale(1.02);
              background-color: rgba(20, 20, 20, 0.3) !important; 
              box-shadow: 
-                -3px 0 10px rgba(0, 255, 255, 0.3), 
-                 3px 0 10px rgba(255, 0, 255, 0.3), 
-                 0 0 30px rgba(255, 157, 227, 0.5),
-                 inset 0 0 10px rgba(255, 255, 255, 0.1);
+                -5px 0 12px rgba(0, 255, 255, 0.35), 
+                 5px 0 12px rgba(255, 0, 255, 0.35), 
+                 0 0 35px rgba(255, 157, 227, 0.5),
+                 inset 0 0 15px rgba(255, 255, 255, 0.15);
         }
         
         .skill-block, .software-block, .about-text-block, .about-image-container {
@@ -170,24 +218,21 @@
             padding: 0.75rem 1.5rem;
             margin: 0.5rem 0;
             text-align: left; 
-            
             background-color: rgba(20, 20, 20, 0.2);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 157, 227, 0.4);
-            
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 157, 227, 0.5);
             box-shadow: 
                 -1px 0 4px rgba(0, 255, 255, 0.15), 
                  1px 0 4px rgba(255, 0, 255, 0.15), 
                  0 0 10px rgba(255, 157, 227, 0.15);
-                 
             transition: transform 0.2s, box-shadow 0.2s;
         }
         .tech-focus-bar:hover {
             transform: scale(1.02);
             box-shadow: 
-                -2px 0 8px rgba(0, 255, 255, 0.3), 
-                 2px 0 8px rgba(255, 0, 255, 0.3), 
-                 0 0 20px rgba(255, 157, 227, 0.4);
+                -3px 0 10px rgba(0, 255, 255, 0.4), 
+                 3px 0 10px rgba(255, 0, 255, 0.4), 
+                 0 0 25px rgba(255, 157, 227, 0.4);
         }
 
         /* Project Button Styles */
@@ -253,29 +298,41 @@
             }
         }
         
-        /* --- Scroll-to-Top Button Styles --- */
+        /* --- Scroll-to-Top Button Styles (UPDATED) --- */
         #scrollToTopBtn {
             position: fixed;
             bottom: 2rem;
             right: 2rem;
             z-index: 100;
-            width: 3rem;
-            height: 3rem;
+            width: 3.5rem; /* Slightly larger for glass effect */
+            height: 3.5rem;
             border-radius: 50%;
-            background-color: var(--secondary-pink);
-            color: var(--accent-black);
+            
+            /* Liquid Glass Material */
+            background-color: rgba(20, 20, 20, 0.2); 
+            backdrop-filter: blur(6px); 
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 157, 227, 0.5); 
+            
+            /* Pink Icon Default */
+            color: var(--secondary-pink);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            
             opacity: 0; 
             visibility: hidden; 
-            transition: opacity 0.5s ease-in-out, 
-                        background-color 0.3s, 
-                        color 0.3s, 
-                        transform 0.5s ease-in-out; 
             transform: translateY(100%); 
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            
+            /* Chromatic Shadow + Pink Glow */
+            box-shadow: 
+                -2px 0 6px rgba(0, 255, 255, 0.2),  
+                 2px 0 6px rgba(255, 0, 255, 0.2),  
+                 0 0 15px rgba(255, 157, 227, 0.2),
+                 inset 0 0 15px rgba(255, 255, 255, 0.05);
+
+            transition: opacity 0.5s, transform 0.5s, background-color 0.3s, color 0.3s, box-shadow 0.3s, border-color 0.3s;
         }
 
         #scrollToTopBtn.visible {
@@ -290,10 +347,19 @@
         }
 
         #scrollToTopBtn:hover {
-            background-color: var(--primary-white); 
-            color: var(--secondary-pink); 
+            /* Hover: White Glass Glow */
+            background-color: rgba(255, 255, 255, 0.2); 
+            color: var(--primary-white); /* Icon turns white */
+            border-color: rgba(255, 255, 255, 0.8);
+            
             transform: translateY(-5px) scale(1.1); 
-            box-shadow: 0 0 20px rgba(255, 157, 227, 0.8);
+            
+            /* Intense White/Pink Distortion Glow */
+            box-shadow: 
+                -3px 0 10px rgba(0, 255, 255, 0.4), 
+                 3px 0 10px rgba(255, 0, 255, 0.4), 
+                 0 0 30px rgba(255, 255, 255, 0.5),
+                 inset 0 0 20px rgba(255, 255, 255, 0.2);
         }
 
         #scrollToTopBtn .arrow-up {
@@ -304,23 +370,16 @@
         }
 
 
-        /* Contact Footer Styling - Adjusted to Pink Neon Text */
+        /* Contact Footer Styling */
         #contact-footer {
-            /* Liquid Glass Properties */
             background-color: rgba(20, 20, 20, 0.2); 
-            backdrop-filter: blur(16px); 
-            -webkit-backdrop-filter: blur(16px);
-            /* Base Text Color: Secondary Pink */
+            backdrop-filter: blur(6px); 
+            -webkit-backdrop-filter: blur(6px);
             color: var(--secondary-pink);
-            /* Neon Pink Text Glow */
             text-shadow: 0 0 8px rgba(255, 157, 227, 0.8);
-            
-            /* Border - Pink, remove bottom border */
-            border: 1px solid rgba(255, 157, 227, 0.4);
+            border: 1px solid rgba(255, 157, 227, 0.5);
             border-bottom: none;
             border-radius: 1.5rem 1.5rem 0 0;
-            
-            /* Chromatic Shadow pointing up */
             box-shadow: 
                 -2px -4px 6px rgba(0, 255, 255, 0.15),  
                  2px -4px 6px rgba(255, 0, 255, 0.15),  
@@ -330,7 +389,7 @@
         
         #contact-footer h3 {
             color: var(--secondary-pink);
-            border-bottom-color: var(--secondary-pink); /* Pink border line */
+            border-bottom-color: var(--secondary-pink); 
             text-shadow: 0 0 10px rgba(255, 157, 227, 0.8);
         }
 
@@ -345,7 +404,6 @@
             text-shadow: 0 0 15px var(--primary-white);
         }
 
-        /* Ensure icons in footer are also pink/glowing */
         #contact-footer i {
             color: var(--secondary-pink);
             text-shadow: 0 0 10px rgba(255, 157, 227, 0.8);
@@ -400,8 +458,8 @@
 </head>
 <body class="text-white antialiased">
     
-    <!-- Interactive Dot Grid Canvas (Z-Index 1) -->
-    <canvas id="canvas-container"></canvas>
+    <!-- Interactive 3D Button Canvas (Z-Index 1) -->
+    <div id="canvas-container"></div>
 
     <!-- Top Navigation Bar (Now scrolls off-screen) -->
     <div class="topbar" id="topbar-nav">
@@ -419,12 +477,15 @@
         
         <!-- Header Section -->
         <header class="text-center">
-            <!-- Added ID for JS targeting of letters -->
-            <h1 id="name-title" class="text-6xl md:text-8xl font-extrabold tracking-tight text-white/90">SUBHAM PANDA</h1>
-            <!-- Secondary Accent: Lighter Pink - Updated Titles with pipe -->
-            <p class="text-xl md:text-2xl font-light tracking-widest uppercase text-secondary-pink">
-                LEVEL DESIGNER | 3D ARTIST | TECHNICAL ARTIST
-            </p>
+            <!-- Name with stained glass effect -->
+            <h1 id="name-title" class="text-6xl md:text-8xl font-extrabold tracking-tight stained-glass-text" style="position: relative; z-index: 20; display: inline-block;">SUBHAM PANDA</h1>
+            
+            <!-- Job Title Glass Box -->
+            <div class="job-title-box" id="job-title-container">
+                <p class="text-xl md:text-2xl font-light tracking-widest uppercase text-secondary-pink" style="margin: 0;">
+                    LEVEL DESIGNER | 3D ARTIST | TECHNICAL ARTIST
+                </p>
+            </div>
         </header>
         
         <!-- Scroll Indicator (Simple arrow) -->
@@ -442,7 +503,10 @@
         <!-- Anchor Target -->
         <div id="projects-anchor" class="scroll-anchor"></div> 
         
-        <h2 class="text-4xl font-extrabold mb-12 text-center text-secondary-pink">PROJECT ARTIFACTS</h2>
+        <!-- Full-width Title Bar -->
+        <div class="section-title-bar liquid-glass">
+             <h2 class="text-4xl font-extrabold text-center text-secondary-pink m-0">PROJECT ARTIFACTS</h2>
+        </div>
         
         <!-- ROW 1: Fast'N'Food and Shaders Showcase (Side-by-side) -->
         <div class="grid md:grid-cols-2 gap-8 mb-8">
@@ -551,8 +615,10 @@
         <!-- New Anchor Target for Skills -->
         <div id="skills-anchor" class="scroll-anchor"></div>
 
-        <!-- Merged and Centered Title -->
-        <h2 class="text-4xl font-extrabold mb-8 text-center text-secondary-pink">TECHNICAL SKILLS</h2>
+        <!-- Section Title Bar -->
+        <div class="section-title-bar liquid-glass">
+            <h2 class="text-4xl font-extrabold text-center text-secondary-pink m-0">TECHNICAL SKILLS</h2>
+        </div>
 
         <!-- 1. Technical Focus Areas (Horizontal Bars, Left Aligned) -->
         <div class="max-w-4xl mx-auto mb-16">
@@ -585,7 +651,11 @@
         <!-- NEW HEADING ADDED HERE -->
         <!-- New Anchor Target for Softwares - Increased offset for better clearance -->
         <div id="softwares-anchor" class="scroll-anchor" style="top: -10rem;"></div> 
-        <h2 class="text-4xl font-extrabold mb-8 text-center text-secondary-pink max-w-4xl mx-auto">SOFTWARE PROFICIENCIES</h2>
+        
+        <!-- Section Title Bar -->
+        <div class="section-title-bar liquid-glass">
+             <h2 class="text-4xl font-extrabold text-center text-secondary-pink m-0">SOFTWARE PROFICIENCIES</h2>
+        </div>
 
 
         <!-- 2. Software Proficiencies (Horizontal Boxes, 2x2 Grid, uniform size, now shorter) -->
@@ -641,7 +711,10 @@
         <!-- New Anchor Target for About -->
         <div id="about-anchor" class="scroll-anchor"></div> 
 
-        <h2 class="text-4xl font-extrabold mb-8 text-center text-secondary-pink">ABOUT ME</h2>
+        <!-- Section Title Bar -->
+        <div class="section-title-bar liquid-glass">
+            <h2 class="text-4xl font-extrabold text-center text-secondary-pink m-0">ABOUT ME</h2>
+        </div>
         
         <!-- Centered About Me Text Block and Side-by-Side Image Placeholder -->
         <div class="about-content-wrapper mx-auto max-w-4xl flex flex-col md:flex-row">
@@ -656,7 +729,7 @@
             <!-- Right Column: Image Placeholder (Vertical, Rounded, Translucent) -->
             <div class="about-image-container liquid-glass">
                 <!-- Replaced text placeholder with the actual image tag -->
-                <img src="https://github.com/Charli4Li/Subham/blob/a92851cbe970547a2b6537fc984d23b86b3f3c18/SFSS.png?raw=true" 
+                <img src="https://raw.githubusercontent.com/Charli4Li/Subham/31cc10382ecb93af9c17a3d3c6270e4ae7c37c6f/SFSS.png" 
                      alt="Profile Picture" 
                      class="w-full h-full object-cover"
                      onerror="this.onerror=null; this.src='https://placehold.co/400x400/141414/FF9DE3?text=Profile+Image+Not+Found';">
@@ -728,203 +801,200 @@
 
     <!-- JavaScript for the Background & Smooth Scrolling -->
     <script>
-        // --- INTERACTIVE NEON DOT GRID BACKGROUND ---
-        function initDotGrid() {
-            const canvas = document.getElementById('canvas-container');
-            if (!canvas) return;
+        // --- 3D GEOMETRY BACKGROUND (Cubes, Spheres, Pyramids, Diamonds) ---
+        function initThreeBackground() {
+            const container = document.getElementById('canvas-container');
+            if (!container) return;
 
-            const ctx = canvas.getContext('2d');
-            let width, height;
+            // 1. Scene & Camera
+            const scene = new THREE.Scene();
+            const camera = new THREE.OrthographicCamera(
+                window.innerWidth / -2, window.innerWidth / 2, 
+                window.innerHeight / 2, window.innerHeight / -2, 
+                1, 1000
+            );
+            camera.position.z = 500;
+
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            // 2. Geometries
+            // Size 4 (Doubled from 2)
+            const size = 4; 
+            const geometries = [
+                new THREE.BoxGeometry(size, size, size),             // Cube
+                new THREE.SphereGeometry(size * 0.6, 8, 8),          // Sphere
+                new THREE.TetrahedronGeometry(size * 0.7),           // Pyramid
+                new THREE.OctahedronGeometry(size * 0.6)             // Diamond
+            ];
+
+            // 3. Materials
+            const pinkColor = new THREE.Color(0xFF9DE3); 
+            const whiteColor = new THREE.Color(0xFFFFFF);
+
+            const material = new THREE.MeshBasicMaterial({ 
+                color: whiteColor, // Default to white (star state)
+                transparent: true,
+                opacity: 0,
+                blending: THREE.AdditiveBlending // Additive blending for neon glow
+            });
+
+            // 4. Create Grid of Shapes
+            const shapes = [];
+            const GRID_SPACING = 30; 
+            const cols = Math.ceil(window.innerWidth / GRID_SPACING) + 2;
+            const rows = Math.ceil(window.innerHeight / GRID_SPACING) + 2;
             
-            // Mouse state
-            let mouseX = -1000;
-            let mouseY = -1000;
+            const group = new THREE.Group();
+            scene.add(group);
+            
+            const startX = -(cols * GRID_SPACING) / 2;
+            const startY = (rows * GRID_SPACING) / 2;
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const geo = geometries[Math.floor(Math.random() * geometries.length)];
+                    const mesh = new THREE.Mesh(geo, material.clone()); 
+                    
+                    const x = startX + c * GRID_SPACING;
+                    const y = startY - r * GRID_SPACING;
+                    
+                    mesh.position.set(x, y, 0);
+                    
+                    mesh.userData = {
+                        originX: x,
+                        originY: y,
+                        // Reduce rotation speed for relaxed vibe
+                        rotSpeedX: (Math.random() - 0.5) * 0.01,
+                        rotSpeedY: (Math.random() - 0.5) * 0.01,
+                        rotSpeedZ: (Math.random() - 0.5) * 0.01,
+                        timerOffset: Math.random() * 100
+                    };
+                    
+                    group.add(mesh);
+                    shapes.push(mesh);
+                }
+            }
+            
+            // 5. Interaction Variables
+            const LIGHT_RADIUS = 450; 
+            const INNER_RADIUS = 250; 
+            const REPEL_RADIUS = 100; 
+            // Removed connections var as per request
+
+            let mouseX = -9999; 
+            let mouseY = -9999;
+            let targetMouseX = -9999;
+            let targetMouseY = -9999;
             let timer = 0;
 
-            // Grid configuration
-            const GRID_SPACING = 30;
-            const FADE_SPEED = 0.03; 
-            const LIGHT_RADIUS = 900; 
-            const INNER_RADIUS = 250; 
-            const REPEL_RADIUS = 300; 
-            const CONNECT_DISTANCE = 50; // Distance to connect dots
-            
-            // Store dot states
-            let dots = [];
-
-            function resize() {
-                width = window.innerWidth;
-                height = window.innerHeight;
-                canvas.width = width;
-                canvas.height = height;
-                createDots();
-            }
-
-            function createDots() {
-                dots = [];
-                const cols = Math.ceil(width / GRID_SPACING);
-                const rows = Math.ceil(height / GRID_SPACING);
-                
-                const pinkHex = getComputedStyle(document.documentElement).getPropertyValue('--secondary-pink').trim();
-
-                for (let r = 0; r < rows; r++) {
-                    for (let c = 0; c < cols; c++) {
-                        // All dots are now pink
-                        dots.push({
-                            originX: c * GRID_SPACING,
-                            originY: r * GRID_SPACING,
-                            x: c * GRID_SPACING,
-                            y: r * GRID_SPACING,
-                            alpha: 0,
-                            interactionAlpha: 0, // For pink state
-                            color: pinkHex,
-                            glowColor: 'rgba(255, 157, 227, 0.8)',
-                            baseColor: '255, 157, 227',
-                            pulseOffset: Math.random() * Math.PI * 2 // Random phase for stars
-                        });
-                    }
-                }
-            }
-
-            // Mouse tracking
             window.addEventListener('mousemove', (e) => {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
+                targetMouseX = e.clientX - window.innerWidth / 2;
+                targetMouseY = -(e.clientY - window.innerHeight / 2);
             });
+
+            // No connection lines in this version as per request
             
-            window.addEventListener('touchmove', (e) => {
-                if(e.touches.length > 0) {
-                    mouseX = e.touches[0].clientX;
-                    mouseY = e.touches[0].clientY;
-                }
-            });
-
             function animate() {
-                ctx.clearRect(0, 0, width, height);
-                timer += 0.01; 
+                requestAnimationFrame(animate);
+                timer += 0.005; // SLOWED DOWN for relaxed animation
 
-                for (let dot of dots) {
-                    // Calculate distance to mouse
-                    const dx = mouseX - dot.x;
-                    const dy = mouseY - dot.y;
+                // Mouse Lerp
+                mouseX += (targetMouseX - mouseX) * 0.1;
+                mouseY += (targetMouseY - mouseY) * 0.1;
+                
+                shapes.forEach(mesh => {
+                    const u = mesh.userData;
+
+                    // 1. Rotation (Gyroscope)
+                    mesh.rotation.x += u.rotSpeedX;
+                    mesh.rotation.y += u.rotSpeedY;
+                    mesh.rotation.z += u.rotSpeedZ;
+
+                    // 2. Physics (Calculations in 2D plane)
+                    const dx = mouseX - mesh.position.x;
+                    const dy = mouseY - mesh.position.y;
                     const dist = Math.sqrt(dx*dx + dy*dy);
 
-                    // --- INTERACTION LOGIC ---
-                    
-                    // 1. "Jelly" Drift
-                    const driftX = Math.sin(timer + dot.originY * 0.05) * 5; 
-                    const driftY = Math.cos(timer + dot.originX * 0.05) * 5; 
-                    
-                    let targetX = dot.originX + driftX;
-                    let targetY = dot.originY + driftY;
+                    // Jelly Drift
+                    const driftX = Math.sin(timer + u.originY * 0.01) * 10;
+                    const driftY = Math.cos(timer + u.originX * 0.01) * 10;
+                    let targetX = u.originX + driftX;
+                    let targetY = u.originY + driftY;
 
-                    // 2. Repel Effect (Mouse Only)
+                    // Repel
                     if (dist < REPEL_RADIUS) {
                         const angle = Math.atan2(dy, dx);
                         const force = (REPEL_RADIUS - dist) / REPEL_RADIUS;
-                        const repelDist = force * 20; 
+                        const repelDist = force * 20;
                         
-                        const repelTargetX = targetX - Math.cos(angle) * repelDist;
-                        const repelTargetY = targetY - Math.sin(angle) * repelDist;
-                        
-                        dot.x += (repelTargetX - dot.x) * 0.1;
-                        dot.y += (repelTargetY - dot.y) * 0.1;
-                    } else {
-                        dot.x += (targetX - dot.x) * 0.1;
-                        dot.y += (targetY - dot.y) * 0.1;
+                        targetX -= Math.cos(angle) * repelDist;
+                        targetY -= Math.sin(angle) * repelDist;
                     }
 
-                    // 3. Ring Light Up & Fade (Liquid Pink Interaction)
-                    let targetInteractionAlpha = 0;
-                    
-                    if (dist < 450) { // Radius where pink liquid starts showing
+                    mesh.position.x += (targetX - mesh.position.x) * 0.1;
+                    mesh.position.y += (targetY - mesh.position.y) * 0.1;
+
+                    // 3. Visibility Logic (Ring Logic)
+                    let targetOpacity = 0;
+                    let isLiquid = false;
+
+                    if (dist < LIGHT_RADIUS) {
+                        isLiquid = true;
                         if (dist < INNER_RADIUS) {
-                            targetInteractionAlpha = dist / INNER_RADIUS;
+                            targetOpacity = dist / INNER_RADIUS; 
                         } else {
-                            targetInteractionAlpha = 1 - ((dist - INNER_RADIUS) / (450 - INNER_RADIUS));
+                            targetOpacity = 1 - ((dist - INNER_RADIUS) / (LIGHT_RADIUS - INNER_RADIUS)); 
                         }
-                    }
-                    
-                    targetInteractionAlpha = Math.max(0, Math.min(1, targetInteractionAlpha));
-                    dot.interactionAlpha += (targetInteractionAlpha - dot.interactionAlpha) * 0.1;
-
-                    // 4. Star Pulse Logic (White Idle)
-                    // Use sine wave. If interactionAlpha is high, star effect should fade out.
-                    const starPulse = (Math.sin(timer * 1.5 + dot.pulseOffset) + 1) / 2; 
-                    let starAlpha = starPulse * 0.3; // Max opacity for stars
-                    
-                    // If liquid is visible, hide star
-                    if (dot.interactionAlpha > 0.1) {
-                         starAlpha = 0;
-                    }
-
-                    // 5. Draw Dot
-                    // Priority: Liquid Pink > Star White
-                    
-                    if (dot.interactionAlpha > 0.05) {
-                         // Draw Pink Liquid
-                         ctx.beginPath();
-                         const radius = 1.5 + (dot.interactionAlpha * 2.0); 
-                         ctx.fillStyle = `rgba(255, 157, 227, ${dot.interactionAlpha})`;
-                         ctx.shadowColor = 'rgba(255, 157, 227, 0.8)';
-                         ctx.shadowBlur = 10 * dot.interactionAlpha; 
-                         ctx.arc(dot.x, dot.y, radius, 0, Math.PI * 2);
-                         ctx.fill();
-                         ctx.shadowBlur = 0;
-                         
-                         dot.alpha = dot.interactionAlpha; // Used for connections
-                    } else if (starAlpha > 0.05) {
-                         // Draw White Star
-                         ctx.beginPath();
-                         ctx.fillStyle = `rgba(255, 255, 255, ${starAlpha})`;
-                         // Smaller, subtle glow
-                         ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
-                         ctx.shadowBlur = 5 * starAlpha;
-                         ctx.arc(dot.x, dot.y, 1.0, 0, Math.PI * 2);
-                         ctx.fill();
-                         ctx.shadowBlur = 0;
-                         
-                         dot.alpha = 0; // No connections for stars
-                    } else {
-                        dot.alpha = 0;
-                    }
-                }
-                
-                // 6. Draw Connections (Only for Pink Dots)
-                const visibleDots = dots.filter(d => d.alpha > 0.05);
-                
-                ctx.lineWidth = 0.5;
-                for (let i = 0; i < visibleDots.length; i++) {
-                    const dotA = visibleDots[i];
-                    
-                    for (let j = i + 1; j < visibleDots.length; j++) {
-                        const dotB = visibleDots[j];
-                        const dx = dotA.x - dotB.x;
-                        const dy = dotA.y - dotB.y;
-                        const dist = Math.sqrt(dx*dx + dy*dy);
+                        targetOpacity = Math.max(0, Math.min(1, targetOpacity));
                         
-                        if (dist < CONNECT_DISTANCE) {
-                            const lineAlpha = (1 - (dist / CONNECT_DISTANCE)) * Math.min(dotA.alpha, dotB.alpha) * 0.6;
-                            if (lineAlpha > 0.05) {
-                                ctx.beginPath();
-                                ctx.strokeStyle = `rgba(255, 157, 227, ${lineAlpha})`;
-                                ctx.moveTo(dotA.x, dotA.y);
-                                ctx.lineTo(dotB.x, dotB.y);
-                                ctx.stroke();
-                            }
+                        // Active state opacity
+                        mesh.material.opacity += (targetOpacity - mesh.material.opacity) * 0.1;
+                    } else {
+                        // Fade Out towards star state
+                        mesh.material.opacity -= 0.03;
+                        if (mesh.material.opacity < 0) mesh.material.opacity = 0;
+                    }
+                    
+                    // 4. State Transition (Color & Size)
+                    if (isLiquid && mesh.material.opacity > 0.05) {
+                        // Active State: Pink, larger
+                        mesh.material.color.lerp(pinkColor, 0.1);
+                        const targetScale = 1.5;
+                        mesh.scale.setScalar(mesh.scale.x + (targetScale - mesh.scale.x) * 0.1);
+                    } else {
+                        // Idle State: White, smaller, pulsing star
+                        // Star Pulse logic override
+                        const pulse = (Math.sin(timer * 2.0 + u.timerOffset) + 1) / 2;
+                        const starOpacity = pulse * 0.4; // Dim stars
+                        
+                        if(mesh.material.opacity <= 0.01) {
+                             mesh.material.opacity = starOpacity;
+                             mesh.material.color.set(whiteColor); // Instant switch for stars
+                             const targetScale = 0.8;
+                             mesh.scale.setScalar(targetScale);
                         }
                     }
-                }
+                });
 
-                requestAnimationFrame(animate);
+                renderer.render(scene, camera);
             }
             
-            window.addEventListener('resize', resize);
-            resize();
+            // Handle Resize
+            window.addEventListener('resize', () => {
+                camera.left = window.innerWidth / -2;
+                camera.right = window.innerWidth / 2;
+                camera.top = window.innerHeight / 2;
+                camera.bottom = window.innerHeight / -2;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
             animate();
         }
-
-        window.addEventListener('load', initDotGrid);
+        
+        window.addEventListener('load', initThreeBackground);
 
 
         // --- SMOOTH SCROLLING LOGIC (Vanilla JS) ---
@@ -939,19 +1009,10 @@
                 if (startTime === null) startTime = currentTime;
                 const timeElapsed = currentTime - startTime;
                 const progress = Math.min(1, timeElapsed / duration);
-                
                 const easeOutQuad = t => t * (2 - t);
                 const easedProgress = easeOutQuad(progress);
-                
-                window.scrollTo({
-                    top: startPosition + distance * easedProgress,
-                    left: 0,
-                    behavior: 'auto'
-                });
-
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                }
+                window.scrollTo({ top: startPosition + distance * easedProgress, left: 0, behavior: 'auto' });
+                if (progress < 1) window.requestAnimationFrame(step);
             }
             window.requestAnimationFrame(step);
         }
@@ -962,44 +1023,30 @@
                 e.preventDefault();
                 const targetId = targetLink.getAttribute('href').substring(1);
                 const targetElement = document.getElementById(targetId);
-
-                if (targetElement) {
-                    smoothScroll(targetElement);
-                }
+                if (targetElement) smoothScroll(targetElement);
             }
         });
 
-        // --- SCROLL-TO-TOP BUTTON LOGIC ---
+        // --- SCROLL-TO-TOP LOGIC ---
         const topbar = document.getElementById('topbar-nav');
         const scrollToTopBtn = document.getElementById('scrollToTopBtn');
-        
         if (topbar && scrollToTopBtn) {
-            // Scroll handler to show/hide button
             window.addEventListener('scroll', function() {
                 const topbarBottom = topbar.getBoundingClientRect().bottom;
-                
                 if (topbarBottom < 0) {
-                    // Show: Slide in smoothly
                     scrollToTopBtn.classList.remove('hidden-transition');
                     scrollToTopBtn.classList.add('visible');
                 } else {
-                    // Hide: Slide out smoothly
                     scrollToTopBtn.classList.add('hidden-transition');
                     scrollToTopBtn.classList.remove('visible');
                 }
             });
-            
-            // Scroll to top functionality
             scrollToTopBtn.addEventListener('click', function() {
-                // Smoothly scroll to the very top of the page (Y=0)
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         }
 
-        // --- NAME HOVER ANIMATION LOGIC (CHAINED) ---
+        // --- NAME HOVER LOGIC ---
         const nameTitle = document.getElementById('name-title');
         if (nameTitle) {
             const text = nameTitle.innerText;
@@ -1007,33 +1054,22 @@
                 if(char === ' ') return '<span class="name-char" style="display:inline-block; width:0.3em;">&nbsp;</span>';
                 return `<span class="name-char">${char}</span>`;
             }).join('');
-
             const chars = Array.from(nameTitle.querySelectorAll('.name-char'));
-            
             chars.forEach((char, index) => {
-                // Mouse Enter: Calculate distance and lift neighbors
                 char.addEventListener('mouseenter', () => {
                     chars.forEach((c, i) => {
                         const distance = Math.abs(index - i);
-                        // Gaussian-like falloff: Closer letters lift more
                         let lift = 0;
-                        if (distance === 0) lift = -35;       // Target: Highest
-                        else if (distance === 1) lift = -20;  // Neighbors: High
-                        else if (distance === 2) lift = -10;  // Next: Medium
-                        
-                        if (lift !== 0) {
-                            c.style.transform = `translateY(${lift}px)`;
-                        } else {
-                            c.style.transform = 'translateY(0)';
-                        }
+                        if (distance === 0) lift = -35;       
+                        else if (distance === 1) lift = -20;  
+                        else if (distance === 2) lift = -10;  
+                        if (lift !== 0) c.style.transform = `translateY(${lift}px)`;
+                        else c.style.transform = 'translateY(0)';
                     });
                 });
             });
-
             nameTitle.addEventListener('mouseleave', () => {
-                chars.forEach(c => {
-                    c.style.transform = 'translateY(0)';
-                });
+                chars.forEach(c => c.style.transform = 'translateY(0)');
             });
         }
     </script>
