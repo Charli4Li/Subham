@@ -89,9 +89,9 @@
         }
 
         .name-char.lifted {
-            /* Fast lift transition (0.1s) when hovered */
-            transform: translateY(-25px);
-            transition: transform 0.1s ease-out;
+            /* Fast lift transition (0.08s) when hovered */
+            transform: translateY(-35px);
+            transition: transform 0.08s ease-out;
         }
 
 
@@ -712,22 +712,16 @@
             // Grid configuration
             const GRID_SPACING = 30;
             const FADE_SPEED = 0.03; 
-            const LIGHT_RADIUS = 550; // 450px outer limit
-            const INNER_RADIUS = 250; // 150px inner fade-in limit (the ring)
-            const REPEL_RADIUS = 400; 
+            // Updated Radius Values
+            const LIGHT_RADIUS = 600; // Outer fade limit (decreased)
+            const INNER_RADIUS = 300; // Inner ring fade-in limit (increased)
+            const REPEL_RADIUS = 450; // Liquid physics interaction radius (increased)
             const CONNECT_DISTANCE = 50; // Distance to connect dots
             
             // Store dot states
             let dots = [];
-
-            function resize() {
-                width = window.innerWidth;
-                height = window.innerHeight;
-                canvas.width = width;
-                canvas.height = height;
-                createDots();
-            }
-
+            
+            // Initialize with random pulse offsets for "Star Mode"
             function createDots() {
                 dots = [];
                 const cols = Math.ceil(width / GRID_SPACING);
@@ -737,19 +731,28 @@
 
                 for (let r = 0; r < rows; r++) {
                     for (let c = 0; c < cols; c++) {
-                        // All dots are now pink
                         dots.push({
                             originX: c * GRID_SPACING,
                             originY: r * GRID_SPACING,
                             x: c * GRID_SPACING,
                             y: r * GRID_SPACING,
                             alpha: 0,
+                            interactionAlpha: 0, // Separate alpha for mouse interaction
                             color: pinkHex,
                             glowColor: 'rgba(255, 157, 227, 0.8)',
-                            baseColor: '255, 157, 227'
+                            baseColor: '255, 157, 227',
+                            pulseOffset: Math.random() * Math.PI * 2 // Random phase for star pulse
                         });
                     }
                 }
+            }
+
+            function resize() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+                createDots();
             }
 
             // Mouse tracking
@@ -778,14 +781,14 @@
 
                     // --- INTERACTION LOGIC ---
                     
-                    // 1. "Jelly" Drift (Sine wave based on time and position)
+                    // 1. "Jelly" Drift
                     const driftX = Math.sin(timer + dot.originY * 0.05) * 5; 
                     const driftY = Math.cos(timer + dot.originX * 0.05) * 5; 
                     
                     let targetX = dot.originX + driftX;
                     let targetY = dot.originY + driftY;
 
-                    // 2. Repel Effect (Mouse Only)
+                    // 2. Repel Effect (Mouse Only - No Text Obstacles)
                     if (dist < REPEL_RADIUS) {
                         const angle = Math.atan2(dy, dx);
                         const force = (REPEL_RADIUS - dist) / REPEL_RADIUS;
@@ -802,37 +805,67 @@
                         dot.y += (targetY - dot.y) * 0.1;
                     }
 
-                    // 3. Ring Light Up & Fade
+                    // 3. Ring Light Up & Fade Logic (Pink Interaction)
+                    let targetInteractionAlpha = 0;
+                    
                     if (dist < LIGHT_RADIUS) {
-                        let targetAlpha = 0;
-                        
-                        // Ring logic:
                         if (dist < INNER_RADIUS) {
-                            // Fade IN from center (0 to 1)
-                            targetAlpha = dist / INNER_RADIUS;
+                            // Inner Circle: Fade IN from center (void)
+                            targetInteractionAlpha = dist / INNER_RADIUS;
                         } else {
-                            // Fade OUT to edge (1 to 0)
-                            targetAlpha = 1 - ((dist - INNER_RADIUS) / (LIGHT_RADIUS - INNER_RADIUS));
+                            // Outer Ring: Fade OUT to edge
+                            targetInteractionAlpha = 1 - ((dist - INNER_RADIUS) / (LIGHT_RADIUS - INNER_RADIUS));
                         }
-                        // Ensure valid alpha
-                        targetAlpha = Math.max(0, Math.min(1, targetAlpha));
-                        
-                        dot.alpha += (targetAlpha - dot.alpha) * 0.1;
-                    } else {
-                        dot.alpha -= FADE_SPEED;
-                        if (dot.alpha < 0) dot.alpha = 0;
                     }
+                    
+                    targetInteractionAlpha = Math.max(0, Math.min(1, targetInteractionAlpha));
+                    dot.interactionAlpha += (targetInteractionAlpha - dot.interactionAlpha) * 0.1;
+
+                    // 4. Star Pulse Logic (White Idle)
+                    // Sine wave oscillating between 0 and 0.4 (dim)
+                    const starPulse = (Math.sin(timer * 2.0 + dot.pulseOffset) + 1) / 2; 
+                    const starAlpha = starPulse * 0.4;
+
+                    // 5. Draw Dot
+                    ctx.beginPath();
+                    const radius = 1.5 + (dot.interactionAlpha * 2.0); 
+
+                    // Priority: Interaction Pink > Star White
+                    if (dot.interactionAlpha > 0.05) {
+                         // Draw Pink (Interaction)
+                         ctx.fillStyle = `rgba(255, 157, 227, ${dot.interactionAlpha})`;
+                         ctx.shadowColor = 'rgba(255, 157, 227, 0.8)';
+                         ctx.shadowBlur = 10 * dot.interactionAlpha; 
+                         
+                         ctx.arc(dot.x, dot.y, radius, 0, Math.PI * 2);
+                         ctx.fill();
+                         
+                         // Update dot.alpha for line connection logic
+                         dot.alpha = dot.interactionAlpha; 
+                    } else {
+                         // Draw White Star (Idle)
+                         // Only draw if star is visible enough to matter
+                         if (starAlpha > 0.05) {
+                             ctx.fillStyle = `rgba(255, 255, 255, ${starAlpha})`;
+                             ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
+                             ctx.shadowBlur = 5 * starAlpha;
+                             
+                             // Stars are smaller
+                             ctx.arc(dot.x, dot.y, 1.0, 0, Math.PI * 2);
+                             ctx.fill();
+                         }
+                         dot.alpha = 0; // No connections for stars
+                    }
+                    ctx.shadowBlur = 0; // Reset
                 }
                 
-                // 4. Draw Connections & Dots (Only for visible dots)
+                // 6. Draw Connections (Only for Pink Interaction Dots)
                 const visibleDots = dots.filter(d => d.alpha > 0.05);
                 
-                // Draw Connections
                 ctx.lineWidth = 0.5;
                 for (let i = 0; i < visibleDots.length; i++) {
                     const dotA = visibleDots[i];
                     
-                    // Check neighbors
                     for (let j = i + 1; j < visibleDots.length; j++) {
                         const dotB = visibleDots[j];
                         const dx = dotA.x - dotB.x;
@@ -850,18 +883,6 @@
                             }
                         }
                     }
-                }
-
-                // Draw Dots
-                for (let dot of visibleDots) {
-                     ctx.beginPath();
-                     const radius = 1.5 + (dot.alpha * 2.0); 
-                     ctx.fillStyle = `rgba(255, 157, 227, ${dot.alpha})`;
-                     ctx.shadowColor = 'rgba(255, 157, 227, 0.8)';
-                     ctx.shadowBlur = 10 * dot.alpha; 
-                     ctx.arc(dot.x, dot.y, radius, 0, Math.PI * 2);
-                     ctx.fill();
-                     ctx.shadowBlur = 0;
                 }
 
                 requestAnimationFrame(animate);
