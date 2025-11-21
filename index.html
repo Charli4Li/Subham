@@ -44,14 +44,82 @@
             border: 1px solid rgba(255, 157, 227, 0.5); 
             border-radius: 0.75rem;
             
-            /* Intense Chromatic Aberration + Glow */
+            /* Intense Chromatic Aberration + Glow (Standardized) */
             box-shadow: 
                 -4px 0 8px rgba(0, 255, 255, 0.2),  
                  4px 0 8px rgba(255, 0, 255, 0.2),  
                  0 0 25px rgba(255, 157, 227, 0.15),
                  inset 0 0 30px rgba(255, 255, 255, 0.08);
             
-            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s;
+            /* Smooth transition for all glass elements */
+            transition: 
+                transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                box-shadow 0.7s ease-out, 
+                background-color 0.7s ease-out;
+            
+            /* Relative position needed for the ::after glow element */
+            position: relative;
+            overflow: hidden; 
+        }
+
+        /* --- SPOTLIGHT DISTORTION HALO (::before) --- */
+        /* This creates the glass edge distortion behind the glow */
+        .liquid-glass::before,
+        .topbar::before,
+        #contact-footer::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: inherit;
+            /* Distortion Halo: Cyan/Magenta split */
+            background: radial-gradient(
+                250px circle at var(--mouse-x) var(--mouse-y), 
+                rgba(0, 255, 255, 0.15),  
+                rgba(255, 0, 255, 0.15) 30%, 
+                transparent 60%
+            );
+            opacity: 0; 
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+            z-index: 1; 
+            mix-blend-mode: screen; 
+        }
+
+        /* --- CURSOR GLOW (::after) --- */
+        .liquid-glass::after,
+        .topbar::after,
+        #contact-footer::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: inherit;
+            
+            /* Main Spotlight (Holographic): White -> Pink -> Blue */
+            background: radial-gradient(
+                180px circle at var(--mouse-x) var(--mouse-y), 
+                rgba(255, 255, 255, 0.2) 0%,      /* White Core */
+                rgba(255, 157, 227, 0.15) 40%,    /* Pink Mid */
+                rgba(0, 255, 255, 0.1) 70%,       /* Blue Edge */
+                transparent 100%
+            );
+            
+            opacity: 0; 
+            transition: opacity 0.5s ease;
+            pointer-events: none; 
+            z-index: 2; 
+            mix-blend-mode: overlay; 
+        }
+
+        .liquid-glass:hover::before, .liquid-glass:hover::after,
+        .topbar:hover::before, .topbar:hover::after,
+        #contact-footer:hover::before, #contact-footer:hover::after {
+            opacity: 1;
+        }
+
+        /* Ensure content inside stays clickable */
+        .liquid-glass > *, .topbar > *, #contact-footer > * {
+            position: relative;
+            z-index: 5;
         }
 
         /* --- Job Title Glass Box --- */
@@ -74,6 +142,24 @@
                  4px 4px 8px rgba(255, 0, 255, 0.2),  
                  0 0 25px rgba(255, 157, 227, 0.15),
                  inset 0 0 30px rgba(255, 255, 255, 0.08);
+
+            /* Add Transition for Hover Effect */
+            transition: 
+                transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                box-shadow 0.7s ease-out, 
+                background-color 0.7s ease-out;
+        }
+
+        /* Hover Glow Effect for Job Title Box */
+        .job-title-box:hover {
+            transform: scale(1.05);
+            background-color: rgba(30, 30, 30, 0.4); 
+            /* Enhanced White/Pink Glow */
+            box-shadow: 
+                -6px 0 15px rgba(0, 255, 255, 0.45), 
+                 6px 0 15px rgba(255, 0, 255, 0.45), 
+                 0 0 40px rgba(255, 255, 255, 0.4),
+                 inset 0 0 25px rgba(255, 255, 255, 0.2);
         }
         
         @media (min-width: 768px) {
@@ -110,13 +196,22 @@
                 inset 0 0 30px rgba(255, 255, 255, 0.08);
         }
 
-        /* --- Whiter Stained Glass Text --- */
+        /* --- Translucent Glass Name Text (UPDATED) --- */
         .stained-glass-text {
-            color: rgba(255, 255, 255, 0.92);
+            /* Highly Translucent Fill to act like Glass */
+            color: rgba(255, 255, 255, 0.08); 
+            
+            /* No Stroke - Pure Material */
+            -webkit-text-stroke: 0px transparent;
+            
+            /* Chromatic Aberration Shadow + Glass Edge Glow */
+            /* Cyan Left, Magenta Right, Soft White Backlight */
             text-shadow: 
-                0 0 10px rgba(255, 255, 255, 0.6),
-                0 0 20px rgba(255, 157, 227, 0.4),
-                0 0 40px rgba(255, 157, 227, 0.2);
+                -2px 0 2px rgba(0, 255, 255, 0.3),  
+                 2px 0 2px rgba(255, 0, 255, 0.3),
+                 0 0 15px rgba(255, 255, 255, 0.2);
+            
+            transition: all 0.5s ease;
         }
 
         /* Top Bar Styling */
@@ -136,24 +231,46 @@
                  3px 4px 8px rgba(255, 0, 255, 0.2),  
                  0 4px 20px rgba(255, 157, 227, 0.3),
                  inset 0 -10px 25px rgba(255, 255, 255, 0.08);
+                 
+            /* Necessary for spotlight positioning */
+            overflow: hidden; 
         }
 
+        /* --- TOP BAR BUTTONS WITH EDGE DISTORTION --- */
         .top-nav-button {
-            background-color: var(--accent-black);
+            background-color: rgba(20, 20, 20, 0.2); 
+            backdrop-filter: blur(4px); 
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 157, 227, 0.5); 
+            
             color: var(--secondary-pink); 
             padding: 0.5rem 1.25rem;
-            border-radius: 0.5rem; 
+            border-radius: 9999px; /* Pill Shape */
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             text-decoration: none;
             cursor: pointer; 
-            box-shadow: 0 0 5px rgba(255, 157, 227, 0.2);
+            
+            /* Edge Distortion Glow */
+            box-shadow: 
+                -2px 0 5px rgba(0, 255, 255, 0.3),  
+                 2px 0 5px rgba(255, 0, 255, 0.3),  
+                 0 0 10px rgba(255, 157, 227, 0.3),
+                 inset 0 0 8px rgba(255, 255, 255, 0.15);
         }
 
         .top-nav-button:hover {
+            transform: scale(1.05); 
+            background-color: rgba(255, 255, 255, 0.1); /* Lighten bg */
             color: var(--primary-white); 
-            background-color: var(--accent-black); 
-            box-shadow: 0 0 15px rgba(255, 157, 227, 0.8); 
+            border-color: rgba(255, 255, 255, 0.8);
+            
+            /* Strong White Glow + Intense Distortion on Hover */
+            box-shadow: 
+                -3px 0 10px rgba(0, 255, 255, 0.5),
+                 3px 0 10px rgba(255, 0, 255, 0.5),
+                 0 0 20px rgba(255, 255, 255, 0.6),
+                 inset 0 0 15px rgba(255, 255, 255, 0.2);
         }
 
         /* Hero content styling */
@@ -168,13 +285,23 @@
         .name-char {
             display: inline-block;
             cursor: default;
-            transition: transform 1.5s ease-out;
+            /* Smooth transitions for color/shadow changes */
+            transition: transform 1.5s ease-out, color 0.5s ease, text-shadow 0.5s ease;
             vertical-align: middle;
         }
 
         .name-char.lifted {
             transform: translateY(-25px);
             transition: transform 0.1s ease-out;
+        }
+        
+        /* Interactive Brightness for Letters (On Hover) */
+        .name-char:hover {
+            color: rgba(255, 255, 255, 0.8); /* Brighten up on hover */
+            text-shadow: 
+                -3px 0 5px rgba(0, 255, 255, 0.6),
+                 3px 0 5px rgba(255, 0, 255, 0.6),
+                 0 0 30px rgba(255, 255, 255, 0.8);
         }
 
         /* Portfolio Sections */
@@ -195,75 +322,143 @@
             padding: 0;
         }
         
+        /* Anchor Logic Adjustment */
         #softwares-anchor {
-            top: -10rem; 
+            top: -2rem; 
         }
 
-        /* Project Cards */
+        /* =========================================
+           ANIMATION STYLES FOR PROJECT CARDS 
+           ========================================= */
+
+        /* 1. Card Start State (Hidden/Small) */
         .project-card {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-        }
-        
-        .project-card:hover {
-             transform: scale(1.02);
-             background-color: rgba(20, 20, 20, 0.3) !important; 
-             box-shadow: 
-                -5px 0 12px rgba(0, 255, 255, 0.35), 
-                 5px 0 12px rgba(255, 0, 255, 0.35), 
-                 0 0 35px rgba(255, 157, 227, 0.5),
-                 inset 0 0 15px rgba(255, 255, 255, 0.15);
-        }
-        
-        .skill-block, .software-block, .about-text-block, .about-image-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            
+            opacity: 0; /* Start hidden */
+            transform: scale(0.85); /* Start small */
+            /* Consolidated smooth transition */
+            transition: 
+                opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), 
+                transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                box-shadow 0.7s ease-out, 
+                background-color 0.7s ease-out;
         }
 
-        /* Tech Focus Bars */
-        .tech-focus-bar {
-            border-radius: 9999px; 
-            padding: 0.75rem 1.5rem;
-            margin: 0.5rem 0;
-            text-align: left; 
-            background-color: rgba(20, 20, 20, 0.2);
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 157, 227, 0.5);
-            box-shadow: 
-                -1px 0 4px rgba(0, 255, 255, 0.15), 
-                 1px 0 4px rgba(255, 0, 255, 0.15), 
-                 0 0 10px rgba(255, 157, 227, 0.15);
-            transition: transform 0.2s, box-shadow 0.2s;
+        /* Card Visible State (Entrance Animation) */
+        .project-card.card-visible {
+            opacity: 1;
+            transform: scale(1);
         }
-        .tech-focus-bar:hover {
-            transform: scale(1.02);
+        
+        /* Common Hover Glow Style (Smooth Transition) */
+        .interaction-ready:hover {
+            transform: scale(1.03) !important;
+            background-color: rgba(30, 30, 30, 0.4) !important; 
+            /* Enhanced White/Pink Glow on Hover */
             box-shadow: 
-                -3px 0 10px rgba(0, 255, 255, 0.4), 
-                 3px 0 10px rgba(255, 0, 255, 0.4), 
-                 0 0 25px rgba(255, 157, 227, 0.4);
+                -6px 0 15px rgba(0, 255, 255, 0.45), 
+                 6px 0 15px rgba(255, 0, 255, 0.45), 
+                 0 0 40px rgba(255, 255, 255, 0.4),
+                 inset 0 0 25px rgba(255, 255, 255, 0.2) !important;
+            z-index: 20; /* Bring to front slightly */
         }
 
-        /* Project Button Styles */
+        /* 2. Reveal Animation Wrapper */
+        .reveal-holder {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+            vertical-align: top; 
+            width: fit-content; 
+            margin-bottom: 2px;
+        }
+
+        .reveal-content {
+            opacity: 0;
+            display: block;
+        }
+
+        .reveal-block {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background-color: var(--primary-white);
+            z-index: 10;
+        }
+
+        /* Animation Classes */
+        .reveal-holder.animate-reveal .reveal-block {
+            animation: block-swipe-right 1.0s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+        }
+
+        .reveal-holder.animate-reveal .reveal-content {
+            animation: text-appear-instant 0.01s 0.5s forwards; 
+        }
+
+        @keyframes block-swipe-right {
+            0% { width: 0%; left: 0; }
+            50% { width: 100%; left: 0; } 
+            100% { width: 0%; left: 100%; } 
+        }
+
+        @keyframes text-appear-instant {
+            to { opacity: 1; }
+        }
+
+        /* 3. Button Fade Animation & Glass Style */
+        .project-button-wrapper {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .project-button-wrapper.btn-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* --- PROJECT BUTTONS WITH EDGE DISTORTION --- */
         .project-button {
-            background-color: var(--secondary-pink);
-            color: var(--accent-black); 
+            /* Glass Base */
+            background-color: rgba(20, 20, 20, 0.2); 
+            backdrop-filter: blur(4px); 
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 157, 227, 0.5); 
+            
+            color: var(--secondary-pink); /* Default Pink Text */
             padding: 0.5rem 1.5rem;
             border-radius: 9999px; 
             font-weight: bold;
             display: inline-flex;
             align-items: center;
-            transition: all 0.3s ease;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             transform: scale(1); 
             text-decoration: none;
+            
+            /* Edge Distortion Glow */
+            box-shadow: 
+                -2px 0 5px rgba(0, 255, 255, 0.3),  
+                 2px 0 5px rgba(255, 0, 255, 0.3),  
+                 0 0 15px rgba(255, 157, 227, 0.4),
+                 inset 0 0 10px rgba(255, 255, 255, 0.1);
         }
         
         .project-button:hover {
             transform: scale(1.08); 
-            background-color: var(--accent-coral); 
-            box-shadow: 0 4px 20px rgba(255, 157, 227, 0.8); 
-            color: var(--primary-white); 
+            background-color: rgba(255, 255, 255, 0.1); /* Lighten bg */
+            color: var(--primary-white); /* White Text on Hover */
+            border-color: rgba(255, 255, 255, 0.8);
+            
+            /* Strong White Glow + Distortion */
+            box-shadow: 
+                -3px 0 10px rgba(0, 255, 255, 0.5),
+                 3px 0 10px rgba(255, 0, 255, 0.5),
+                 0 0 20px rgba(255, 255, 255, 0.6),
+                 inset 0 0 15px rgba(255, 255, 255, 0.2);
         }
 
         .arrow-icon {
@@ -275,26 +470,166 @@
             color: currentColor; 
             transition: color 0.3s ease;
         }
+        
+        /* =========================================
+           TECHNICAL SKILLS & SOFTWARE ANIMATION
+           ========================================= */
+        /* --- TECH SKILLS BARS WITH EDGE DISTORTION --- */
+        .tech-focus-bar {
+            border-radius: 9999px; 
+            padding: 0.75rem 1.5rem;
+            margin: 0.5rem 0;
+            text-align: left; 
+            background-color: rgba(20, 20, 20, 0.2);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 157, 227, 0.5);
+            
+            /* Edge Distortion Glow (Enhanced) */
+            box-shadow: 
+                -3px 0 8px rgba(0, 255, 255, 0.25),  
+                 3px 0 8px rgba(255, 0, 255, 0.25),  
+                 0 0 15px rgba(255, 157, 227, 0.2),
+                 inset 0 0 12px rgba(255, 255, 255, 0.1);
+            
+            /* Animatable properties - Smooth interaction transition */
+            transition: 
+                transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                box-shadow 0.7s ease-out, 
+                width 1s cubic-bezier(0.22, 1, 0.36, 1), 
+                opacity 0.5s ease, 
+                border-radius 0.5s ease;
+        }
+        
+        /* Initial state for Skills Animation */
+        .tech-bar-anim {
+            opacity: 0;
+            width: 3.5rem; 
+            height: auto;
+            min-height: 3.5rem; 
+            border-radius: 50%; 
+            overflow: hidden; 
+            white-space: nowrap; 
+            display: flex;
+            align-items: center;
+            padding: 0; 
+        }
+
+        /* Expanded State for Skills */
+        .tech-bar-anim.bar-expanded {
+            opacity: 1;
+            width: 100%; 
+            border-radius: 9999px; 
+            padding: 0.75rem 1.5rem; 
+        }
+
+        /* --- SOFTWARE BLOCK ANIMATION (SPLIT) --- */
+        .software-block {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; 
+            min-height: 150px; 
+            height: 100%;
+            
+            /* Consolidated Transitions: IMPORTANT to avoid snappy hover */
+            transition: 
+                transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                box-shadow 0.7s ease-out, 
+                background-color 0.7s ease-out,
+                opacity 0.8s ease;
+        }
+
+        /* Initial State: Clustered in the Middle 
+           Using transform to pull them to center based on 50% + gap offset
+        */
+        .software-split-item {
+            opacity: 0;
+            
+            /* Default Distortion Glow for Software Blocks */
+            box-shadow: 
+                -3px 0 8px rgba(0, 255, 255, 0.25),  
+                 3px 0 8px rgba(255, 0, 255, 0.25),  
+                 0 0 15px rgba(255, 157, 227, 0.2),
+                 inset 0 0 12px rgba(255, 255, 255, 0.1);
+
+            border-radius: 2rem; /* Squircle */
+            padding: 1.5rem;
+            
+            /* Setup for split animation override */
+            transition: 
+                transform 1.0s cubic-bezier(0.22, 1, 0.36, 1), 
+                opacity 0.8s ease,
+                box-shadow 0.7s ease-out,
+                background-color 0.7s ease-out;
+        }
+
+        .software-split-item.interaction-ready {
+             /* Switch to interaction optimized transition */
+             transition: 
+                transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                box-shadow 0.7s ease-out, 
+                background-color 0.7s ease-out;
+        }
+
+        /* Desktop Cluster Logic (2x2 Grid) */
+        @media (min-width: 640px) {
+            /* Top Left -> Move Right & Down to Center */
+            .software-split-item:nth-child(1) {
+                transform: translate(calc(50% + 0.5rem), calc(50% + 0.5rem)) scale(0.5);
+            }
+            /* Top Right -> Move Left & Down to Center */
+            .software-split-item:nth-child(2) {
+                transform: translate(calc(-50% - 0.5rem), calc(50% + 0.5rem)) scale(0.5);
+            }
+            /* Bottom Left -> Move Right & Up to Center */
+            .software-split-item:nth-child(3) {
+                transform: translate(calc(50% + 0.5rem), calc(-50% - 0.5rem)) scale(0.5);
+            }
+            /* Bottom Right -> Move Left & Up to Center */
+            .software-split-item:nth-child(4) {
+                transform: translate(calc(-50% - 0.5rem), calc(-50% - 0.5rem)) scale(0.5);
+            }
+        }
+        
+        /* Mobile Fallback (Just scale in) */
+        @media (max-width: 639px) {
+            .software-split-item {
+                transform: scale(0.9) translateY(20px);
+            }
+        }
+
+        /* Active State: Move to grid position (0,0) */
+        /* IMPORTANT: !important forces this override */
+        .software-split-item.split-active {
+            opacity: 1 !important;
+            transform: translate(0, 0) scale(1) !important;
+            visibility: visible;
+        }
+        
+        /* =========================================
+           END ANIMATION STYLES 
+           ========================================= */
+        
+        .skill-block, .about-text-block, .about-image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
         /* Software Grid */
         .software-grid-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr); 
             gap: 1rem; 
+            position: relative; /* Needed for transforms context */
+            /* IMPORTANT: Enforce row height here to prevent collapse/jump */
+            grid-auto-rows: minmax(180px, auto);
         }
         
-        .software-block {
-            padding: 1rem; 
-            margin: 0;
-            min-height: 150px; 
-            height: 100%;
-        }
-
         .software-block ul {
             list-style-position: outside; 
-            padding-left: 1.25rem; 
+            padding-left: 0.25rem; 
             margin-top: 0.5rem; 
-            line-height: 1.25; 
+            line-height: 1.5; 
         }
         
         .software-block ul li {
@@ -308,40 +643,32 @@
             }
         }
         
-        /* --- Scroll-to-Top Button Styles (UPDATED) --- */
+        /* --- Scroll-to-Top Button Styles --- */
         #scrollToTopBtn {
             position: fixed;
             bottom: 2rem;
             right: 2rem;
             z-index: 100;
-            width: 3.5rem; /* Slightly larger for glass effect */
+            width: 3.5rem; 
             height: 3.5rem;
             border-radius: 50%;
-            
-            /* Liquid Glass Material */
             background-color: rgba(20, 20, 20, 0.2); 
             backdrop-filter: blur(6px); 
             -webkit-backdrop-filter: blur(6px);
             border: 1px solid rgba(255, 157, 227, 0.5); 
-            
-            /* Pink Icon Default */
             color: var(--secondary-pink);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            
             opacity: 0; 
             visibility: hidden; 
             transform: translateY(100%); 
-            
-            /* Chromatic Shadow + Pink Glow */
             box-shadow: 
                 -2px 0 6px rgba(0, 255, 255, 0.2),  
                  2px 0 6px rgba(255, 0, 255, 0.2),  
                  0 0 15px rgba(255, 157, 227, 0.2),
                  inset 0 0 15px rgba(255, 255, 255, 0.05);
-
             transition: opacity 0.5s, transform 0.5s, background-color 0.3s, color 0.3s, box-shadow 0.3s, border-color 0.3s;
         }
 
@@ -357,14 +684,10 @@
         }
 
         #scrollToTopBtn:hover {
-            /* Hover: White Glass Glow */
             background-color: rgba(255, 255, 255, 0.2); 
-            color: var(--primary-white); /* Icon turns white */
+            color: var(--primary-white); 
             border-color: rgba(255, 255, 255, 0.8);
-            
             transform: translateY(-5px) scale(1.1); 
-            
-            /* Intense White/Pink Distortion Glow */
             box-shadow: 
                 -3px 0 10px rgba(0, 255, 255, 0.4), 
                  3px 0 10px rgba(255, 0, 255, 0.4), 
@@ -395,6 +718,8 @@
                  2px -4px 6px rgba(255, 0, 255, 0.15),  
                  0 -4px 20px rgba(255, 157, 227, 0.3),
                  inset 0 10px 20px rgba(255, 255, 255, 0.05);
+            /* Add overflow hidden to clip the spotlight */
+            overflow: hidden; 
         }
         
         #contact-footer h3 {
@@ -488,13 +813,10 @@
         <!-- Header Section -->
         <header class="text-center flex flex-col items-center max-w-full">
             <!-- Name with stained glass effect -->
-            <!-- Added responsive text sizing: text-5xl (mobile) -> sm:text-6xl -> md:text-8xl -->
             <h1 id="name-title" class="text-5xl sm:text-6xl md:text-8xl font-extrabold tracking-tight stained-glass-text text-center break-words max-w-full px-2" style="position: relative; z-index: 20; display: inline-block;">SUBHAM PANDA</h1>
             
             <!-- Job Title Glass Box -->
             <div class="job-title-box mx-auto" id="job-title-container">
-                <!-- Added responsive text sizing for job titles: text-xs (mobile) -> sm:text-sm -> md:text-2xl -->
-                <!-- Added text-center and whitespace controls to ensure alignment on mobile -->
                 <p class="text-xs sm:text-sm md:text-2xl font-light tracking-widest uppercase text-secondary-pink text-center whitespace-normal md:whitespace-nowrap" style="margin: 0;">
                     LEVEL DESIGNER | 3D ARTIST | TECHNICAL ARTIST
                 </p>
@@ -527,15 +849,47 @@
             <!-- Project 1: Fast'N'Food -->
             <div class="project-card liquid-glass p-6">
                 <div>
-                    <h3 class="text-2xl font-bold mb-2 text-white">Fast’N’Food Showcase</h3>
-                    <p class="text-sm uppercase text-gray-300 mb-4">Technical Art & Texture Art</p>
-                    <ul class="list-disc list-inside space-y-1 text-sm text-white/90">
-                        <li>Developed unique Post Process Shaders using HLSL and Blueprints on Unreal Engine 5.</li>
-                        <li>Created 12+ Post Process Shaders with modular nodes (Toon, Outline, Posterized, Pixelated).</li>
-                        <li>Textured Stylized Assets for Game Props and Food Items.</li>
+                    <!-- Title with Reveal Wrapper -->
+                    <h3 class="text-2xl font-bold mb-2 text-white">
+                        <span class="reveal-holder">
+                            <span class="reveal-block"></span>
+                            <span class="reveal-content">Fast’N’Food Showcase</span>
+                        </span>
+                    </h3>
+                    
+                    <!-- Subtitle with Reveal Wrapper -->
+                    <p class="text-sm uppercase text-gray-300 mb-4">
+                        <span class="reveal-holder">
+                            <span class="reveal-block"></span>
+                            <span class="reveal-content">Technical Art & Texture Art</span>
+                        </span>
+                    </p>
+                    
+                    <!-- List with Custom Bullet Reveals -->
+                    <ul class="list-none space-y-2 text-sm text-white/90">
+                        <li>
+                            <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>Developed unique Post Process Shaders using HLSL and Blueprints on Unreal Engine 5.</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>Created 12+ Post Process Shaders with modular nodes (Toon, Outline, Posterized, Pixelated).</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>Textured Stylized Assets for Game Props and Food Items.</span>
+                            </span>
+                        </li>
                     </ul>
                 </div>
-                <div class="mt-6">
+                
+                <!-- Button Wrapper -->
+                <div class="mt-6 project-button-wrapper">
                     <a href="https://docs.google.com/presentation/d/1zor-x2IDyLBThWrv6ZLjsVA44IDvUjAdfcoTEa4GdOU/edit?usp=sharing" target="_self" class="project-button">
                         View Project <span class="arrow-icon">➜</span>
                     </a>
@@ -545,15 +899,40 @@
             <!-- Project 2: Post-Process Shaders Showcase -->
             <div class="project-card liquid-glass p-6">
                 <div>
-                    <h3 class="text-2xl font-bold mb-2 text-white">Post-Process Shaders Showcase</h3>
-                    <p class="text-sm uppercase text-gray-300 mb-4">HLSL & Technical Art</p>
-                    <ul class="list-disc list-inside space-y-1 text-sm text-white/90">
-                        <li>Showcase of 12+ Post Process Shaders with modular nodes under different stylized art styles.</li>
-                        <li>Shaders include: Toon Shader, Outline Shader, Posterized Shader, Pixelated Shaders through Unreal.</li>
-                        <li>Creation of Material Functions and HLSL Codes for better Shader Volume functionality.</li>
+                    <h3 class="text-2xl font-bold mb-2 text-white">
+                        <span class="reveal-holder">
+                            <span class="reveal-block"></span>
+                            <span class="reveal-content">Post-Process Shaders Showcase</span>
+                        </span>
+                    </h3>
+                    <p class="text-sm uppercase text-gray-300 mb-4">
+                        <span class="reveal-holder">
+                            <span class="reveal-block"></span>
+                            <span class="reveal-content">HLSL & Technical Art</span>
+                        </span>
+                    </p>
+                    <ul class="list-none space-y-2 text-sm text-white/90">
+                        <li>
+                            <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>Showcase of 12+ Post Process Shaders with modular nodes under different stylized art styles.</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>Shaders include: Toon Shader, Outline Shader, Posterized Shader, Pixelated Shaders through Unreal.</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>Creation of Material Functions and HLSL Codes for better Shader Volume functionality.</span>
+                            </span>
+                        </li>
                     </ul>
                 </div>
-                <div class="mt-6">
+                <div class="mt-6 project-button-wrapper">
                     <a href="https://docs.google.com/presentation/d/1wW1diNIsfEuRFndMYDs5oWtjH2_nkr4aUaGCNr0zfyk/edit?usp=sharing" target="_self" class="project-button">
                         View Project <span class="arrow-icon">➜</span>
                     </a>
@@ -568,15 +947,40 @@
             <!-- Project 3: Road Rush -->
             <div class="project-card liquid-glass p-6">
                 <div>
-                    <h3 class="text-2xl font-bold mb-2 text-white">Road Rush</h3>
-                    <p class="text-sm uppercase text-gray-300 mb-4">3D Modelling & Texture Art</p>
-                    <ul class="list-disc list-inside space-y-1 text-sm text-white/90">
-                        <li>Created stylized 3D assets for Vehicles and Cars.</li>
-                        <li>Textured 3D meshes for a stylized look in the Itch.io Game Build.</li>
-                        <li>Focus on creating game-ready assets for a complete pipeline.</li>
+                    <h3 class="text-2xl font-bold mb-2 text-white">
+                        <span class="reveal-holder">
+                            <span class="reveal-block"></span>
+                            <span class="reveal-content">Road Rush</span>
+                        </span>
+                    </h3>
+                    <p class="text-sm uppercase text-gray-300 mb-4">
+                        <span class="reveal-holder">
+                            <span class="reveal-block"></span>
+                            <span class="reveal-content">3D Modelling & Texture Art</span>
+                        </span>
+                    </p>
+                    <ul class="list-none space-y-2 text-sm text-white/90">
+                        <li>
+                            <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>Created stylized 3D assets for Vehicles and Cars.</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>Textured 3D meshes for a stylized look in the Itch.io Game Build.</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>Focus on creating game-ready assets for a complete pipeline.</span>
+                            </span>
+                        </li>
                     </ul>
                 </div>
-                <div class="mt-6">
+                <div class="mt-6 project-button-wrapper">
                     <a href="https://rrover.itch.io/road-rush" target="_self" class="project-button">
                         View Project <span class="arrow-icon">➜</span>
                     </a>
@@ -586,18 +990,37 @@
             <!-- Project 4: Malorian 3516 -->
             <div class="project-card liquid-glass p-6">
                 <div>
-                    <h3 class="text-2xl font-bold mb-2 text-white">Malorian 3516 (Cyberpunk 2077)</h3>
-                    <p class="text-sm uppercase text-gray-300 mb-4">Hard Surface Modelling</p>
-                    <ul class="list-disc list-inside space-y-1 text-sm text-white/90">
-                        <li>Developed a Combat Revolver 3D asset from scratch using Maya and 3D Substance Painter.</li>
-                        <li>Focus on texture painting for adding depth and boldness, matching the Cyberpunk aesthetic.</li>
+                    <h3 class="text-2xl font-bold mb-2 text-white">
+                        <span class="reveal-holder">
+                            <span class="reveal-block"></span>
+                            <span class="reveal-content">Malorian 3516 (Cyberpunk 2077)</span>
+                        </span>
+                    </h3>
+                    <p class="text-sm uppercase text-gray-300 mb-4">
+                        <span class="reveal-holder">
+                            <span class="reveal-block"></span>
+                            <span class="reveal-content">Hard Surface Modelling</span>
+                        </span>
+                    </p>
+                    <ul class="list-none space-y-2 text-sm text-white/90">
+                        <li>
+                            <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>Developed a Combat Revolver 3D asset from scratch using Maya and 3D Substance Painter.</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>Focus on texture painting for adding depth and boldness, matching the Cyberpunk aesthetic.</span>
+                            </span>
+                        </li>
                     </ul>
                 </div>
-                <div class="mt-6">
+                <div class="mt-6 project-button-wrapper">
                     <a href="https://www.artstation.com/artwork/dyLXNW" target="_self" class="project-button">
                         View Project <span class="arrow-icon">➜</span>
                     </a>
-                    <a href="https://www.artstation.com/artcharlie_exe" target="_blank"></a>
                 </div>
             </div>
             
@@ -607,14 +1030,34 @@
         <div class="flex justify-center mb-8">
             <div class="project-card liquid-glass p-6 w-full md:w-1/2">
                 <div>
-                    <h3 class="text-2xl font-bold mb-2 text-white">Stylized Nintendo Switch</h3>
-                    <p class="text-sm uppercase text-gray-300 mb-4">3D Modelling (3DS Max)</p>
-                    <ul class="list-disc list-inside space-y-1 text-sm text-white/90">
-                        <li>Game Ready 3D mesh created on 3DS Max.</li>
-                        <li>Demonstrated skill in the creation of modular 3D elements.</li>
+                    <h3 class="text-2xl font-bold mb-2 text-white">
+                        <span class="reveal-holder">
+                            <span class="reveal-block"></span>
+                            <span class="reveal-content">Stylized Nintendo Switch</span>
+                        </span>
+                    </h3>
+                    <p class="text-sm uppercase text-gray-300 mb-4">
+                        <span class="reveal-holder">
+                            <span class="reveal-block"></span>
+                            <span class="reveal-content">3D Modelling (3DS Max)</span>
+                        </span>
+                    </p>
+                    <ul class="list-none space-y-2 text-sm text-white/90">
+                        <li>
+                            <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>Game Ready 3D mesh created on 3DS Max.</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>Demonstrated skill in the creation of modular 3D elements.</span>
+                            </span>
+                        </li>
                     </ul>
                 </div>
-                <div class="mt-6">
+                <div class="mt-6 project-button-wrapper">
                     <a href="https://www.linkedin.com/posts/artcharlie4li_3dsmax-nintendoswitch-3dmodeling-activity-7319770677018771456-PSDl?utm_source=share&utm_medium=member_desktop&rcm=ACoAAD4NqcAB-_11aoyoLZt7Gtt0SMD7uv1EY9g" target="_self" class="project-button">
                         View Project <span class="arrow-icon">➜</span>
                     </a>
@@ -638,24 +1081,49 @@
             
             <div class="space-y-3">
                 
-                <div class="tech-focus-bar liquid-glass text-white/90">
-                    <b class="text-secondary-pink">Technical Art:</b> Good Knowledge of Post-Process Shaders and basic HLSL Learning for Shader Creation.
+                <div class="tech-focus-bar tech-bar-anim liquid-glass text-white/90">
+                    <span class="reveal-holder">
+                        <span class="reveal-block"></span>
+                        <span class="reveal-content">
+                            <b class="text-secondary-pink">Technical Art:</b> Good Knowledge of Post-Process Shaders and basic HLSL Learning for Shader Creation.
+                        </span>
+                    </span>
                 </div>
 
-                <div class="tech-focus-bar liquid-glass text-white/90">
-                    <b class="text-secondary-pink">3D Art:</b> Familiarity with 3D art in game development Pipeline.
+                <div class="tech-focus-bar tech-bar-anim liquid-glass text-white/90">
+                    <span class="reveal-holder">
+                        <span class="reveal-block"></span>
+                        <span class="reveal-content">
+                            <b class="text-secondary-pink">3D Art:</b> Familiarity with 3D art in game development Pipeline.
+                        </span>
+                    </span>
                 </div>
 
-                <div class="tech-focus-bar liquid-glass text-white/90">
-                    <b class="text-secondary-pink">Level Design:</b> Proficient with core principles of level design and Well Acquainted with video games.
+                <div class="tech-focus-bar tech-bar-anim liquid-glass text-white/90">
+                    <span class="reveal-holder">
+                        <span class="reveal-block"></span>
+                        <span class="reveal-content">
+                            <b class="text-secondary-pink">Level Design:</b> Proficient with core principles of level design and Well Acquainted with video games.
+                        </span>
+                    </span>
                 </div>
 
-                <div class="tech-focus-bar liquid-glass text-white/90">
-                    <b class="text-secondary-pink">Key Art:</b> Thorough with game key art creation and analytical about game art.
+                <div class="tech-focus-bar tech-bar-anim liquid-glass text-white/90">
+                    <span class="reveal-holder">
+                        <span class="reveal-block"></span>
+                        <span class="reveal-content">
+                            <b class="text-secondary-pink">Key Art:</b> Thorough with game key art creation and analytical about game art.
+                        </span>
+                    </span>
                 </div>
 
-                <div class="tech-focus-bar liquid-glass text-white/90">
-                    <b class="text-secondary-pink">3D Sculpting:</b> Well-Versed in Sculpting for game art in game development pipeline.
+                <div class="tech-focus-bar tech-bar-anim liquid-glass text-white/90">
+                     <span class="reveal-holder">
+                        <span class="reveal-block"></span>
+                        <span class="reveal-content">
+                            <b class="text-secondary-pink">3D Sculpting:</b> Well-Versed in Sculpting for game art in game development pipeline.
+                        </span>
+                    </span>
                 </div>
 
             </div>
@@ -663,7 +1131,7 @@
 
         <!-- NEW HEADING ADDED HERE -->
         <!-- New Anchor Target for Softwares - Increased offset for better clearance -->
-        <div id="softwares-anchor" class="scroll-anchor" style="top: -10rem;"></div> 
+        <div id="softwares-anchor" class="scroll-anchor" style="top: -2rem;"></div> 
         
         <!-- Section Title Bar -->
         <div class="section-title-bar liquid-glass">
@@ -678,41 +1146,116 @@
             <div class="software-grid-container w-full">
 
                 <!-- Game Engines -->
-                <div class="software-block liquid-glass">
-                    <p class="font-bold text-lg text-secondary-pink mb-2 border-b border-white/30 w-full pb-1 text-center">Game Engines</p>
-                    <ul class="text-sm text-white/90 list-disc text-left w-full pl-6">
-                        <li><b>Unity</b></li>
-                        <li><b>Unreal Engine 5</b></li>
+                <div class="software-block software-split-item liquid-glass">
+                    <p class="font-bold text-lg text-secondary-pink mb-2 border-b border-white/30 w-full pb-1 text-center">
+                        <span class="reveal-holder">
+                            <span class="reveal-block"></span>
+                            <span class="reveal-content">Game Engines</span>
+                        </span>
+                    </p>
+                    <ul class="text-sm text-white/90 list-none text-left w-full pl-6">
+                        <li>
+                            <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>Unity</span>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>Unreal Engine 5</span>
+                            </span>
+                        </li>
                     </ul>
                 </div>
 
                 <!-- 3D Softwares -->
-                <div class="software-block liquid-glass">
-                    <p class="font-bold text-lg text-secondary-pink mb-2 border-b border-white/30 w-full pb-1 text-center">3D Softwares</p>
-                    <ul class="text-sm text-white/90 list-disc text-left w-full pl-6">
-                        <li><b>Maya</b></li>
-                        <li><b>3DS Max</b></li>
-                        <li><b>3D Substance Painter</b></li>
-                        <li><b>Blender</b></li>
+                <div class="software-block software-split-item liquid-glass">
+                    <p class="font-bold text-lg text-secondary-pink mb-2 border-b border-white/30 w-full pb-1 text-center">
+                         <span class="reveal-holder">
+                            <span class="reveal-block"></span>
+                            <span class="reveal-content">3D Softwares</span>
+                        </span>
+                    </p>
+                    <ul class="text-sm text-white/90 list-none text-left w-full pl-6">
+                        <li>
+                             <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>Maya</span>
+                            </span>
+                        </li>
+                        <li>
+                             <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>3DS Max</span>
+                            </span>
+                        </li>
+                        <li>
+                             <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>3D Substance Painter</span>
+                            </span>
+                        </li>
+                        <li>
+                             <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>Blender</span>
+                            </span>
+                        </li>
                     </ul>
                 </div>
 
                 <!-- Art Softwares -->
-                <div class="software-block liquid-glass">
-                    <p class="font-bold text-lg text-secondary-pink mb-2 border-b border-white/30 w-full pb-1 text-center">Art Softwares</p>
-                    <ul class="text-sm text-white/90 list-disc text-left w-full pl-6">
-                        <li><b>Adobe Photoshop</b></li>
-                        <li><b>Adobe Illustrator</b></li>
+                <div class="software-block software-split-item liquid-glass">
+                    <p class="font-bold text-lg text-secondary-pink mb-2 border-b border-white/30 w-full pb-1 text-center">
+                        <span class="reveal-holder">
+                            <span class="reveal-block"></span>
+                            <span class="reveal-content">Art Softwares</span>
+                        </span>
+                    </p>
+                    <ul class="text-sm text-white/90 list-none text-left w-full pl-6">
+                        <li>
+                             <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>Adobe Photoshop</span>
+                            </span>
+                        </li>
+                        <li>
+                             <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>Adobe Illustrator</span>
+                            </span>
+                        </li>
                     </ul>
                 </div>
                 
                 <!-- SCM Softwares -->
-                <div class="software-block liquid-glass">
-                    <p class="font-bold text-lg text-secondary-pink mb-2 border-b border-white/30 w-full pb-1 text-center">SCM Softwares</p>
-                    <ul class="text-sm text-white/90 list-disc text-left w-full pl-6">
-                        <li><b>GitHub</b></li>
-                        <li><b>GitLab</b></li>
-                        <li><b>Unity Version Control</b></li>
+                <div class="software-block software-split-item liquid-glass">
+                    <p class="font-bold text-lg text-secondary-pink mb-2 border-b border-white/30 w-full pb-1 text-center">
+                        <span class="reveal-holder">
+                            <span class="reveal-block"></span>
+                            <span class="reveal-content">SCM Softwares</span>
+                        </span>
+                    </p>
+                    <ul class="text-sm text-white/90 list-none text-left w-full pl-6">
+                        <li>
+                             <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>GitHub</span>
+                            </span>
+                        </li>
+                        <li>
+                             <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>GitLab</span>
+                            </span>
+                        </li>
+                        <li>
+                             <span class="reveal-holder">
+                                <span class="reveal-block"></span>
+                                <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>Unity Version Control</span>
+                            </span>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -742,7 +1285,7 @@
             <!-- Right Column: Image Placeholder (Vertical, Rounded, Translucent) -->
             <div class="about-image-container liquid-glass">
                 <!-- Replaced text placeholder with the actual image tag -->
-                <img src="https://raw.githubusercontent.com/Charli4Li/Subham/31cc10382ecb93af9c17a3d3c6270e4ae7c37c6f/SFSS.png" 
+                <img src="https://raw.githubusercontent.com/Charli4Li/Subham/24fd575b3223a2082d86183bd6c725d98de1b2f5/sdfghjkl.jpeg" 
                      alt="Profile Picture" 
                      class="w-full h-full object-cover"
                      onerror="this.onerror=null; this.src='https://placehold.co/400x400/141414/FF9DE3?text=Profile+Image+Not+Found';">
@@ -1085,6 +1628,183 @@
                 chars.forEach(c => c.style.transform = 'translateY(0)');
             });
         }
+        
+        // --- PROJECT CARD SEQUENTIAL ANIMATION LOGIC ---
+        // Helper to wait
+        const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        const cardObserverOptions = {
+            threshold: 0.15, // Trigger when 15% of the card is visible
+            rootMargin: '0px 0px -10% 0px'
+        };
+
+        const cardObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateProjectCard(entry.target);
+                    cardObserver.unobserve(entry.target); // Only animate once
+                }
+            });
+        }, cardObserverOptions);
+
+        // Animate function for Project Cards
+        async function animateProjectCard(card) {
+            // 1. Expand the Card (Scale + Opacity)
+            card.classList.add('card-visible');
+            
+            // Wait for card expansion to mostly finish
+            await wait(600);
+
+            // 2. Select all reveal holders in sequence
+            const revealElements = card.querySelectorAll('.reveal-holder');
+            
+            // Loop through each text element and trigger animation
+            for (let i = 0; i < revealElements.length; i++) {
+                const el = revealElements[i];
+                el.classList.add('animate-reveal');
+                
+                // Stagger delay
+                await wait(200); 
+            }
+            
+            // 3. Finally, show the button
+            const btn = card.querySelector('.project-button-wrapper');
+            if(btn) {
+                btn.classList.add('btn-visible');
+            }
+            
+            // 4. Enable Interaction (Hover Effects)
+            await wait(500);
+            card.classList.add('interaction-ready');
+        }
+
+        // Start Observing Project Cards
+        const cards = document.querySelectorAll('.project-card');
+        cards.forEach(card => cardObserver.observe(card));
+
+
+        // --- TECH SKILLS & SOFTWARE ANIMATION LOGIC ---
+        const techObserverOptions = {
+            threshold: 0.2, 
+            rootMargin: '0px'
+        };
+
+        const techObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateTechBar(entry.target);
+                    techObserver.unobserve(entry.target); // Once per bar
+                }
+            });
+        }, techObserverOptions);
+
+        async function animateTechBar(bar) {
+            // 1. Expand from Circle to Full Bar
+            bar.classList.add('bar-expanded');
+
+            // Wait for expansion (1s duration in CSS)
+            await wait(800);
+
+            // 2. Trigger Text Reveals for all children in this bar
+            const revealElements = bar.querySelectorAll('.reveal-holder');
+            for (let i = 0; i < revealElements.length; i++) {
+                revealElements[i].classList.add('animate-reveal');
+                await wait(100); // Slight stagger inside the software block
+            }
+            
+            // 3. Enable Hover Interaction
+            await wait(600);
+            bar.classList.add('interaction-ready');
+        }
+        
+        // Start Observing Tech Bars & Software Grids
+        const techBars = document.querySelectorAll('.tech-bar-anim');
+        const softwareGrids = document.querySelectorAll('.software-expand-anim');
+        
+        // Tech Stagger
+        const skillSection = document.getElementById('skills');
+        const skillObserver = new IntersectionObserver((entries) => {
+            if(entries[0].isIntersecting) {
+                 triggerStagger(techBars, 300);
+                 skillObserver.disconnect();
+            }
+        }, { threshold: 0.1 });
+        if(skillSection) skillObserver.observe(skillSection);
+
+        // Software Stagger
+        const softwareSection = document.getElementById('softwares-anchor');
+         // Note: using parent container for simpler observer logic 
+        const softwareContainer = document.querySelector('.software-grid-container');
+        const softwareObserver = new IntersectionObserver((entries) => {
+             if(entries[0].isIntersecting) {
+                 animateSoftwareSplit();
+                 softwareObserver.disconnect();
+             }
+        }, { threshold: 0.1 });
+        if(softwareContainer) softwareObserver.observe(softwareContainer);
+
+
+        async function triggerStagger(elements, delay) {
+             for (let i = 0; i < elements.length; i++) {
+                 animateTechBar(elements[i]);
+                 await wait(delay); 
+             }
+        }
+
+        // --- SOFTWARE ANIMATION LOGIC (SPLIT FROM CENTER) ---
+        const softwareItems = document.querySelectorAll('.software-split-item');
+        
+        // New Logic: Trigger split animation simultaneously then text reveals
+        async function animateSoftwareSplit() {
+            // 1. Trigger Split
+            softwareItems.forEach(item => {
+                item.classList.add('split-active');
+                // Safety fallback: ensure visibility after transition
+                item.style.visibility = 'visible';
+            });
+
+            // Wait for Split Animation to settle (1.0s CSS transition)
+            await wait(1000);
+
+            // 2. Trigger Text Reveals sequentially
+            for (let i = 0; i < softwareItems.length; i++) {
+                const item = softwareItems[i];
+                const revealElements = item.querySelectorAll('.reveal-holder');
+                for (let j = 0; j < revealElements.length; j++) {
+                    revealElements[j].classList.add('animate-reveal');
+                    await wait(50); 
+                }
+                // Enable hover after text starts revealing
+                item.classList.add('interaction-ready');
+            }
+        }
+
+        // --- ABOUT ME INTERACTION LOGIC ---
+        // Manually add interaction-ready to About Me blocks when scrolled into view
+        const aboutSection = document.getElementById('about');
+        const aboutObserver = new IntersectionObserver((entries) => {
+            if(entries[0].isIntersecting) {
+                const aboutBlocks = document.querySelectorAll('.about-text-block, .about-image-container');
+                aboutBlocks.forEach(block => block.classList.add('interaction-ready'));
+                aboutObserver.disconnect();
+            }
+        }, { threshold: 0.3 });
+        if(aboutSection) aboutObserver.observe(aboutSection);
+
+        // --- MOUSE SPOTLIGHT LOGIC ---
+        const spotlightElements = document.querySelectorAll('.liquid-glass, .topbar, #contact-footer');
+        
+        spotlightElements.forEach(el => {
+            // Standard mouse tracking
+            el.addEventListener('mousemove', e => {
+                const rect = el.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                el.style.setProperty('--mouse-x', `${x}px`);
+                el.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
     </script>
 </body>
 </html>
