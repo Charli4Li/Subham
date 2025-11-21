@@ -20,6 +20,11 @@
         /* Custom styles for the animation canvas and glowing text */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         
+        /* GLOBAL CURSOR REMOVAL */
+        * {
+            cursor: none !important; /* Hides default cursor everywhere */
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             overflow-x: hidden; 
@@ -34,6 +39,78 @@
             z-index: 1; /* Lowest index */
             pointer-events: none; /* Let clicks pass through */
             background-color: #000000; /* Pitch black background */
+        }
+
+        /* --- CUSTOM GLASS CURSOR --- */
+        #custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            /* Reverted/Adjusted Size: 15px */
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            z-index: 9999; /* Top of everything */
+            pointer-events: none; /* Pass clicks through */
+            transform: translate(-50%, -50%);
+            
+            /* Glass Material Base */
+            background-color: rgba(255, 255, 255, 0.15); 
+            backdrop-filter: blur(2px); 
+            -webkit-backdrop-filter: blur(2px);
+            border: 1px solid rgba(255, 157, 227, 0.6); 
+            
+            /* Chromatic Aberration + Glow */
+            box-shadow: 
+                0 0 10px rgba(255, 157, 227, 0.5), 
+                -1px 0 2px rgba(0, 255, 255, 0.4), 
+                1px 0 2px rgba(255, 0, 255, 0.4),  
+                inset 0 0 4px rgba(255, 255, 255, 0.4);
+            
+            /* Smooth State Transitions */
+            transition: 
+                transform 0.05s ease-out, 
+                width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                height 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                background-color 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
+                
+            /* Initially hidden */
+            opacity: 0;
+        }
+
+        /* Active State (Hovering Specific Clickables) */
+        #custom-cursor.active {
+            /* Smaller Expanded Radius: 25px (Reduced from 30px) */
+            width: 25px;
+            height: 25px;
+            
+            /* Brighter White Tint */
+            background-color: rgba(255, 255, 255, 0.25); 
+            border-color: rgba(255, 255, 255, 0.9);
+            
+            /* Intensify Glow */
+            box-shadow: 
+                0 0 15px rgba(255, 255, 255, 0.6), 
+                0 0 30px rgba(255, 157, 227, 0.6), 
+                -2px 0 5px rgba(0, 255, 255, 0.5),  
+                2px 0 5px rgba(255, 0, 255, 0.5),  
+                inset 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Add inner distortion to cursor */
+        #custom-cursor::before {
+            content: "";
+            position: absolute;
+            top: 1px; left: 1px; right: 1px; bottom: 1px;
+            border-radius: 50%;
+            background: radial-gradient(
+                circle at 30% 30%, 
+                rgba(255, 255, 255, 0.6), 
+                transparent 60%
+            );
+            opacity: 0.6;
         }
 
         /* --- LIQUID GLASS STYLE (High Transparency) --- */
@@ -74,8 +151,8 @@
             /* Distortion Halo: Cyan/Magenta split */
             background: radial-gradient(
                 250px circle at var(--mouse-x) var(--mouse-y), 
-                rgba(0, 255, 255, 0.15),  
-                rgba(255, 0, 255, 0.15) 30%, 
+                rgba(0, 255, 255, 0.1),  
+                rgba(255, 0, 255, 0.1) 30%, 
                 transparent 60%
             );
             opacity: 0; 
@@ -95,11 +172,12 @@
             border-radius: inherit;
             
             /* Main Spotlight (Holographic): White -> Pink -> Blue */
+            /* Low opacity for subtlety */
             background: radial-gradient(
                 180px circle at var(--mouse-x) var(--mouse-y), 
-                rgba(255, 255, 255, 0.2) 0%,      /* White Core */
-                rgba(255, 157, 227, 0.15) 40%,    /* Pink Mid */
-                rgba(0, 255, 255, 0.1) 70%,       /* Blue Edge */
+                rgba(255, 255, 255, 0.15) 0%,      /* White Core */
+                rgba(255, 157, 227, 0.1) 40%,     /* Pink Mid */
+                rgba(0, 255, 255, 0.08) 70%,      /* Blue Edge */
                 transparent 100%
             );
             
@@ -150,9 +228,9 @@
                 background-color 0.7s ease-out;
         }
 
-        /* Hover Glow Effect for Job Title Box */
+        /* Hover Glow Effect for Job Title Box (Background Only) */
         .job-title-box:hover {
-            transform: scale(1.05);
+            /* transform: scale(1.05);  Removed scale on container to allow text pop */
             background-color: rgba(30, 30, 30, 0.4); 
             /* Enhanced White/Pink Glow */
             box-shadow: 
@@ -160,6 +238,33 @@
                  6px 0 15px rgba(255, 0, 255, 0.45), 
                  0 0 40px rgba(255, 255, 255, 0.4),
                  inset 0 0 25px rgba(255, 255, 255, 0.2);
+        }
+        
+        /* --- INDIVIDUAL JOB ITEM ANIMATION (UPDATED) --- */
+        .job-item {
+            display: inline-block;
+            /* Smoother, slower pop-out transition */
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+            cursor: none; /* Custom cursor used */
+        }
+        
+        .job-item:hover {
+            color: #FFFFFF;
+            /* Glass Distortion Glow on Text */
+            text-shadow: 
+                -2px 0 8px rgba(0, 255, 255, 0.6),  /* Cyan shift */
+                 2px 0 8px rgba(255, 0, 255, 0.6),  /* Magenta shift */
+                 0 0 20px rgba(255, 255, 255, 0.8), /* White core */
+                 0 0 40px rgba(255, 157, 227, 0.6); /* Pink outer */
+            
+            /* Less pop (1.05 instead of 1.15), smoother */
+            transform: scale(1.05) translateY(-1px); 
+        }
+
+        .separator {
+            display: inline-block;
+            margin: 0 0.5rem;
+            opacity: 0.6;
         }
         
         @media (min-width: 768px) {
@@ -196,22 +301,106 @@
                 inset 0 0 30px rgba(255, 255, 255, 0.08);
         }
 
-        /* --- Translucent Glass Name Text (UPDATED) --- */
+        /* --- Translucent Liquid Glass Name Text (UPDATED) --- */
         .stained-glass-text {
-            /* Highly Translucent Fill to act like Glass */
-            color: rgba(255, 255, 255, 0.08); 
-            
-            /* No Stroke - Pure Material */
-            -webkit-text-stroke: 0px transparent;
-            
-            /* Chromatic Aberration Shadow + Glass Edge Glow */
-            /* Cyan Left, Magenta Right, Soft White Backlight */
-            text-shadow: 
-                -2px 0 2px rgba(0, 255, 255, 0.3),  
-                 2px 0 2px rgba(255, 0, 255, 0.3),
-                 0 0 15px rgba(255, 255, 255, 0.2);
-            
+            /* Removed fill/stroke/shadow from parent. Now handled by children .name-char */
+            position: relative;
+            z-index: 20;
             transition: all 0.5s ease;
+        }
+        
+        /* --- Name Letter Animation Styles --- */
+        .name-char {
+            display: inline-block;
+            cursor: default;
+            position: relative; /* Needed for pseudo-element positioning */
+
+            /* Inside: White Tint (Frosted Glass) - Increased opacity for more tint */
+            color: rgba(255, 255, 255, 0.5); 
+            
+            /* Glass Edge Stroke - Crisp White/Pink - Increased opacity */
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.6);
+
+            /* BLUR the fill and stroke of the letter itself for volume - Reduced blur */
+            filter: blur(0.8px);
+
+            /* Smooth transitions including filter */
+            transition: transform 1.5s ease-out, color 0.5s ease, -webkit-text-stroke 0.5s ease, filter 0.5s ease;
+            vertical-align: middle;
+        }
+
+        /* NEW: Pseudo-element for the DEEP GLASS BLUR behind the letters */
+        .name-char::before {
+            content: attr(data-char);
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: -2; /* Place deep behind everything */
+            
+            /* No fill, just a thick, translucent stroke to simulate glass thickness */
+            color: transparent;
+            /* INCREASED: Thick stroke for more blur volume */
+            -webkit-text-stroke: 8px rgba(255, 157, 227, 0.3); 
+
+            /* INCREASED: Heavier blur for depth */
+            filter: blur(12px);
+            
+            pointer-events: none;
+            transition: all 0.5s ease;
+        }
+
+        /* Pseudo-element for the SHARP outer glow */
+        .name-char::after {
+            content: attr(data-char); /* Duplicates the character */
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: -1; /* Place behind the blurred text */
+            
+            /* No fill or stroke for this layer */
+            color: transparent;
+            -webkit-text-stroke: 0;
+            
+            /* The sharp, unblurred outer glow with chromatic distortion */
+            text-shadow: 
+                -2px 0 10px rgba(0, 255, 255, 0.35), 
+                 2px 0 10px rgba(255, 0, 255, 0.35), 
+                 0 0 20px rgba(255, 255, 255, 0.3);
+            
+            /* Ensure no blur is inherited */
+            filter: none;
+            pointer-events: none;
+            transition: text-shadow 0.5s ease;
+        }
+
+        .name-char.lifted {
+            transform: translateY(-25px);
+            transition: transform 0.1s ease-out;
+        }
+        
+        /* Hover State for Name */
+        .name-char:hover {
+             /* Brighten the blurred fill and stroke on hover (White Hot) */
+             color: rgba(255, 255, 255, 1.0); 
+             -webkit-text-stroke: 1px rgba(255, 255, 255, 1);
+             /* Focus effect: Reduce blur slightly */
+             filter: blur(0.4px);
+        }
+
+        /* Hover state for the deep blur layer */
+        .name-char:hover::before {
+             /* Brighten and widen the deep blur on hover */
+             -webkit-text-stroke: 10px rgba(255, 255, 255, 0.5);
+             filter: blur(15px);
+        }
+
+        /* Hover state for the sharp glow layer */
+        .name-char:hover::after {
+             /* Intensify the sharp glow on hover */
+             text-shadow: 
+                0 0 20px rgba(255, 255, 255, 0.8),
+                0 0 40px rgba(255, 157, 227, 0.8),
+                0 0 60px rgba(255, 255, 255, 0.5);
         }
 
         /* Top Bar Styling */
@@ -257,6 +446,10 @@
                  2px 0 5px rgba(255, 0, 255, 0.3),  
                  0 0 10px rgba(255, 157, 227, 0.3),
                  inset 0 0 8px rgba(255, 255, 255, 0.15);
+             
+             /* For trail clipping */
+             position: relative;
+             overflow: hidden;
         }
 
         .top-nav-button:hover {
@@ -279,29 +472,6 @@
             height: 100vh;
             position: relative;
             z-index: 10;
-        }
-
-        /* --- Name Letter Animation Styles --- */
-        .name-char {
-            display: inline-block;
-            cursor: default;
-            /* Smooth transitions for color/shadow changes */
-            transition: transform 1.5s ease-out, color 0.5s ease, text-shadow 0.5s ease;
-            vertical-align: middle;
-        }
-
-        .name-char.lifted {
-            transform: translateY(-25px);
-            transition: transform 0.1s ease-out;
-        }
-        
-        /* Interactive Brightness for Letters (On Hover) */
-        .name-char:hover {
-            color: rgba(255, 255, 255, 0.8); /* Brighten up on hover */
-            text-shadow: 
-                -3px 0 5px rgba(0, 255, 255, 0.6),
-                 3px 0 5px rgba(255, 0, 255, 0.6),
-                 0 0 30px rgba(255, 255, 255, 0.8);
         }
 
         /* Portfolio Sections */
@@ -445,6 +615,10 @@
                  2px 0 5px rgba(255, 0, 255, 0.3),  
                  0 0 15px rgba(255, 157, 227, 0.4),
                  inset 0 0 10px rgba(255, 255, 255, 0.1);
+            
+            /* For trail clipping */
+            position: relative;
+            overflow: hidden;
         }
         
         .project-button:hover {
@@ -498,6 +672,10 @@
                 width 1s cubic-bezier(0.22, 1, 0.36, 1), 
                 opacity 0.5s ease, 
                 border-radius 0.5s ease;
+                
+            /* For trail clipping */
+            position: relative;
+            overflow: hidden;
         }
         
         /* Initial state for Skills Animation */
@@ -536,6 +714,10 @@
                 box-shadow 0.7s ease-out, 
                 background-color 0.7s ease-out,
                 opacity 0.8s ease;
+            
+            /* For trail clipping */
+            position: relative;
+            overflow: hidden;
         }
 
         /* Initial State: Clustered in the Middle 
@@ -662,7 +844,6 @@
             align-items: center;
             justify-content: center;
             opacity: 0; 
-            visibility: hidden; 
             transform: translateY(100%); 
             box-shadow: 
                 -2px 0 6px rgba(0, 255, 255, 0.2),  
@@ -680,7 +861,8 @@
         
         #scrollToTopBtn.hidden-transition {
             opacity: 0;
-            transform: translateY(100%); 
+            transform: translateY(150%); /* Move further down */
+            pointer-events: none; /* Prevent clicks while hiding */
         }
 
         #scrollToTopBtn:hover {
@@ -720,6 +902,7 @@
                  inset 0 10px 20px rgba(255, 255, 255, 0.05);
             /* Add overflow hidden to clip the spotlight */
             overflow: hidden; 
+            position: relative;
         }
         
         #contact-footer h3 {
@@ -796,6 +979,9 @@
     <!-- Interactive 3D Button Canvas (Z-Index 1) -->
     <div id="canvas-container"></div>
 
+    <!-- NEW: Custom Glass Cursor -->
+    <div id="custom-cursor"></div>
+
     <!-- Top Navigation Bar (Now scrolls off-screen) -->
     <div class="topbar" id="topbar-nav">
         <nav id="top-nav" class="max-w-6xl mx-auto flex justify-center space-x-4 p-4">
@@ -818,7 +1004,7 @@
             <!-- Job Title Glass Box -->
             <div class="job-title-box mx-auto" id="job-title-container">
                 <p class="text-xs sm:text-sm md:text-2xl font-light tracking-widest uppercase text-secondary-pink text-center whitespace-normal md:whitespace-nowrap" style="margin: 0;">
-                    LEVEL DESIGNER | 3D ARTIST | TECHNICAL ARTIST
+                    <span class="job-item">LEVEL DESIGNER</span> <span class="separator">|</span> <span class="job-item">3D ARTIST</span> <span class="separator">|</span> <span class="job-item">TECHNICAL ARTIST</span>
                 </p>
             </div>
         </header>
@@ -1607,8 +1793,9 @@
         if (nameTitle) {
             const text = nameTitle.innerText;
             nameTitle.innerHTML = text.split('').map(char => {
-                if(char === ' ') return '<span class="name-char" style="display:inline-block; width:0.3em;">&nbsp;</span>';
-                return `<span class="name-char">${char}</span>`;
+                // Add data-char attribute to each span
+                if(char === ' ') return '<span class="name-char" data-char=" " style="display:inline-block; width:0.3em;">&nbsp;</span>';
+                return `<span class="name-char" data-char="${char}">${char}</span>`;
             }).join('');
             const chars = Array.from(nameTitle.querySelectorAll('.name-char'));
             chars.forEach((char, index) => {
@@ -1717,9 +1904,8 @@
             bar.classList.add('interaction-ready');
         }
         
-        // Start Observing Tech Bars & Software Grids
+        // Start Observing Tech Bars
         const techBars = document.querySelectorAll('.tech-bar-anim');
-        const softwareGrids = document.querySelectorAll('.software-expand-anim');
         
         // Tech Stagger
         const skillSection = document.getElementById('skills');
@@ -1731,28 +1917,9 @@
         }, { threshold: 0.1 });
         if(skillSection) skillObserver.observe(skillSection);
 
-        // Software Stagger
-        const softwareSection = document.getElementById('softwares-anchor');
-         // Note: using parent container for simpler observer logic 
-        const softwareContainer = document.querySelector('.software-grid-container');
-        const softwareObserver = new IntersectionObserver((entries) => {
-             if(entries[0].isIntersecting) {
-                 animateSoftwareSplit();
-                 softwareObserver.disconnect();
-             }
-        }, { threshold: 0.1 });
-        if(softwareContainer) softwareObserver.observe(softwareContainer);
-
-
-        async function triggerStagger(elements, delay) {
-             for (let i = 0; i < elements.length; i++) {
-                 animateTechBar(elements[i]);
-                 await wait(delay); 
-             }
-        }
-
         // --- SOFTWARE ANIMATION LOGIC (SPLIT FROM CENTER) ---
         const softwareItems = document.querySelectorAll('.software-split-item');
+        const softwareSection = document.getElementById('softwares-anchor');
         
         // New Logic: Trigger split animation simultaneously then text reveals
         async function animateSoftwareSplit() {
@@ -1779,6 +1946,24 @@
             }
         }
 
+        const softwareObserver = new IntersectionObserver((entries) => {
+             if(entries[0].isIntersecting) {
+                 animateSoftwareSplit();
+                 softwareObserver.disconnect();
+             }
+        }, { threshold: 0.1 });
+        
+        const softwareContainer = document.querySelector('.software-grid-container');
+        if(softwareContainer) softwareObserver.observe(softwareContainer);
+
+
+        async function triggerStagger(elements, delay) {
+             for (let i = 0; i < elements.length; i++) {
+                 animateTechBar(elements[i]);
+                 await wait(delay); 
+             }
+        }
+
         // --- ABOUT ME INTERACTION LOGIC ---
         // Manually add interaction-ready to About Me blocks when scrolled into view
         const aboutSection = document.getElementById('about');
@@ -1791,18 +1976,40 @@
         }, { threshold: 0.3 });
         if(aboutSection) aboutObserver.observe(aboutSection);
 
-        // --- MOUSE SPOTLIGHT LOGIC ---
-        const spotlightElements = document.querySelectorAll('.liquid-glass, .topbar, #contact-footer');
-        
-        spotlightElements.forEach(el => {
-            // Standard mouse tracking
-            el.addEventListener('mousemove', e => {
-                const rect = el.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                el.style.setProperty('--mouse-x', `${x}px`);
-                el.style.setProperty('--mouse-y', `${y}px`);
-            });
+        // --- CUSTOM CURSOR LOGIC ---
+        const cursor = document.getElementById('custom-cursor');
+
+        // Move cursor
+        window.addEventListener('mousemove', e => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            cursor.style.opacity = 1; // Ensure it's visible when moving
+        });
+
+        // Hover Detection Logic
+        // List of selectors that should trigger the active state
+        // NOTE: Only specific interactive elements trigger the "Active" (Big glow) state now.
+        const clickableSelectors = '.top-nav-button, #scrollToTopBtn, .project-button, #contact-footer a, #contact-footer i';
+
+        document.body.addEventListener('mouseover', e => {
+            // Check if the hovered element (or its parent) matches our clickable list
+            if (e.target.closest(clickableSelectors)) {
+                cursor.classList.add('active');
+            }
+        });
+
+        document.body.addEventListener('mouseout', e => {
+            if (e.target.closest(clickableSelectors)) {
+                cursor.classList.remove('active');
+            }
+        });
+
+        // Hide cursor when leaving window
+        document.addEventListener('mouseleave', () => {
+             cursor.style.opacity = '0';
+        });
+         document.addEventListener('mouseenter', () => {
+             cursor.style.opacity = '1';
         });
 
     </script>
