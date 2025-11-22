@@ -28,6 +28,8 @@
         body {
             font-family: 'Inter', sans-serif;
             overflow-x: hidden; 
+            color: var(--primary-white);
+            background-color: var(--accent-black);
         }
         
         #canvas-container {
@@ -46,7 +48,7 @@
             position: fixed;
             top: 0;
             left: 0;
-            /* Reverted/Adjusted Size: 15px */
+            /* Size: 15px */
             width: 15px;
             height: 15px;
             border-radius: 50%;
@@ -60,7 +62,7 @@
             -webkit-backdrop-filter: blur(2px);
             border: 1px solid rgba(255, 157, 227, 0.6); 
             
-            /* Chromatic Aberration + Glow */
+            /* Chromatic Aberration + Glow (Restored to original Pink/Cyan mix) */
             box-shadow: 
                 0 0 10px rgba(255, 157, 227, 0.5), 
                 -1px 0 2px rgba(0, 255, 255, 0.4), 
@@ -82,7 +84,7 @@
 
         /* Active State (Hovering Specific Clickables) */
         #custom-cursor.active {
-            /* Smaller Expanded Radius: 25px (Reduced from 30px) */
+            /* Expanded Radius: 25px */
             width: 25px;
             height: 25px;
             
@@ -240,10 +242,9 @@
                  inset 0 0 25px rgba(255, 255, 255, 0.2);
         }
         
-        /* --- INDIVIDUAL JOB ITEM ANIMATION (UPDATED) --- */
+        /* --- INDIVIDUAL JOB ITEM ANIMATION --- */
         .job-item {
             display: inline-block;
-            /* Smoother, slower pop-out transition */
             transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
             cursor: none; /* Custom cursor used */
         }
@@ -318,14 +319,19 @@
             /* Inside: White Tint (Frosted Glass) - Increased opacity for more tint */
             color: rgba(255, 255, 255, 0.5); 
             
-            /* Glass Edge Stroke - Crisp White/Pink - Increased opacity */
-            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.6);
+            /* REPLACED TEXT STROKE WITH SHADOW FOR ANDROID FIX */
+            /* Simulates 1px white/pink stroke without using -webkit-text-stroke */
+            text-shadow: 
+                1px 0 0 rgba(255, 255, 255, 0.4), 
+                -1px 0 0 rgba(255, 255, 255, 0.4), 
+                0 1px 0 rgba(255, 255, 255, 0.4), 
+                0 -1px 0 rgba(255, 255, 255, 0.4);
 
-            /* BLUR the fill and stroke of the letter itself for volume - Reduced blur */
+            /* BLUR the fill for volume */
             filter: blur(0.8px);
 
-            /* Smooth transitions including filter */
-            transition: transform 1.5s ease-out, color 0.5s ease, -webkit-text-stroke 0.5s ease, filter 0.5s ease;
+            /* Smooth transitions */
+            transition: transform 1.5s ease-out, color 0.5s ease, text-shadow 0.5s ease, filter 0.5s ease;
             vertical-align: middle;
         }
 
@@ -337,10 +343,9 @@
             top: 0;
             z-index: -2; /* Place deep behind everything */
             
-            /* No fill, just a thick, translucent stroke to simulate glass thickness */
+            /* No fill, just a thick shadow to simulate glass thickness instead of stroke */
             color: transparent;
-            /* INCREASED: Thick stroke for more blur volume */
-            -webkit-text-stroke: 8px rgba(255, 157, 227, 0.3); 
+            text-shadow: 0 0 8px rgba(255, 157, 227, 0.5);
 
             /* INCREASED: Heavier blur for depth */
             filter: blur(12px);
@@ -357,9 +362,8 @@
             top: 0;
             z-index: -1; /* Place behind the blurred text */
             
-            /* No fill or stroke for this layer */
+            /* No fill */
             color: transparent;
-            -webkit-text-stroke: 0;
             
             /* The sharp, unblurred outer glow with chromatic distortion */
             text-shadow: 
@@ -380,17 +384,23 @@
         
         /* Hover State for Name */
         .name-char:hover {
-             /* Brighten the blurred fill and stroke on hover (White Hot) */
+             /* Brighten the blurred fill on hover */
              color: rgba(255, 255, 255, 1.0); 
-             -webkit-text-stroke: 1px rgba(255, 255, 255, 1);
+             
+             /* Brighten the simulated stroke */
+             text-shadow: 
+                1px 0 0 rgba(255, 255, 255, 0.9), 
+                -1px 0 0 rgba(255, 255, 255, 0.9), 
+                0 1px 0 rgba(255, 255, 255, 0.9), 
+                0 -1px 0 rgba(255, 255, 255, 0.9);
+                
              /* Focus effect: Reduce blur slightly */
              filter: blur(0.4px);
         }
 
         /* Hover state for the deep blur layer */
         .name-char:hover::before {
-             /* Brighten and widen the deep blur on hover */
-             -webkit-text-stroke: 10px rgba(255, 255, 255, 0.5);
+             text-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
              filter: blur(15px);
         }
 
@@ -551,14 +561,20 @@
             display: block;
         }
 
+        /* --- REVERTED TO SOLID WHITE BLOCK --- */
         .reveal-block {
             position: absolute;
             top: 0;
             left: 0;
             height: 100%;
             width: 0%;
-            background-color: var(--primary-white);
             z-index: 10;
+            
+            /* Solid White - No Glass */
+            background-color: #FFFFFF;
+            box-shadow: none;
+            border: none;
+            border-radius: 0;
         }
 
         /* Animation Classes */
@@ -844,6 +860,7 @@
             align-items: center;
             justify-content: center;
             opacity: 0; 
+            visibility: hidden; 
             transform: translateY(100%); 
             box-shadow: 
                 -2px 0 6px rgba(0, 255, 255, 0.2),  
@@ -861,8 +878,7 @@
         
         #scrollToTopBtn.hidden-transition {
             opacity: 0;
-            transform: translateY(150%); /* Move further down */
-            pointer-events: none; /* Prevent clicks while hiding */
+            transform: translateY(100%); 
         }
 
         #scrollToTopBtn:hover {
@@ -1695,8 +1711,18 @@
                         mesh.material.opacity += (targetOpacity - mesh.material.opacity) * 0.1;
                     } else {
                         // Fade Out towards star state
+                        // SLOWER PULSE for dots
+                        // Reduced multiplier from 2.0 to 0.5 in sin wave
+                        const pulse = (Math.sin(timer * 0.5 + u.timerOffset) + 1) / 2;
+                        const starOpacity = pulse * 0.4; 
+                        
                         mesh.material.opacity -= 0.03;
-                        if (mesh.material.opacity < 0) mesh.material.opacity = 0;
+                        if (mesh.material.opacity < 0.01) {
+                            mesh.material.opacity = starOpacity;
+                            mesh.material.color.set(whiteColor); 
+                            const targetScale = 0.8;
+                            mesh.scale.setScalar(targetScale);
+                        }
                     }
                     
                     // 4. State Transition (Color & Size)
@@ -1705,18 +1731,6 @@
                         mesh.material.color.lerp(pinkColor, 0.1);
                         const targetScale = 1.5;
                         mesh.scale.setScalar(mesh.scale.x + (targetScale - mesh.scale.x) * 0.1);
-                    } else {
-                        // Idle State: White, smaller, pulsing star
-                        // Star Pulse logic override
-                        const pulse = (Math.sin(timer * 2.0 + u.timerOffset) + 1) / 2;
-                        const starOpacity = pulse * 0.4; // Dim stars
-                        
-                        if(mesh.material.opacity <= 0.01) {
-                             mesh.material.opacity = starOpacity;
-                             mesh.material.color.set(whiteColor); // Instant switch for stars
-                             const targetScale = 0.8;
-                             mesh.scale.setScalar(targetScale);
-                        }
                     }
                 });
 
