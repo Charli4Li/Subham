@@ -48,7 +48,7 @@
             position: fixed;
             top: 0;
             left: 0;
-            /* Size: 15px */
+            /* Reverted/Adjusted Size: 15px */
             width: 15px;
             height: 15px;
             border-radius: 50%;
@@ -62,7 +62,7 @@
             -webkit-backdrop-filter: blur(2px);
             border: 1px solid rgba(255, 157, 227, 0.6); 
             
-            /* Chromatic Aberration + Glow (Restored to original Pink/Cyan mix) */
+            /* Chromatic Aberration + Glow */
             box-shadow: 
                 0 0 10px rgba(255, 157, 227, 0.5), 
                 -1px 0 2px rgba(0, 255, 255, 0.4), 
@@ -84,7 +84,7 @@
 
         /* Active State (Hovering Specific Clickables) */
         #custom-cursor.active {
-            /* Expanded Radius: 25px */
+            /* Smaller Expanded Radius: 25px (Reduced from 30px) */
             width: 25px;
             height: 25px;
             
@@ -205,17 +205,21 @@
         /* --- Job Title Glass Box --- */
         .job-title-box {
             display: inline-block;
-            padding: 0.75rem 1.5rem;
+            /* Initial small circle state */
+            width: 3.5rem; 
+            height: auto;
+            min-height: 3.5rem;
+            padding: 0; 
             margin-top: 1.5rem;
+            
             background-color: rgba(20, 20, 20, 0.2); 
             backdrop-filter: blur(6px); 
             -webkit-backdrop-filter: blur(6px);
             border: 1px solid rgba(255, 157, 227, 0.5);
             border-radius: 9999px; /* Fully Rounded */
             
-            /* Ensure it fits on mobile */
-            max-width: 90vw;
-            width: fit-content;
+            overflow: hidden; /* Required for circular expansion */
+            opacity: 0;
             
             box-shadow: 
                 -4px 4px 8px rgba(0, 255, 255, 0.2),  
@@ -223,16 +227,28 @@
                  0 0 25px rgba(255, 157, 227, 0.15),
                  inset 0 0 30px rgba(255, 255, 255, 0.08);
 
-            /* Add Transition for Hover Effect */
+            /* Transition for horizontal expansion */
             transition: 
+                width 1s cubic-bezier(0.22, 1, 0.36, 1),
+                padding 0.5s ease,
+                border-radius 0.5s ease,
+                opacity 0.5s ease,
                 transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
                 box-shadow 0.7s ease-out, 
                 background-color 0.7s ease-out;
         }
 
+        .job-title-box.expanded {
+            /* Final State: Wide Pill */
+            width: 100%;
+            max-width: fit-content;
+            border-radius: 9999px;
+            opacity: 1;
+            padding: 0.75rem 1.5rem;
+        }
+
         /* Hover Glow Effect for Job Title Box (Background Only) */
         .job-title-box:hover {
-            /* transform: scale(1.05);  Removed scale on container to allow text pop */
             background-color: rgba(30, 30, 30, 0.4); 
             /* Enhanced White/Pink Glow */
             box-shadow: 
@@ -258,7 +274,6 @@
                  0 0 20px rgba(255, 255, 255, 0.8), /* White core */
                  0 0 40px rgba(255, 157, 227, 0.6); /* Pink outer */
             
-            /* Less pop (1.05 instead of 1.15), smoother */
             transform: scale(1.05) translateY(-1px); 
         }
 
@@ -302,36 +317,49 @@
                 inset 0 0 30px rgba(255, 255, 255, 0.08);
         }
 
-        /* --- Translucent Liquid Glass Name Text (UPDATED) --- */
+        /* --- Translucent Liquid Glass Name Text --- */
         .stained-glass-text {
-            /* Removed fill/stroke/shadow from parent. Now handled by children .name-char */
             position: relative;
             z-index: 20;
             transition: all 0.5s ease;
+            display: inline-block; 
+            white-space: nowrap;
         }
         
+        .name-wrapper {
+            display: inline-block;
+            position: relative;
+            letter-spacing: -0.4em; 
+            filter: blur(10px);
+            opacity: 0;
+            transition: 
+                letter-spacing 1.5s cubic-bezier(0.22, 1, 0.36, 1),
+                filter 1s ease-out,
+                opacity 1s ease-out;
+        }
+        
+        .name-wrapper.split {
+            letter-spacing: normal;
+            filter: blur(0);
+            opacity: 1;
+        }
+
         /* --- Name Letter Animation Styles --- */
         .name-char {
             display: inline-block;
             cursor: default;
             position: relative; /* Needed for pseudo-element positioning */
 
-            /* Inside: White Tint (Frosted Glass) - Increased opacity for more tint */
-            color: rgba(255, 255, 255, 0.5); 
+            /* Inside: White Tint (Frosted Glass) */
+            color: rgba(255, 255, 255, 0.25); 
             
-            /* REPLACED TEXT STROKE WITH SHADOW FOR ANDROID FIX */
-            /* Simulates 1px white/pink stroke without using -webkit-text-stroke */
-            text-shadow: 
-                1px 0 0 rgba(255, 255, 255, 0.4), 
-                -1px 0 0 rgba(255, 255, 255, 0.4), 
-                0 1px 0 rgba(255, 255, 255, 0.4), 
-                0 -1px 0 rgba(255, 255, 255, 0.4);
+            /* Glass Edge Stroke */
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5);
 
-            /* BLUR the fill for volume */
+            /* BLUR the fill */
             filter: blur(0.8px);
 
-            /* Smooth transitions */
-            transition: transform 1.5s ease-out, color 0.5s ease, text-shadow 0.5s ease, filter 0.5s ease;
+            transition: transform 1.5s ease-out, color 0.5s ease, -webkit-text-stroke 0.5s ease, filter 0.5s ease;
             vertical-align: middle;
         }
 
@@ -343,11 +371,11 @@
             top: 0;
             z-index: -2; /* Place deep behind everything */
             
-            /* No fill, just a thick shadow to simulate glass thickness instead of stroke */
             color: transparent;
-            text-shadow: 0 0 8px rgba(255, 157, 227, 0.5);
+            /* Thick stroke for more blur volume */
+            -webkit-text-stroke: 8px rgba(255, 157, 227, 0.3); 
 
-            /* INCREASED: Heavier blur for depth */
+            /* Heavier blur for depth */
             filter: blur(12px);
             
             pointer-events: none;
@@ -356,14 +384,14 @@
 
         /* Pseudo-element for the SHARP outer glow */
         .name-char::after {
-            content: attr(data-char); /* Duplicates the character */
+            content: attr(data-char); 
             position: absolute;
             left: 0;
             top: 0;
-            z-index: -1; /* Place behind the blurred text */
+            z-index: -1; 
             
-            /* No fill */
             color: transparent;
+            -webkit-text-stroke: 0;
             
             /* The sharp, unblurred outer glow with chromatic distortion */
             text-shadow: 
@@ -371,7 +399,6 @@
                  2px 0 10px rgba(255, 0, 255, 0.35), 
                  0 0 20px rgba(255, 255, 255, 0.3);
             
-            /* Ensure no blur is inherited */
             filter: none;
             pointer-events: none;
             transition: text-shadow 0.5s ease;
@@ -382,38 +409,26 @@
             transition: transform 0.1s ease-out;
         }
         
-        /* Hover State for Name */
-        .name-char:hover {
-             /* Brighten the blurred fill on hover */
+        /* Hover State for Name - ONLY ACTIVE WHEN PARENT HAS .name-interactive */
+        .name-interactive .name-char:hover {
              color: rgba(255, 255, 255, 1.0); 
-             
-             /* Brighten the simulated stroke */
-             text-shadow: 
-                1px 0 0 rgba(255, 255, 255, 0.9), 
-                -1px 0 0 rgba(255, 255, 255, 0.9), 
-                0 1px 0 rgba(255, 255, 255, 0.9), 
-                0 -1px 0 rgba(255, 255, 255, 0.9);
-                
-             /* Focus effect: Reduce blur slightly */
+             -webkit-text-stroke: 1px rgba(255, 255, 255, 1);
              filter: blur(0.4px);
         }
 
-        /* Hover state for the deep blur layer */
-        .name-char:hover::before {
-             text-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+        .name-interactive .name-char:hover::before {
+             -webkit-text-stroke: 10px rgba(255, 255, 255, 0.5);
              filter: blur(15px);
         }
 
-        /* Hover state for the sharp glow layer */
-        .name-char:hover::after {
-             /* Intensify the sharp glow on hover */
+        .name-interactive .name-char:hover::after {
              text-shadow: 
                 0 0 20px rgba(255, 255, 255, 0.8),
                 0 0 40px rgba(255, 157, 227, 0.8),
                 0 0 60px rgba(255, 255, 255, 0.5);
         }
 
-        /* Top Bar Styling */
+        /* Top Bar Styling (Curtain Drop) */
         .topbar {
             position: relative;
             top: 0;
@@ -430,9 +445,16 @@
                  3px 4px 8px rgba(255, 0, 255, 0.2),  
                  0 4px 20px rgba(255, 157, 227, 0.3),
                  inset 0 -10px 25px rgba(255, 255, 255, 0.08);
-                 
-            /* Necessary for spotlight positioning */
             overflow: hidden; 
+            
+            /* Start Position: Fully above screen */
+            transform: translateY(-100%);
+            opacity: 1; 
+            transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        
+        .topbar.slide-in {
+            transform: translateY(0);
         }
 
         /* --- TOP BAR BUTTONS WITH EDGE DISTORTION --- */
@@ -465,10 +487,10 @@
         .top-nav-button:hover {
             transform: scale(1.05); 
             background-color: rgba(255, 255, 255, 0.1); /* Lighten bg */
-            color: var(--primary-white); 
+            color: var(--primary-white); /* White Text on Hover */
             border-color: rgba(255, 255, 255, 0.8);
             
-            /* Strong White Glow + Intense Distortion on Hover */
+            /* Strong White Glow + Distortion */
             box-shadow: 
                 -3px 0 10px rgba(0, 255, 255, 0.5),
                  3px 0 10px rgba(255, 0, 255, 0.5),
@@ -561,7 +583,7 @@
             display: block;
         }
 
-        /* --- REVERTED TO SOLID WHITE BLOCK --- */
+        /* Solid White Reveal Block */
         .reveal-block {
             position: absolute;
             top: 0;
@@ -569,8 +591,6 @@
             height: 100%;
             width: 0%;
             z-index: 10;
-            
-            /* Solid White - No Glass */
             background-color: #FFFFFF;
             box-shadow: none;
             border: none;
@@ -878,7 +898,8 @@
         
         #scrollToTopBtn.hidden-transition {
             opacity: 0;
-            transform: translateY(100%); 
+            transform: translateY(150%); /* Move further down */
+            pointer-events: none; /* Prevent clicks while hiding */
         }
 
         #scrollToTopBtn:hover {
@@ -998,7 +1019,7 @@
     <!-- NEW: Custom Glass Cursor -->
     <div id="custom-cursor"></div>
 
-    <!-- Top Navigation Bar (Now scrolls off-screen) -->
+    <!-- Top Navigation Bar (Starts hidden) -->
     <div class="topbar" id="topbar-nav">
         <nav id="top-nav" class="max-w-6xl mx-auto flex justify-center space-x-4 p-4">
             <a href="#projects-anchor" class="top-nav-button">Projects</a>
@@ -1015,12 +1036,30 @@
         <!-- Header Section -->
         <header class="text-center flex flex-col items-center max-w-full">
             <!-- Name with stained glass effect -->
-            <h1 id="name-title" class="text-5xl sm:text-6xl md:text-8xl font-extrabold tracking-tight stained-glass-text text-center break-words max-w-full px-2" style="position: relative; z-index: 20; display: inline-block;">SUBHAM PANDA</h1>
+            <h1 id="name-title" class="text-5xl sm:text-6xl md:text-8xl font-extrabold tracking-tight stained-glass-text text-center break-words max-w-full px-2" style="position: relative; z-index: 20; display: inline-block;">
+                <span class="name-wrapper">
+                     <!-- JS will inject .name-char here -->
+                     SUBHAM PANDA
+                </span>
+            </h1>
             
             <!-- Job Title Glass Box -->
             <div class="job-title-box mx-auto" id="job-title-container">
                 <p class="text-xs sm:text-sm md:text-2xl font-light tracking-widest uppercase text-secondary-pink text-center whitespace-normal md:whitespace-nowrap" style="margin: 0;">
-                    <span class="job-item">LEVEL DESIGNER</span> <span class="separator">|</span> <span class="job-item">3D ARTIST</span> <span class="separator">|</span> <span class="job-item">TECHNICAL ARTIST</span>
+                    <span class="reveal-holder">
+                        <span class="reveal-block"></span>
+                        <span class="reveal-content job-item">LEVEL DESIGNER</span>
+                    </span>
+                    <span class="separator">|</span>
+                    <span class="reveal-holder">
+                        <span class="reveal-block"></span>
+                        <span class="reveal-content job-item">3D ARTIST</span>
+                    </span>
+                    <span class="separator">|</span>
+                    <span class="reveal-holder">
+                        <span class="reveal-block"></span>
+                        <span class="reveal-content job-item">TECHNICAL ARTIST</span>
+                    </span>
                 </p>
             </div>
         </header>
@@ -1615,15 +1654,16 @@
                     const geo = geometries[Math.floor(Math.random() * geometries.length)];
                     const mesh = new THREE.Mesh(geo, material.clone()); 
                     
-                    const x = startX + c * GRID_SPACING;
-                    const y = startY - r * GRID_SPACING;
+                    // Store final grid positions
+                    const gridX = startX + c * GRID_SPACING;
+                    const gridY = startY - r * GRID_SPACING;
                     
-                    mesh.position.set(x, y, 0);
+                    // START AT CENTER (0,0,0) for explosion
+                    mesh.position.set(0, 0, 0);
                     
                     mesh.userData = {
-                        originX: x,
-                        originY: y,
-                        // Reduce rotation speed for relaxed vibe
+                        originX: gridX, // Target X
+                        originY: gridY, // Target Y
                         rotSpeedX: (Math.random() - 0.5) * 0.01,
                         rotSpeedY: (Math.random() - 0.5) * 0.01,
                         rotSpeedZ: (Math.random() - 0.5) * 0.01,
@@ -1635,102 +1675,144 @@
                 }
             }
             
-            // 5. Interaction Variables
-            const LIGHT_RADIUS = 450; 
-            const INNER_RADIUS = 250; 
-            const REPEL_RADIUS = 100; 
-            // Removed connections var as per request
-
+            // 5. Animation State
+            // Target maximums
+            const MAX_LIGHT_RADIUS = 450; 
+            const MAX_INNER_RADIUS = 250; 
+            const MAX_REPEL_RADIUS = 100; 
+            
+            // Current dynamic values (start at 0 for smooth growth)
+            let currentLightRadius = 0;
+            let currentInnerRadius = 0;
+            let currentRepelRadius = 0;
+            
             let mouseX = -9999; 
             let mouseY = -9999;
             let targetMouseX = -9999;
             let targetMouseY = -9999;
             let timer = 0;
+            
+            // Sequence Flags
+            let animationPhase = 'explode'; // 'explode', 'interactive'
+            let repelEnabled = false; // Changed later by orchestrator
+
+            // Transition Variables for Seamless Blend
+            let physicsWeight = 0; // 0 = Grid Only, 1 = Full Physics
 
             window.addEventListener('mousemove', (e) => {
                 targetMouseX = e.clientX - window.innerWidth / 2;
                 targetMouseY = -(e.clientY - window.innerHeight / 2);
             });
 
-            // No connection lines in this version as per request
-            
+            // Expose repel toggle to window
+            window.enableRepel = () => { repelEnabled = true; };
+
             function animate() {
                 requestAnimationFrame(animate);
-                timer += 0.005; // SLOWED DOWN for relaxed animation
+                timer += 0.005; 
 
                 // Mouse Lerp
                 mouseX += (targetMouseX - mouseX) * 0.1;
                 mouseY += (targetMouseY - mouseY) * 0.1;
                 
+                // Smoothly ramp up radii when repel is enabled
+                if (repelEnabled) {
+                    currentLightRadius += (MAX_LIGHT_RADIUS - currentLightRadius) * 0.015;
+                    currentInnerRadius += (MAX_INNER_RADIUS - currentInnerRadius) * 0.015;
+                    currentRepelRadius += (MAX_REPEL_RADIUS - currentRepelRadius) * 0.015;
+                }
+
+                // Ramp up physics weight once explosion is settling
+                if(animationPhase === 'interactive' && physicsWeight < 1.0) {
+                    physicsWeight += 0.005; 
+                    if(physicsWeight > 1.0) physicsWeight = 1.0;
+                }
+
                 shapes.forEach(mesh => {
                     const u = mesh.userData;
 
-                    // 1. Rotation (Gyroscope)
+                    // Always Rotate
                     mesh.rotation.x += u.rotSpeedX;
                     mesh.rotation.y += u.rotSpeedY;
                     mesh.rotation.z += u.rotSpeedZ;
+                    
+                    // --- UNIFIED MOVEMENT LOGIC ---
+                    
+                    // 1. Base Grid Position (Explosion Target)
+                    let targetX = u.originX;
+                    let targetY = u.originY;
 
-                    // 2. Physics (Calculations in 2D plane)
+                    // 2. Calculate Physics Offsets (Waves + Repel)
+                    const driftX = Math.sin(timer + u.originY * 0.01) * 10;
+                    const driftY = Math.cos(timer + u.originX * 0.01) * 10;
+
+                    let repelX = 0;
+                    let repelY = 0;
                     const dx = mouseX - mesh.position.x;
                     const dy = mouseY - mesh.position.y;
                     const dist = Math.sqrt(dx*dx + dy*dy);
 
-                    // Jelly Drift
-                    const driftX = Math.sin(timer + u.originY * 0.01) * 10;
-                    const driftY = Math.cos(timer + u.originX * 0.01) * 10;
-                    let targetX = u.originX + driftX;
-                    let targetY = u.originY + driftY;
-
-                    // Repel
-                    if (dist < REPEL_RADIUS) {
+                    if (dist < currentRepelRadius && currentRepelRadius > 1) {
                         const angle = Math.atan2(dy, dx);
-                        const force = (REPEL_RADIUS - dist) / REPEL_RADIUS;
-                        const repelDist = force * 20;
-                        
-                        targetX -= Math.cos(angle) * repelDist;
-                        targetY -= Math.sin(angle) * repelDist;
+                        const repelDist = (1 - dist/currentRepelRadius) * 20; 
+                        repelX = -Math.cos(angle) * repelDist;
+                        repelY = -Math.sin(angle) * repelDist;
                     }
 
-                    mesh.position.x += (targetX - mesh.position.x) * 0.1;
-                    mesh.position.y += (targetY - mesh.position.y) * 0.1;
+                    // 3. Apply Weighted Physics (Fade in waves/repel)
+                    // In 'explode' phase, physicsWeight is 0, so they just seek grid.
+                    // In 'interactive' phase, physicsWeight goes to 1, adding waves.
+                    targetX += (driftX + repelX) * physicsWeight;
+                    targetY += (driftY + repelY) * physicsWeight;
 
-                    // 3. Visibility Logic (Ring Logic)
-                    let targetOpacity = 0;
-                    let isLiquid = false;
-
-                    if (dist < LIGHT_RADIUS) {
-                        isLiquid = true;
-                        if (dist < INNER_RADIUS) {
-                            targetOpacity = dist / INNER_RADIUS; 
-                        } else {
-                            targetOpacity = 1 - ((dist - INNER_RADIUS) / (LIGHT_RADIUS - INNER_RADIUS)); 
-                        }
-                        targetOpacity = Math.max(0, Math.min(1, targetOpacity));
-                        
-                        // Active state opacity
-                        mesh.material.opacity += (targetOpacity - mesh.material.opacity) * 0.1;
-                    } else {
-                        // Fade Out towards star state
-                        // SLOWER PULSE for dots
-                        // Reduced multiplier from 2.0 to 0.5 in sin wave
-                        const pulse = (Math.sin(timer * 0.5 + u.timerOffset) + 1) / 2;
-                        const starOpacity = pulse * 0.4; 
-                        
-                        mesh.material.opacity -= 0.03;
-                        if (mesh.material.opacity < 0.01) {
-                            mesh.material.opacity = starOpacity;
-                            mesh.material.color.set(whiteColor); 
-                            const targetScale = 0.8;
-                            mesh.scale.setScalar(targetScale);
-                        }
+                    // 4. Move Mesh (Consistent Lerp)
+                    mesh.position.x += (targetX - mesh.position.x) * 0.05;
+                    mesh.position.y += (targetY - mesh.position.y) * 0.05;
+                    
+                    // --- VISUALS ---
+                    
+                    // Fade in during explosion
+                    if(animationPhase === 'explode' && mesh.material.opacity < 0.4) {
+                         mesh.material.opacity += 0.01;
                     }
                     
-                    // 4. State Transition (Color & Size)
-                    if (isLiquid && mesh.material.opacity > 0.05) {
-                        // Active State: Pink, larger
-                        mesh.material.color.lerp(pinkColor, 0.1);
-                        const targetScale = 1.5;
-                        mesh.scale.setScalar(mesh.scale.x + (targetScale - mesh.scale.x) * 0.1);
+                    // Visual Logic based on weight to prevent snapping
+                    if(physicsWeight > 0.1) {
+                         // Check against dynamic light radius
+                        let targetOpacity = 0;
+                        let isLiquid = false;
+
+                        if (dist < currentLightRadius && currentLightRadius > 1) {
+                            isLiquid = true;
+                            if (dist < currentInnerRadius) {
+                                if(currentInnerRadius > 1) targetOpacity = dist / currentInnerRadius; 
+                            } else {
+                                if((currentLightRadius - currentInnerRadius) > 1) {
+                                    targetOpacity = 1 - ((dist - currentInnerRadius) / (currentLightRadius - currentInnerRadius)); 
+                                }
+                            }
+                            targetOpacity = Math.max(0, Math.min(1, targetOpacity));
+                            
+                            // Active state opacity
+                            mesh.material.opacity += (targetOpacity - mesh.material.opacity) * 0.1;
+                        } else {
+                            // Blink State (Slower)
+                            const pulse = (Math.sin(timer * 0.5 + u.timerOffset) + 1) / 2;
+                            const starOpacity = pulse * 0.4; 
+                            
+                            mesh.material.opacity += (starOpacity - mesh.material.opacity) * 0.05;
+                            mesh.material.color.set(whiteColor);
+                        }
+                        
+                        // Scale logic
+                        if (isLiquid && mesh.material.opacity > 0.05) {
+                            mesh.material.color.lerp(pinkColor, 0.1);
+                            const targetScale = 1.5;
+                            mesh.scale.setScalar(mesh.scale.x + (targetScale - mesh.scale.x) * 0.1);
+                        } else {
+                            const targetScale = 0.8;
+                            mesh.scale.setScalar(mesh.scale.x + (targetScale - mesh.scale.x) * 0.1);
+                        }
                     }
                 });
 
@@ -1746,8 +1828,14 @@
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
             });
-
+            
+            // Start Loop
             animate();
+            
+            // Switch phase after explosion duration
+            setTimeout(() => {
+                animationPhase = 'interactive';
+            }, 1500);
         }
         
         window.addEventListener('load', initThreeBackground);
@@ -1803,18 +1891,47 @@
         }
 
         // --- NAME HOVER LOGIC ---
+        // ADD SEPARATE FUNCTION FOR NAME INTERACTION
+        function enableNameInteraction() {
+            const nameWrapper = document.querySelector('.name-wrapper');
+            if(nameWrapper) {
+                nameWrapper.classList.add('name-interactive');
+            }
+        }
+
         const nameTitle = document.getElementById('name-title');
         if (nameTitle) {
             const text = nameTitle.innerText;
-            nameTitle.innerHTML = text.split('').map(char => {
-                // Add data-char attribute to each span
-                if(char === ' ') return '<span class="name-char" data-char=" " style="display:inline-block; width:0.3em;">&nbsp;</span>';
-                return `<span class="name-char" data-char="${char}">${char}</span>`;
-            }).join('');
-            const chars = Array.from(nameTitle.querySelectorAll('.name-char'));
-            chars.forEach((char, index) => {
-                char.addEventListener('mouseenter', () => {
-                    chars.forEach((c, i) => {
+            // Clear text initially for JS to repopulate
+            nameTitle.innerHTML = ''; 
+            
+            const wrapper = document.createElement('span');
+            wrapper.className = 'name-wrapper';
+            
+            text.split('').forEach(char => {
+                let span;
+                if(char === ' ') {
+                    span = document.createElement('span');
+                    span.className = 'name-char';
+                    span.style.display = 'inline-block';
+                    span.style.width = '0.3em';
+                    span.innerHTML = '&nbsp;';
+                    span.setAttribute('data-char', ' ');
+                } else {
+                    span = document.createElement('span');
+                    span.className = 'name-char';
+                    span.innerText = char;
+                    span.setAttribute('data-char', char);
+                }
+                
+                // Hover Logic
+                span.addEventListener('mouseenter', () => {
+                   // Only run if interactive class is present
+                   if(!wrapper.classList.contains('name-interactive')) return;
+
+                   const allChars = Array.from(document.querySelectorAll('.name-char'));
+                   const index = allChars.indexOf(span);
+                    allChars.forEach((c, i) => {
                         const distance = Math.abs(index - i);
                         let lift = 0;
                         if (distance === 0) lift = -35;       
@@ -1824,18 +1941,21 @@
                         else c.style.transform = 'translateY(0)';
                     });
                 });
+                
+                wrapper.appendChild(span);
             });
+            
+            nameTitle.appendChild(wrapper);
             nameTitle.addEventListener('mouseleave', () => {
-                chars.forEach(c => c.style.transform = 'translateY(0)');
+                 document.querySelectorAll('.name-char').forEach(c => c.style.transform = 'translateY(0)');
             });
         }
         
         // --- PROJECT CARD SEQUENTIAL ANIMATION LOGIC ---
-        // Helper to wait
         const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
         const cardObserverOptions = {
-            threshold: 0.15, // Trigger when 15% of the card is visible
+            threshold: 0.15, 
             rootMargin: '0px 0px -10% 0px'
         };
 
@@ -1843,85 +1963,52 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     animateProjectCard(entry.target);
-                    cardObserver.unobserve(entry.target); // Only animate once
+                    cardObserver.unobserve(entry.target); 
                 }
             });
         }, cardObserverOptions);
 
-        // Animate function for Project Cards
         async function animateProjectCard(card) {
-            // 1. Expand the Card (Scale + Opacity)
             card.classList.add('card-visible');
-            
-            // Wait for card expansion to mostly finish
             await wait(600);
-
-            // 2. Select all reveal holders in sequence
             const revealElements = card.querySelectorAll('.reveal-holder');
-            
-            // Loop through each text element and trigger animation
             for (let i = 0; i < revealElements.length; i++) {
                 const el = revealElements[i];
                 el.classList.add('animate-reveal');
-                
-                // Stagger delay
                 await wait(200); 
             }
-            
-            // 3. Finally, show the button
             const btn = card.querySelector('.project-button-wrapper');
-            if(btn) {
-                btn.classList.add('btn-visible');
-            }
-            
-            // 4. Enable Interaction (Hover Effects)
+            if(btn) btn.classList.add('btn-visible');
             await wait(500);
             card.classList.add('interaction-ready');
         }
 
-        // Start Observing Project Cards
         const cards = document.querySelectorAll('.project-card');
         cards.forEach(card => cardObserver.observe(card));
 
-
         // --- TECH SKILLS & SOFTWARE ANIMATION LOGIC ---
-        const techObserverOptions = {
-            threshold: 0.2, 
-            rootMargin: '0px'
-        };
-
         const techObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     animateTechBar(entry.target);
-                    techObserver.unobserve(entry.target); // Once per bar
+                    techObserver.unobserve(entry.target); 
                 }
             });
-        }, techObserverOptions);
+        }, { threshold: 0.2 });
 
         async function animateTechBar(bar) {
-            // 1. Expand from Circle to Full Bar
             bar.classList.add('bar-expanded');
-
-            // Wait for expansion (1s duration in CSS)
             await wait(800);
-
-            // 2. Trigger Text Reveals for all children in this bar
             const revealElements = bar.querySelectorAll('.reveal-holder');
             for (let i = 0; i < revealElements.length; i++) {
                 revealElements[i].classList.add('animate-reveal');
-                await wait(100); // Slight stagger inside the software block
+                await wait(100); 
             }
-            
-            // 3. Enable Hover Interaction
             await wait(600);
             bar.classList.add('interaction-ready');
         }
         
-        // Start Observing Tech Bars
         const techBars = document.querySelectorAll('.tech-bar-anim');
-        
-        // Tech Stagger
         const skillSection = document.getElementById('skills');
         const skillObserver = new IntersectionObserver((entries) => {
             if(entries[0].isIntersecting) {
@@ -1933,21 +2020,13 @@
 
         // --- SOFTWARE ANIMATION LOGIC (SPLIT FROM CENTER) ---
         const softwareItems = document.querySelectorAll('.software-split-item');
-        const softwareSection = document.getElementById('softwares-anchor');
         
-        // New Logic: Trigger split animation simultaneously then text reveals
         async function animateSoftwareSplit() {
-            // 1. Trigger Split
             softwareItems.forEach(item => {
                 item.classList.add('split-active');
-                // Safety fallback: ensure visibility after transition
                 item.style.visibility = 'visible';
             });
-
-            // Wait for Split Animation to settle (1.0s CSS transition)
             await wait(1000);
-
-            // 2. Trigger Text Reveals sequentially
             for (let i = 0; i < softwareItems.length; i++) {
                 const item = softwareItems[i];
                 const revealElements = item.querySelectorAll('.reveal-holder');
@@ -1955,7 +2034,6 @@
                     revealElements[j].classList.add('animate-reveal');
                     await wait(50); 
                 }
-                // Enable hover after text starts revealing
                 item.classList.add('interaction-ready');
             }
         }
@@ -1978,53 +2056,118 @@
              }
         }
 
-        // --- ABOUT ME INTERACTION LOGIC ---
-        // Manually add interaction-ready to About Me blocks when scrolled into view
+        // --- ABOUT ME OBSERVER ---
         const aboutSection = document.getElementById('about');
         const aboutObserver = new IntersectionObserver((entries) => {
             if(entries[0].isIntersecting) {
-                const aboutBlocks = document.querySelectorAll('.about-text-block, .about-image-container');
-                aboutBlocks.forEach(block => block.classList.add('interaction-ready'));
+                document.querySelectorAll('.about-text-block, .about-image-container')
+                    .forEach(block => block.classList.add('interaction-ready'));
                 aboutObserver.disconnect();
             }
         }, { threshold: 0.3 });
         if(aboutSection) aboutObserver.observe(aboutSection);
 
+        // --- FOOTER POP-UP OBSERVER ---
+        const footer = document.getElementById('contact-footer');
+        const footerObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    footer.classList.add('pop-up');
+                } 
+            });
+        }, { threshold: 0.1 }); 
+        if(footer) footerObserver.observe(footer);
+
+
+        // --- OPENING SEQUENCE ORCHESTRATOR ---
+        window.onload = function() {
+            // 1. Three.js explosion starts immediately on load (handled in animate loop)
+            
+            // 2. Name Animation: Start sooner (400ms)
+            setTimeout(() => {
+                // Using letter-spacing transition for centering/splitting
+                const wrapper = document.querySelector('.name-wrapper');
+                if(wrapper) wrapper.classList.add('split'); 
+                
+                const chars = document.querySelectorAll('.name-char');
+                chars.forEach((c, i) => {
+                    setTimeout(() => {
+                        c.classList.add('visible'); // Fade in
+                    }, i * 50); 
+                });
+            }, 400);
+
+            // 3. Job Title Box Expansion: Start while name is finishing (1100ms)
+            setTimeout(() => {
+                const jobBox = document.querySelector('.job-title-box');
+                if(jobBox) jobBox.classList.add('expanded');
+            }, 1100);
+
+            // 4. Job Title Text Reveal: Start before box is fully expanded (1800ms)
+            setTimeout(async () => {
+                const jobBox = document.querySelector('.job-title-box');
+                if(jobBox) {
+                    // Allow overflow now that expansion is done so hover pop works
+                    jobBox.style.overflow = 'visible'; 
+                    
+                    const reveals = jobBox.querySelectorAll('.reveal-holder');
+                    for (let i = 0; i < reveals.length; i++) {
+                        // Reveal text
+                        const content = reveals[i].querySelector('.job-item');
+                        if(content) content.classList.add('revealed');
+                        
+                        // Also trigger the block swipe animation if needed, though currently using direct opacity
+                        reveals[i].classList.add('animate-reveal');
+                        
+                        // Fade in separator
+                        const nextSep = reveals[i].nextElementSibling;
+                        if(nextSep && nextSep.classList.contains('separator')) {
+                             nextSep.classList.add('revealed');
+                        }
+                        
+                        await wait(200);
+                    }
+                }
+            }, 1800);
+
+            // 5. Top Bar Slide In: Start while text is revealing (2100ms)
+            setTimeout(() => {
+                const topbar = document.getElementById('topbar-nav');
+                if(topbar) topbar.classList.add('slide-in');
+            }, 2100);
+
+            // 6. Enable Cursor Repel (2500ms) & Enable Name Hover
+            setTimeout(() => {
+                if(window.enableRepel) window.enableRepel();
+                
+                // Enable Name Interaction separately
+                enableNameInteraction();
+                
+            }, 2500);
+        };
+
+
         // --- CUSTOM CURSOR LOGIC ---
         const cursor = document.getElementById('custom-cursor');
-
-        // Move cursor
         window.addEventListener('mousemove', e => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
-            cursor.style.opacity = 1; // Ensure it's visible when moving
+            cursor.style.opacity = 1; 
         });
 
-        // Hover Detection Logic
-        // List of selectors that should trigger the active state
-        // NOTE: Only specific interactive elements trigger the "Active" (Big glow) state now.
         const clickableSelectors = '.top-nav-button, #scrollToTopBtn, .project-button, #contact-footer a, #contact-footer i';
-
         document.body.addEventListener('mouseover', e => {
-            // Check if the hovered element (or its parent) matches our clickable list
             if (e.target.closest(clickableSelectors)) {
                 cursor.classList.add('active');
             }
         });
-
         document.body.addEventListener('mouseout', e => {
             if (e.target.closest(clickableSelectors)) {
                 cursor.classList.remove('active');
             }
         });
-
-        // Hide cursor when leaving window
-        document.addEventListener('mouseleave', () => {
-             cursor.style.opacity = '0';
-        });
-         document.addEventListener('mouseenter', () => {
-             cursor.style.opacity = '1';
-        });
+        document.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; });
+        document.addEventListener('mouseenter', () => { cursor.style.opacity = '1'; });
 
     </script>
 </body>
