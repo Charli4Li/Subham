@@ -9,7 +9,7 @@
     <!-- Load Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        /* Define colors using CSS variables based on user request */
+        /* RESTORED ORIGINAL COLOR PALETTE */
         :root {
             --primary-white: #FFFFFF;
             --secondary-pink: #FF9DE3; /* Lighter Pink */
@@ -17,19 +17,33 @@
             --accent-coral: #FF8091; /* Coral Pink */
         }
 
-        /* Custom styles for the animation canvas and glowing text */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        /* Note: 'Straight Signwood' and 'Newathletic M54' are custom fonts. 
+           Ensure you have the .ttf/.otf files loaded via @font-face or installed locally 
+           for them to appear correctly. Using generic fallbacks here. */
         
-        /* GLOBAL CURSOR REMOVAL */
-        * {
-            cursor: none !important; /* Hides default cursor everywhere */
+        @font-face {
+            font-family: 'Straight Signwood';
+            src: local('Straight Signwood'), url('path/to/StraightSignwood.ttf') format('truetype');
+            /* Add actual path if hosting */
+        }
+        
+        @font-face {
+            font-family: 'Newathletic M54';
+            src: local('Newathletic M54'), url('path/to/NewathleticM54.ttf') format('truetype');
+            /* Add actual path if hosting */
         }
 
+        /* Default Font for Body (Small Text) */
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Newathletic M54', 'Inter', sans-serif; /* Updated Font */
             overflow-x: hidden; 
             color: var(--primary-white);
             background-color: var(--accent-black);
+        }
+
+        /* GLOBAL CURSOR REMOVAL */
+        * {
+            cursor: none !important; /* Hides default cursor everywhere */
         }
         
         #canvas-container {
@@ -48,28 +62,21 @@
             position: fixed;
             top: 0;
             left: 0;
-            /* Reverted/Adjusted Size: 15px */
             width: 15px;
             height: 15px;
             border-radius: 50%;
-            z-index: 9999; /* Top of everything */
-            pointer-events: none; /* Pass clicks through */
+            z-index: 9999;
+            pointer-events: none; 
             transform: translate(-50%, -50%);
-            
-            /* Glass Material Base */
             background-color: rgba(255, 255, 255, 0.15); 
             backdrop-filter: blur(2px); 
             -webkit-backdrop-filter: blur(2px);
             border: 1px solid rgba(255, 157, 227, 0.6); 
-            
-            /* Chromatic Aberration + Glow */
             box-shadow: 
                 0 0 10px rgba(255, 157, 227, 0.5), 
                 -1px 0 2px rgba(0, 255, 255, 0.4), 
                 1px 0 2px rgba(255, 0, 255, 0.4),  
                 inset 0 0 4px rgba(255, 255, 255, 0.4);
-            
-            /* Smooth State Transitions */
             transition: 
                 transform 0.05s ease-out, 
                 width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
@@ -77,22 +84,14 @@
                 background-color 0.3s ease,
                 border-color 0.3s ease,
                 box-shadow 0.3s ease;
-                
-            /* Initially hidden */
             opacity: 0;
         }
 
-        /* Active State (Hovering Specific Clickables) */
         #custom-cursor.active {
-            /* Smaller Expanded Radius: 25px (Reduced from 30px) */
             width: 25px;
             height: 25px;
-            
-            /* Brighter White Tint */
             background-color: rgba(255, 255, 255, 0.25); 
             border-color: rgba(255, 255, 255, 0.9);
-            
-            /* Intensify Glow */
             box-shadow: 
                 0 0 15px rgba(255, 255, 255, 0.6), 
                 0 0 30px rgba(255, 157, 227, 0.6), 
@@ -101,7 +100,6 @@
                 inset 0 0 10px rgba(255, 255, 255, 0.5);
         }
         
-        /* Add inner distortion to cursor */
         #custom-cursor::before {
             content: "";
             position: absolute;
@@ -115,44 +113,34 @@
             opacity: 0.6;
         }
 
-        /* --- LIQUID GLASS STYLE (High Transparency) --- */
+        /* --- LIQUID GLASS STYLE --- */
         .liquid-glass {
             background-color: rgba(20, 20, 20, 0.2) !important; 
             backdrop-filter: blur(6px); 
             -webkit-backdrop-filter: blur(6px);
             border: 1px solid rgba(255, 157, 227, 0.5); 
             border-radius: 0.75rem;
-            
-            /* Intense Chromatic Aberration + Glow (Standardized) */
             box-shadow: 
                 -4px 0 8px rgba(0, 255, 255, 0.2),  
                  4px 0 8px rgba(255, 0, 255, 0.2),  
                  0 0 25px rgba(255, 157, 227, 0.15),
                  inset 0 0 30px rgba(255, 255, 255, 0.08);
-            
-            /* Smooth transition for all glass elements */
             transition: 
                 transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
                 box-shadow 0.7s ease-out, 
                 background-color 0.7s ease-out;
-            
-            /* Relative position needed for the ::after glow element */
             position: relative;
             overflow: hidden; 
         }
 
-        /* --- SPOTLIGHT DISTORTION HALO (::before) --- */
-        /* This creates the glass edge distortion behind the glow */
-        .liquid-glass::before,
-        .topbar::before,
-        #contact-footer::before {
+        /* Spotlight Effects */
+        .liquid-glass::before, .topbar::before, #contact-footer::before {
             content: "";
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             border-radius: inherit;
-            /* Distortion Halo: Cyan/Magenta split */
             background: radial-gradient(
-                250px circle at var(--mouse-x) var(--mouse-y), 
+                200px circle at var(--mouse-x) var(--mouse-y), 
                 rgba(0, 255, 255, 0.1),  
                 rgba(255, 0, 255, 0.1) 30%, 
                 transparent 60%
@@ -164,25 +152,18 @@
             mix-blend-mode: screen; 
         }
 
-        /* --- CURSOR GLOW (::after) --- */
-        .liquid-glass::after,
-        .topbar::after,
-        #contact-footer::after {
+        .liquid-glass::after, .topbar::after, #contact-footer::after {
             content: "";
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             border-radius: inherit;
-            
-            /* Main Spotlight (Holographic): White -> Pink -> Blue */
-            /* Low opacity for subtlety */
             background: radial-gradient(
-                180px circle at var(--mouse-x) var(--mouse-y), 
-                rgba(255, 255, 255, 0.15) 0%,      /* White Core */
-                rgba(255, 157, 227, 0.1) 40%,     /* Pink Mid */
-                rgba(0, 255, 255, 0.08) 70%,      /* Blue Edge */
+                90px circle at var(--mouse-x) var(--mouse-y), 
+                rgba(255, 255, 255, 0.15) 0%,      
+                rgba(255, 157, 227, 0.1) 40%,     
+                rgba(0, 255, 255, 0.08) 70%,      
                 transparent 100%
             );
-            
             opacity: 0; 
             transition: opacity 0.5s ease;
             pointer-events: none; 
@@ -196,7 +177,6 @@
             opacity: 1;
         }
 
-        /* Ensure content inside stays clickable */
         .liquid-glass > *, .topbar > *, #contact-footer > * {
             position: relative;
             z-index: 5;
@@ -205,20 +185,19 @@
         /* --- Job Title Glass Box --- */
         .job-title-box {
             display: inline-block;
-            /* Initial small circle state */
-            width: 3.5rem; 
+            width: 3.5rem;
             height: auto;
             min-height: 3.5rem;
-            padding: 0; 
+            padding: 0;
             margin-top: 1.5rem;
             
             background-color: rgba(20, 20, 20, 0.2); 
             backdrop-filter: blur(6px); 
             -webkit-backdrop-filter: blur(6px);
             border: 1px solid rgba(255, 157, 227, 0.5);
-            border-radius: 9999px; /* Fully Rounded */
+            border-radius: 9999px; 
             
-            overflow: hidden; /* Required for circular expansion */
+            overflow: hidden; 
             opacity: 0;
             
             box-shadow: 
@@ -227,7 +206,6 @@
                  0 0 25px rgba(255, 157, 227, 0.15),
                  inset 0 0 30px rgba(255, 255, 255, 0.08);
 
-            /* Transition for horizontal expansion */
             transition: 
                 width 1s cubic-bezier(0.22, 1, 0.36, 1),
                 padding 0.5s ease,
@@ -239,7 +217,6 @@
         }
 
         .job-title-box.expanded {
-            /* Final State: Wide Pill */
             width: 100%;
             max-width: fit-content;
             border-radius: 9999px;
@@ -247,10 +224,8 @@
             padding: 0.75rem 1.5rem;
         }
 
-        /* Hover Glow Effect for Job Title Box (Background Only) */
         .job-title-box:hover {
             background-color: rgba(30, 30, 30, 0.4); 
-            /* Enhanced White/Pink Glow */
             box-shadow: 
                 -6px 0 15px rgba(0, 255, 255, 0.45), 
                  6px 0 15px rgba(255, 0, 255, 0.45), 
@@ -262,43 +237,50 @@
         .job-item {
             display: inline-block;
             transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
-            cursor: none; /* Custom cursor used */
+            cursor: none; 
+            opacity: 0; 
+            white-space: nowrap;
+            /* FONT UPDATE: Straight Signwood + Italic */
+            font-family: 'Straight Signwood', sans-serif;
+            font-style: italic;
+            letter-spacing: 0.05em;
         }
         
-        .job-item:hover {
+        .job-item.revealed {
+            opacity: 1;
+        }
+        
+        .reveal-holder:hover .job-item {
             color: #FFFFFF;
-            /* Glass Distortion Glow on Text */
             text-shadow: 
-                -2px 0 8px rgba(0, 255, 255, 0.6),  /* Cyan shift */
-                 2px 0 8px rgba(255, 0, 255, 0.6),  /* Magenta shift */
-                 0 0 20px rgba(255, 255, 255, 0.8), /* White core */
-                 0 0 40px rgba(255, 157, 227, 0.6); /* Pink outer */
+                -2px 0 8px rgba(0, 255, 255, 0.6), 
+                 2px 0 8px rgba(255, 0, 255, 0.6), 
+                 0 0 20px rgba(255, 255, 255, 0.8),
+                 0 0 40px rgba(255, 157, 227, 0.6);
             
-            transform: scale(1.05) translateY(-1px); 
+            transform: none; 
         }
 
         .separator {
             display: inline-block;
             margin: 0 0.5rem;
+            opacity: 0; 
+            transition: opacity 0.5s ease;
+        }
+        
+        .separator.revealed {
             opacity: 0.6;
         }
-        
-        @media (min-width: 768px) {
-            .job-title-box {
-                padding: 0.75rem 2rem;
-            }
-        }
-        
-        /* --- Section Title Bars --- */
+
+        /* --- Section Title Bars (CAPSULES) --- */
         .section-title-bar {
-            width: 100vw;
+            width: fit-content;
             position: relative;
-            left: 50%;
-            right: 50%;
-            margin-left: -50vw;
-            margin-right: -50vw;
-            margin-bottom: 3rem;
-            padding: 1.5rem 0;
+            left: auto;
+            right: auto;
+            margin: 0 auto 3rem auto; 
+            padding: 0.75rem 3rem; 
+            
             display: flex;
             justify-content: center;
             align-items: center;
@@ -307,14 +289,22 @@
             backdrop-filter: blur(6px); 
             -webkit-backdrop-filter: blur(6px);
             
-            border-top: 1px solid rgba(255, 157, 227, 0.5);
-            border-bottom: 1px solid rgba(255, 157, 227, 0.5);
+            border: 1px solid rgba(255, 157, 227, 0.5);
+            border-radius: 9999px;
             
             box-shadow: 
                 0 -4px 8px rgba(0, 255, 255, 0.15),
                 0 4px 8px rgba(255, 0, 255, 0.15),
                 0 0 25px rgba(255, 157, 227, 0.15),
                 inset 0 0 30px rgba(255, 255, 255, 0.08);
+        }
+        
+        /* FONT UPDATE: Subheadings (White, Straight Signwood, Italic) */
+        .section-title-bar h2 {
+            color: var(--primary-white) !important;
+            font-family: 'Straight Signwood', sans-serif !important;
+            font-style: italic;
+            letter-spacing: 0.05em;
         }
 
         /* --- Translucent Liquid Glass Name Text --- */
@@ -348,7 +338,7 @@
         .name-char {
             display: inline-block;
             cursor: default;
-            position: relative; /* Needed for pseudo-element positioning */
+            position: relative; 
 
             /* Inside: White Tint (Frosted Glass) */
             color: rgba(255, 255, 255, 0.25); 
@@ -369,15 +359,11 @@
             position: absolute;
             left: 0;
             top: 0;
-            z-index: -2; /* Place deep behind everything */
+            z-index: -2; 
             
             color: transparent;
-            /* Thick stroke for more blur volume */
-            -webkit-text-stroke: 8px rgba(255, 157, 227, 0.3); 
-
-            /* Heavier blur for depth */
+            -webkit-text-stroke: 8px rgba(255, 157, 227, 0.2); 
             filter: blur(12px);
-            
             pointer-events: none;
             transition: all 0.5s ease;
         }
@@ -392,13 +378,10 @@
             
             color: transparent;
             -webkit-text-stroke: 0;
-            
-            /* The sharp, unblurred outer glow with chromatic distortion */
             text-shadow: 
                 -2px 0 10px rgba(0, 255, 255, 0.35), 
                  2px 0 10px rgba(255, 0, 255, 0.35), 
                  0 0 20px rgba(255, 255, 255, 0.3);
-            
             filter: none;
             pointer-events: none;
             transition: text-shadow 0.5s ease;
@@ -409,7 +392,7 @@
             transition: transform 0.1s ease-out;
         }
         
-        /* Hover State for Name - ONLY ACTIVE WHEN PARENT HAS .name-interactive */
+        /* Hover State for Name */
         .name-interactive .name-char:hover {
              color: rgba(255, 255, 255, 1.0); 
              -webkit-text-stroke: 1px rgba(255, 255, 255, 1);
@@ -428,7 +411,7 @@
                 0 0 60px rgba(255, 255, 255, 0.5);
         }
 
-        /* Top Bar Styling (Curtain Drop) */
+        /* Top Bar Styling */
         .topbar {
             position: relative;
             top: 0;
@@ -447,7 +430,6 @@
                  inset 0 -10px 25px rgba(255, 255, 255, 0.08);
             overflow: hidden; 
             
-            /* Start Position: Fully above screen */
             transform: translateY(-100%);
             opacity: 1; 
             transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
@@ -457,7 +439,7 @@
             transform: translateY(0);
         }
 
-        /* --- TOP BAR BUTTONS WITH EDGE DISTORTION --- */
+        /* --- TOP BAR BUTTONS --- */
         .top-nav-button {
             background-color: rgba(20, 20, 20, 0.2); 
             backdrop-filter: blur(4px); 
@@ -466,31 +448,33 @@
             
             color: var(--secondary-pink); 
             padding: 0.5rem 1.25rem;
-            border-radius: 9999px; /* Pill Shape */
+            border-radius: 9999px; 
             font-weight: 600;
             transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             text-decoration: none;
             cursor: pointer; 
             
-            /* Edge Distortion Glow */
+            /* FONT UPDATE: Straight Signwood + Italic */
+            font-family: 'Straight Signwood', sans-serif;
+            font-style: italic;
+            letter-spacing: 0.05em;
+            
             box-shadow: 
                 -2px 0 5px rgba(0, 255, 255, 0.3),  
                  2px 0 5px rgba(255, 0, 255, 0.3),  
                  0 0 10px rgba(255, 157, 227, 0.3),
                  inset 0 0 8px rgba(255, 255, 255, 0.15);
              
-             /* For trail clipping */
              position: relative;
              overflow: hidden;
         }
 
         .top-nav-button:hover {
             transform: scale(1.05); 
-            background-color: rgba(255, 255, 255, 0.1); /* Lighten bg */
-            color: var(--primary-white); /* White Text on Hover */
+            background-color: rgba(255, 255, 255, 0.1); 
+            color: var(--primary-white); 
             border-color: rgba(255, 255, 255, 0.8);
             
-            /* Strong White Glow + Distortion */
             box-shadow: 
                 -3px 0 10px rgba(0, 255, 255, 0.5),
                  3px 0 10px rgba(255, 0, 255, 0.5),
@@ -528,6 +512,13 @@
         #softwares-anchor {
             top: -2rem; 
         }
+        
+        /* FONT UPDATE: Project Titles (Pink, Straight Signwood, Italic) */
+        .project-card h3 {
+            color: var(--secondary-pink) !important;
+            font-family: 'Straight Signwood', sans-serif !important;
+            font-style: italic;
+        }
 
         /* =========================================
            ANIMATION STYLES FOR PROJECT CARDS 
@@ -538,10 +529,8 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            
-            opacity: 0; /* Start hidden */
-            transform: scale(0.85); /* Start small */
-            /* Consolidated smooth transition */
+            opacity: 0; 
+            transform: scale(0.85); 
             transition: 
                 opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), 
                 transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
@@ -549,30 +538,29 @@
                 background-color 0.7s ease-out;
         }
 
-        /* Card Visible State (Entrance Animation) */
+        /* Card Visible State */
         .project-card.card-visible {
             opacity: 1;
             transform: scale(1);
         }
         
-        /* Common Hover Glow Style (Smooth Transition) */
+        /* Common Hover Glow Style */
         .interaction-ready:hover {
             transform: scale(1.03) !important;
             background-color: rgba(30, 30, 30, 0.4) !important; 
-            /* Enhanced White/Pink Glow on Hover */
             box-shadow: 
                 -6px 0 15px rgba(0, 255, 255, 0.45), 
                  6px 0 15px rgba(255, 0, 255, 0.45), 
                  0 0 40px rgba(255, 255, 255, 0.4),
                  inset 0 0 25px rgba(255, 255, 255, 0.2) !important;
-            z-index: 20; /* Bring to front slightly */
+            z-index: 20; 
         }
 
         /* 2. Reveal Animation Wrapper */
         .reveal-holder {
             position: relative;
             display: inline-block;
-            overflow: hidden;
+            overflow: hidden; 
             vertical-align: top; 
             width: fit-content; 
             margin-bottom: 2px;
@@ -629,41 +617,39 @@
         
         /* --- PROJECT BUTTONS WITH EDGE DISTORTION --- */
         .project-button {
-            /* Glass Base */
             background-color: rgba(20, 20, 20, 0.2); 
             backdrop-filter: blur(4px); 
             -webkit-backdrop-filter: blur(4px);
             border: 1px solid rgba(255, 157, 227, 0.5); 
-            
-            color: var(--secondary-pink); /* Default Pink Text */
+            color: var(--secondary-pink); 
             padding: 0.5rem 1.5rem;
             border-radius: 9999px; 
-            font-weight: bold;
+            font-weight: 600;
             display: inline-flex;
             align-items: center;
             transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             transform: scale(1); 
             text-decoration: none;
             
-            /* Edge Distortion Glow */
+            /* FONT UPDATE: Straight Signwood + Italic */
+            font-family: 'Straight Signwood', sans-serif;
+            font-style: italic;
+            letter-spacing: 0.05em;
+            
             box-shadow: 
                 -2px 0 5px rgba(0, 255, 255, 0.3),  
                  2px 0 5px rgba(255, 0, 255, 0.3),  
                  0 0 15px rgba(255, 157, 227, 0.4),
                  inset 0 0 10px rgba(255, 255, 255, 0.1);
-            
-            /* For trail clipping */
             position: relative;
             overflow: hidden;
         }
         
         .project-button:hover {
             transform: scale(1.08); 
-            background-color: rgba(255, 255, 255, 0.1); /* Lighten bg */
-            color: var(--primary-white); /* White Text on Hover */
+            background-color: rgba(255, 255, 255, 0.1); 
+            color: var(--primary-white); 
             border-color: rgba(255, 255, 255, 0.8);
-            
-            /* Strong White Glow + Distortion */
             box-shadow: 
                 -3px 0 10px rgba(0, 255, 255, 0.5),
                  3px 0 10px rgba(255, 0, 255, 0.5),
@@ -681,10 +667,7 @@
             transition: color 0.3s ease;
         }
         
-        /* =========================================
-           TECHNICAL SKILLS & SOFTWARE ANIMATION
-           ========================================= */
-        /* --- TECH SKILLS BARS WITH EDGE DISTORTION --- */
+        /* --- TECH SKILLS BARS --- */
         .tech-focus-bar {
             border-radius: 9999px; 
             padding: 0.75rem 1.5rem;
@@ -693,28 +676,28 @@
             background-color: rgba(20, 20, 20, 0.2);
             backdrop-filter: blur(6px);
             border: 1px solid rgba(255, 157, 227, 0.5);
-            
-            /* Edge Distortion Glow (Enhanced) */
             box-shadow: 
                 -3px 0 8px rgba(0, 255, 255, 0.25),  
                  3px 0 8px rgba(255, 0, 255, 0.25),  
                  0 0 15px rgba(255, 157, 227, 0.2),
                  inset 0 0 12px rgba(255, 255, 255, 0.1);
-            
-            /* Animatable properties - Smooth interaction transition */
             transition: 
                 transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
                 box-shadow 0.7s ease-out, 
                 width 1s cubic-bezier(0.22, 1, 0.36, 1), 
                 opacity 0.5s ease, 
                 border-radius 0.5s ease;
-                
-            /* For trail clipping */
             position: relative;
             overflow: hidden;
         }
         
-        /* Initial state for Skills Animation */
+        /* FONT UPDATE: Skills Name (Straight Signwood, Italic) */
+        .tech-focus-bar b {
+            font-family: 'Straight Signwood', sans-serif;
+            font-style: italic;
+            letter-spacing: 0.05em;
+        }
+        
         .tech-bar-anim {
             opacity: 0;
             width: 3.5rem; 
@@ -728,7 +711,6 @@
             padding: 0; 
         }
 
-        /* Expanded State for Skills */
         .tech-bar-anim.bar-expanded {
             opacity: 1;
             width: 100%; 
@@ -743,36 +725,31 @@
             align-items: flex-start; 
             min-height: 150px; 
             height: 100%;
-            
-            /* Consolidated Transitions: IMPORTANT to avoid snappy hover */
             transition: 
                 transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
                 box-shadow 0.7s ease-out, 
                 background-color 0.7s ease-out,
                 opacity 0.8s ease;
-            
-            /* For trail clipping */
             position: relative;
             overflow: hidden;
         }
+        
+        /* FONT UPDATE: Software Headers */
+        .software-block p {
+             font-family: 'Straight Signwood', sans-serif;
+             font-style: italic;
+             letter-spacing: 0.05em;
+        }
 
-        /* Initial State: Clustered in the Middle 
-           Using transform to pull them to center based on 50% + gap offset
-        */
         .software-split-item {
             opacity: 0;
-            
-            /* Default Distortion Glow for Software Blocks */
             box-shadow: 
                 -3px 0 8px rgba(0, 255, 255, 0.25),  
                  3px 0 8px rgba(255, 0, 255, 0.25),  
                  0 0 15px rgba(255, 157, 227, 0.2),
                  inset 0 0 12px rgba(255, 255, 255, 0.1);
-
-            border-radius: 2rem; /* Squircle */
+            border-radius: 2rem; 
             padding: 1.5rem;
-            
-            /* Setup for split animation override */
             transition: 
                 transform 1.0s cubic-bezier(0.22, 1, 0.36, 1), 
                 opacity 0.8s ease,
@@ -781,51 +758,40 @@
         }
 
         .software-split-item.interaction-ready {
-             /* Switch to interaction optimized transition */
              transition: 
                 transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
                 box-shadow 0.7s ease-out, 
                 background-color 0.7s ease-out;
         }
 
-        /* Desktop Cluster Logic (2x2 Grid) */
+        /* Desktop Cluster Logic */
         @media (min-width: 640px) {
-            /* Top Left -> Move Right & Down to Center */
             .software-split-item:nth-child(1) {
                 transform: translate(calc(50% + 0.5rem), calc(50% + 0.5rem)) scale(0.5);
             }
-            /* Top Right -> Move Left & Down to Center */
             .software-split-item:nth-child(2) {
                 transform: translate(calc(-50% - 0.5rem), calc(50% + 0.5rem)) scale(0.5);
             }
-            /* Bottom Left -> Move Right & Up to Center */
             .software-split-item:nth-child(3) {
                 transform: translate(calc(50% + 0.5rem), calc(-50% - 0.5rem)) scale(0.5);
             }
-            /* Bottom Right -> Move Left & Up to Center */
             .software-split-item:nth-child(4) {
                 transform: translate(calc(-50% - 0.5rem), calc(-50% - 0.5rem)) scale(0.5);
             }
         }
         
-        /* Mobile Fallback (Just scale in) */
         @media (max-width: 639px) {
             .software-split-item {
                 transform: scale(0.9) translateY(20px);
             }
         }
 
-        /* Active State: Move to grid position (0,0) */
-        /* IMPORTANT: !important forces this override */
+        /* Active State */
         .software-split-item.split-active {
             opacity: 1 !important;
             transform: translate(0, 0) scale(1) !important;
             visibility: visible;
         }
-        
-        /* =========================================
-           END ANIMATION STYLES 
-           ========================================= */
         
         .skill-block, .about-text-block, .about-image-container {
             display: flex;
@@ -838,8 +804,7 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr); 
             gap: 1rem; 
-            position: relative; /* Needed for transforms context */
-            /* IMPORTANT: Enforce row height here to prevent collapse/jump */
+            position: relative; 
             grid-auto-rows: minmax(180px, auto);
         }
         
@@ -880,7 +845,6 @@
             align-items: center;
             justify-content: center;
             opacity: 0; 
-            visibility: hidden; 
             transform: translateY(100%); 
             box-shadow: 
                 -2px 0 6px rgba(0, 255, 255, 0.2),  
@@ -898,8 +862,8 @@
         
         #scrollToTopBtn.hidden-transition {
             opacity: 0;
-            transform: translateY(150%); /* Move further down */
-            pointer-events: none; /* Prevent clicks while hiding */
+            transform: translateY(150%); 
+            pointer-events: none; 
         }
 
         #scrollToTopBtn:hover {
@@ -937,9 +901,17 @@
                  2px -4px 6px rgba(255, 0, 255, 0.15),  
                  0 -4px 20px rgba(255, 157, 227, 0.3),
                  inset 0 10px 20px rgba(255, 255, 255, 0.05);
-            /* Add overflow hidden to clip the spotlight */
             overflow: hidden; 
-            position: relative;
+            
+            /* Intro Animation */
+            transform: translateY(100%);
+            opacity: 0;
+            transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1), opacity 1s ease;
+        }
+        
+        #contact-footer.pop-up {
+            transform: translateY(0);
+            opacity: 1;
         }
         
         #contact-footer h3 {
@@ -1619,9 +1591,14 @@
             // 2. Geometries
             // Size 4 (Doubled from 2)
             const size = 4; 
+            
+            // Create Capsule by stretching a sphere
+            const capsuleGeo = new THREE.SphereGeometry(size * 0.45, 8, 8);
+            capsuleGeo.applyMatrix4(new THREE.Matrix4().makeScale(1, 2.5, 1));
+
             const geometries = [
                 new THREE.BoxGeometry(size, size, size),             // Cube
-                new THREE.SphereGeometry(size * 0.6, 8, 8),          // Sphere
+                capsuleGeo,                                          // Capsule (Replaced Sphere)
                 new THREE.TetrahedronGeometry(size * 0.7),           // Pyramid
                 new THREE.OctahedronGeometry(size * 0.6)             // Diamond
             ];
@@ -1806,6 +1783,7 @@
                         
                         // Scale logic
                         if (isLiquid && mesh.material.opacity > 0.05) {
+                             // Active Pink
                             mesh.material.color.lerp(pinkColor, 0.1);
                             const targetScale = 1.5;
                             mesh.scale.setScalar(mesh.scale.x + (targetScale - mesh.scale.x) * 0.1);
