@@ -1,0 +1,16 @@
+@font-face {
+    font-family: 'Straight Signwood';
+    src: local('Straight Signwood'), url('path/to/StraightSignwood.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Newathletic M54';
+    src: local('Newathletic M54'), url('path/to/NewathleticM54.ttf') format('truetype');
+}
+
+body {
+    font-family: 'Newathletic M54', 'Inter', sans-serif;
+    overflow-x: hidden;
+    color: var(--primary-white);
+    background-color: var(--accent-black);
+}
