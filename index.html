@@ -1,55 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subham Panda | Portfolio</title>
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="stylesheet" href="css/colors.css">
     <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/styles.css">
-    
+
     <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/umd/phosphor-icons-web.js"></script>
 </head>
+
 <body class="text-white antialiased">
-    
-    
+
+
     <div id="canvas-container"></div>
 
-    
+
     <div id="custom-cursor"></div>
 
-    
+
     <div class="topbar" id="topbar-nav">
         <nav id="top-nav" class="max-w-6xl mx-auto flex justify-center space-x-4 p-4">
             <a href="#projects-anchor" class="top-nav-button">Projects</a>
             <a href="#skills-anchor" class="top-nav-button">Skills</a>
             <a href="#softwares-anchor" class="top-nav-button">Softwares</a>
-            <a href="#competitions-anchor" class="top-nav-button">Competitions</a>
             <a href="#about-anchor" class="top-nav-button">About</a>
             <a href="#contact-anchor" class="top-nav-button">Contact</a>
         </nav>
     </div>
 
-    
+
     <div id="hero-content" class="flex flex-col justify-center items-center p-4 pb-32 w-full">
-        
-        
+
+
         <header class="text-center flex flex-col items-center max-w-full">
-            
-            <h1 id="name-title" class="text-5xl sm:text-6xl md:text-8xl font-extrabold tracking-tight stained-glass-text text-center break-words max-w-full px-2" style="position: relative; z-index: 20; display: inline-block;">
+
+            <h1 id="name-title"
+                class="text-5xl sm:text-6xl md:text-8xl font-extrabold tracking-tight stained-glass-text text-center break-words max-w-full px-2"
+                style="position: relative; z-index: 20; display: inline-block;">
                 <span class="name-wrapper">
-                     
-                     SUBHAM PANDA
+
+                    SUBHAM PANDA
                 </span>
             </h1>
-            
-            
+
+
             <div class="job-title-box mx-auto" id="job-title-container">
-                <p class="text-xs sm:text-sm md:text-2xl font-light tracking-widest uppercase text-secondary-pink text-center whitespace-normal md:whitespace-nowrap" style="margin: 0;">
+                <p class="text-xs sm:text-sm md:text-2xl font-light tracking-widest uppercase text-secondary-pink text-center whitespace-normal md:whitespace-nowrap"
+                    style="margin: 0;">
                     <span class="reveal-holder">
                         <span class="reveal-block"></span>
                         <span class="reveal-content job-item">LEVEL DESIGNER</span>
@@ -67,133 +71,138 @@
                 </p>
             </div>
         </header>
-        
-        
-        <div class="absolute bottom-10 animate-bounce text-secondary-pink" style="filter: drop-shadow(0 0 5px var(--secondary-pink));">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+
+
+        <div class="absolute bottom-10 animate-bounce text-secondary-pink"
+            style="filter: drop-shadow(0 0 5px var(--secondary-pink));">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
         </div>
     </div>
 
-    
 
-    
+
+
     <section id="projects" class="portfolio-section max-w-6xl mx-auto">
-        
-        <div id="projects-anchor" class="scroll-anchor"></div> 
-        
-        
+
+        <div id="projects-anchor" class="scroll-anchor"></div>
+
+
         <div class="section-title-bar liquid-glass">
-             <h2 class="text-4xl font-extrabold text-center text-secondary-pink m-0">PROJECT ARTIFACTS</h2>
+            <h2 class="text-4xl font-extrabold text-center text-secondary-pink m-0">PROJECT ARTIFACTS</h2>
         </div>
         <div id="projects-container"></div>
     </section>
-    
-    
+
+
     <section id="skills" class="portfolio-section max-w-6xl mx-auto">
-        
+
         <div id="skills-anchor" class="scroll-anchor"></div>
 
-        
+
         <div class="section-title-bar liquid-glass">
             <h2 class="text-4xl font-extrabold text-center text-secondary-pink m-0">TECHNICAL SKILLS</h2>
         </div>
         <div class="max-w-4xl mx-auto mb-16" id="skills-container"></div>
-        <div id="softwares-anchor" class="scroll-anchor" style="top: -2rem;"></div> 
+        <div id="softwares-anchor" class="scroll-anchor" style="top: -2rem;"></div>
         <div class="section-title-bar liquid-glass">
-             <h2 class="text-4xl font-extrabold text-center text-secondary-pink m-0">SOFTWARE PROFICIENCIES</h2>
+            <h2 class="text-4xl font-extrabold text-center text-secondary-pink m-0">SOFTWARE PROFICIENCIES</h2>
         </div>
         <div class="max-w-md mx-auto" id="softwares-container"></div>
     </section>
 
-    
-    <section id="competitions" class="portfolio-section max-w-6xl mx-auto">
-        <div id="competitions-anchor" class="scroll-anchor"></div> 
-        <div class="section-title-bar liquid-glass">
-            <h2 class="text-4xl font-extrabold text-center text-secondary-pink m-0">COMPETITIONS</h2>
-        </div>
-        <div id="competitions-container"></div>
-    </section>
 
-    
     <section id="about" class="portfolio-section max-w-6xl mx-auto">
-        
-        <div id="about-anchor" class="scroll-anchor"></div> 
 
-        
+        <div id="about-anchor" class="scroll-anchor"></div>
+
+
         <div class="section-title-bar liquid-glass">
             <h2 class="text-4xl font-extrabold text-center text-secondary-pink m-0">ABOUT ME</h2>
         </div>
-        
-        
+
+
         <div class="about-content-wrapper mx-auto max-w-4xl flex flex-col md:flex-row">
-            
-            
+
+
             <div class="about-text-block liquid-glass p-8 flex items-center justify-center">
                 <p class="text-lg text-white/90 text-justify">
-                    I am Subham, and I am a <b>Level Designer</b>, <b>3D Artist</b>, and <b>Technical Artist</b> who combines creative design with strong technical skills to build immersive game environments and stylized visuals. I specialize in crafting engaging levels, creating optimized 3D assets, and developing post-process shaders using Unreal Engine 5, Blueprints, and HLSL. With experience across multiple game engines and 3D tools, I focus on delivering polished, gameplay-driven results that enhance the player experience.
+                    I am Subham, and I am a <b>Level Designer</b>, <b>3D Artist</b>, and <b>Technical Artist</b> who
+                    combines creative design with strong technical skills to build immersive game environments and
+                    stylized visuals. I specialize in crafting engaging levels, creating optimized 3D assets, and
+                    developing post-process shaders using Unreal Engine 5, Blueprints, and HLSL. With experience across
+                    multiple game engines and 3D tools, I focus on delivering polished, gameplay-driven results that
+                    enhance the player experience.
                 </p>
             </div>
 
-            
+
             <div class="about-image-container liquid-glass">
-                
-                <img src="https://raw.githubusercontent.com/Charli4Li/Subham/24fd575b3223a2082d86183bd6c725d98de1b2f5/sdfghjkl.jpeg" 
-                     alt="Profile Picture" 
-                     class="w-full h-full object-cover"
-                     onerror="this.onerror=null; this.src='https://placehold.co/400x400/141414/FF9DE3?text=Profile+Image+Not+Found';">
+
+                <img src="https://raw.githubusercontent.com/Charli4Li/Subham/24fd575b3223a2082d86183bd6c725d98de1b2f5/sdfghjkl.jpeg"
+                    alt="Profile Picture" class="w-full h-full object-cover"
+                    onerror="this.onerror=null; this.src='https://placehold.co/400x400/141414/FF9DE3?text=Profile+Image+Not+Found';">
             </div>
         </div>
     </section>
 
-    
-    
-    <div id="contact-anchor" class="scroll-anchor"></div> 
+
+
+    <div id="contact-anchor" class="scroll-anchor"></div>
     <div id="contact-footer" class="w-full mt-16 p-8 relative z-20">
         <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
-            
-            
+
+
             <div class="space-y-4 md:space-y-6 text-left">
                 <h3 class="text-2xl font-bold border-b-2 pb-2 mb-4">Contacts</h3>
-                
-                
+
+
                 <div class="flex items-center space-x-3 group">
-                    
-                    <i class="ph ph-envelope-simple text-3xl icon-accent group-hover:text-primary-white transition duration-200"></i>
-                    <a href="mailto:artcharlie.exe@gmail.com" class="text-lg font-medium group-hover:text-primary-white transition duration-200">
+
+                    <i
+                        class="ph ph-envelope-simple text-3xl icon-accent group-hover:text-primary-white transition duration-200"></i>
+                    <a href="mailto:artcharlie.exe@gmail.com"
+                        class="text-lg font-medium group-hover:text-primary-white transition duration-200">
                         ✉ artcharlie.exe@gmail.com
                     </a>
                 </div>
-                
-                
+
+
                 <div class="flex items-center space-x-3 group">
-                    
-                    <i class="ph ph-phone text-3xl icon-accent group-hover:text-primary-white transition duration-200"></i>
-                    <a href="tel:+917735465010" class="text-lg font-medium group-hover:text-primary-white transition duration-200">
+
+                    <i
+                        class="ph ph-phone text-3xl icon-accent group-hover:text-primary-white transition duration-200"></i>
+                    <a href="tel:+917735465010"
+                        class="text-lg font-medium group-hover:text-primary-white transition duration-200">
                         ☎ +91 7735465010
                     </a>
                 </div>
             </div>
 
-            
+
             <div class="space-y-4 md:space-y-6 text-left">
                 <h3 class="text-2xl font-bold border-b-2 pb-2 mb-4">Socials</h3>
-                
-                
+
+
                 <div class="flex items-center space-x-3 group">
-                    
-                    <i class="ph ph-linkedin-logo text-3xl icon-accent group-hover:text-primary-white transition duration-200"></i>
-                    <a href="https://www.linkedin.com/in/artcharlie4li/" target="_blank" class="text-lg font-medium group-hover:text-primary-white transition duration-200">
+
+                    <i
+                        class="ph ph-linkedin-logo text-3xl icon-accent group-hover:text-primary-white transition duration-200"></i>
+                    <a href="https://www.linkedin.com/in/artcharlie4li/" target="_blank"
+                        class="text-lg font-medium group-hover:text-primary-white transition duration-200">
                         <b>LinkedIn:</b> Subham Panda
                     </a>
                 </div>
-                
-                
+
+
                 <div class="flex items-center space-x-3 group">
-                    
-                    <i class="ph ph-palette text-3xl icon-accent group-hover:text-primary-white transition duration-200"></i>
-                    <a href="https://www.artstation.com/artcharlie_exe" target="_blank" class="text-lg font-medium group-hover:text-primary-white transition duration-200">
+
+                    <i
+                        class="ph ph-palette text-3xl icon-accent group-hover:text-primary-white transition duration-200"></i>
+                    <a href="https://www.artstation.com/artcharlie_exe" target="_blank"
+                        class="text-lg font-medium group-hover:text-primary-white transition duration-200">
                         <b>Artstation:</b> Artcharlie.exe
                     </a>
                 </div>
@@ -204,19 +213,18 @@
         </div>
     </div>
 
-    
+
     <button id="scrollToTopBtn" aria-label="Scroll to top">
         <span class="arrow-up">⬆</span>
     </button>
 
-    
+
     <script src="js/data/projects.js"></script>
     <script src="js/data/skills.js"></script>
     <script src="js/data/softwares.js"></script>
-    <script src="js/data/competitions.js"></script>
     <script src="js/cursor.js"></script>
     <script src="js/background.js"></script>
     <script src="js/animations.js"></script>
 </body>
-</html>
 
+</html>
