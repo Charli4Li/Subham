@@ -55,7 +55,7 @@ function initThreeBackground() {
             const gridX = startX + c * GRID_SPACING;
             const gridY = startY - r * GRID_SPACING;
 
-            mesh.position.set(0, 0, 0);
+            mesh.position.set(-window.innerWidth, (Math.random() - 0.5) * window.innerHeight, 0);
 
             mesh.userData = {
                 originX: gridX,
