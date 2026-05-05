@@ -13,32 +13,40 @@ function renderSoftwares() {
     const container = document.getElementById('softwares-container');
     if (!container) return;
 
-    let html = '<div class="software-grid-container w-full">';
-    
-    softwareData.forEach(group => {
-        let itemsHtml = group.items.map(item => `
-            <li>
-                <span class="reveal-holder">
-                    <span class="reveal-block"></span>
-                    <span class="reveal-content"><span class="mr-2 text-secondary-pink">⬤</span>${item}</span>
-                </span>
-            </li>
-        `).join('');
+    // Reset max-width on the container so the marquee can stretch full width
+    container.className = "w-full mx-auto";
 
-        html += `
-        <div class="software-block software-split-item liquid-glass">
-            <p class="font-bold text-lg text-secondary-pink mb-2 border-b border-white/30 w-full pb-1 text-center">
-                <span class="reveal-holder">
-                    <span class="reveal-block"></span>
-                    <span class="reveal-content">${group.category}</span>
-                </span>
-            </p>
-            <ul class="text-sm text-white/90 list-none text-left w-full pl-6">
-                ${itemsHtml}
-            </ul>
-        </div>
-        `;
+    let html = '<div class="marquee-container">';
+    
+    let allItems = [];
+    softwareData.forEach(group => {
+        group.items.forEach(item => {
+            allItems.push(`<span class="mr-2 text-secondary-pink">⬤</span> <span class="text-xs font-light text-white/50 mr-2 uppercase tracking-widest">[${group.category}]</span> <span class="text-white/90 font-bold">${item}</span>`);
+        });
     });
+
+    // We'll shuffle or just split them
+    const track1 = allItems.slice(0, 7);
+    const track2 = allItems.slice(7);
+
+    const createTrackHtml = (items, directionClass) => {
+        let trackItemsHtml = items.map(item => `
+            <div class="marquee-item liquid-glass">
+                ${item}
+            </div>
+        `).join('');
+        
+        // Duplicate items extensively to guarantee a seamless loop even on ultra-wide monitors
+        return `<div class="marquee-track ${directionClass}">
+            ${trackItemsHtml}
+            ${trackItemsHtml}
+            ${trackItemsHtml}
+            ${trackItemsHtml}
+        </div>`;
+    };
+
+    html += createTrackHtml(track1, 'left');
+    html += createTrackHtml(track2, 'right');
     
     html += '</div>';
     container.innerHTML = html;
