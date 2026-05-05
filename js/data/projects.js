@@ -75,17 +75,37 @@ const projectsData = [
     }
 ];
 
-// Inject dynamic CSS for Folder shape and transitions
+// Inject dynamic CSS for Folder shape, drop-shadow glow wrapper, and transitions
 const style = document.createElement('style');
 style.innerHTML = `
+.folder-glow-wrapper {
+    /* Apply the pink glow using drop-shadow so it respects the clip-path shape of the child! */
+    filter: drop-shadow(0 0 15px rgba(255, 157, 227, 0.4));
+    transition: transform 0.4s ease, filter 0.4s ease;
+    cursor: pointer;
+    /* Extra padding to ensure glow is not clipped by wrapper bounds */
+    padding: 1rem;
+}
+.folder-glow-wrapper:hover {
+    transform: translateY(-10px);
+    filter: drop-shadow(0 0 25px rgba(255, 157, 227, 0.7));
+}
 .true-folder-shape {
-    clip-path: polygon(0 15%, 35% 15%, 42% 0, 100% 0, 100% 100%, 0 100%);
-    background: rgba(20, 20, 20, 0.4) !important;
+    /* Precise folder shape matching reference */
+    clip-path: polygon(0 8%, 35% 8%, 42% 0, 100% 0, 100% 100%, 0 100%);
+    background: rgba(20, 20, 20, 0.6) !important;
     backdrop-filter: blur(16px) !important;
     -webkit-backdrop-filter: blur(16px) !important;
     border: none !important;
-    padding-top: 3rem !important;
-    box-shadow: inset 0 0 0 1px rgba(255, 157, 227, 0.3) !important;
+    /* Height matched to slides view */
+    min-width: 350px;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
 }
 .true-folder-shape::before { display: none !important; }
 .fade-transition {
@@ -99,6 +119,12 @@ style.innerHTML = `
     opacity: 1;
     transform: scale(1);
 }
+/* Allow shadows to bleed outside carousel */
+.projects-carousel, .projects-carousel-track {
+    overflow-y: visible !important;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
 `;
 document.head.appendChild(style);
 
@@ -106,12 +132,13 @@ document.head.appendChild(style);
 let currentProjectViewMode = 'carousel'; 
 let currentProjectIndex = 0;
 
-function renderProjectsCarousel() {
+window.renderProjectsCarousel = function(withFade = false) {
     const container = document.getElementById('projects-container');
     if (!container) return;
     
     // Animate out if content exists
-    if (container.innerHTML.trim() !== '') {
+    if (withFade && container.innerHTML.trim() !== '') {
+        container.classList.remove('fade-in');
         container.classList.add('fade-out');
         setTimeout(() => buildCarouselHTML(container), 400);
     } else {
@@ -122,16 +149,13 @@ function renderProjectsCarousel() {
 function buildCarouselHTML(container) {
     currentProjectViewMode = 'carousel';
 
-    let html = '<div class="projects-layout projects-carousel">';
+    let html = '<div class="projects-layout projects-carousel w-full">';
     
     const createFolderItems = () => {
         return projectsData.map((project, index) => `
-            <div class="folder-card liquid-glass true-folder-shape" onclick="renderProjectsSplitView(${index})">
-                <i class="ph ph-folder-open text-6xl text-secondary-pink mb-4"></i>
-                <h3 class="text-xl font-bold text-white mb-2 px-4">${project.title}</h3>
-                <p class="text-xs uppercase text-gray-300">${project.subtitle}</p>
-                <div class="mt-4 text-xs font-light text-secondary-pink/70">
-                    <i class="ph ph-magnifying-glass"></i> Click to Open
+            <div class="folder-glow-wrapper" onclick="renderProjectsSplitView(${index})">
+                <div class="true-folder-shape">
+                    <h3 class="text-2xl font-extrabold text-white px-4">${project.title}</h3>
                 </div>
             </div>
         `).join('');
@@ -146,6 +170,9 @@ function buildCarouselHTML(container) {
     html += '</div>';
     
     container.innerHTML = html;
+    
+    // Force reflow
+    void container.offsetWidth;
     
     // Animate in
     container.classList.remove('fade-out');
@@ -171,12 +198,12 @@ function buildSplitViewHTML(container, selectedIndex) {
 
     const selectedProject = projectsData[selectedIndex];
 
-    // Left Dock (Titles) - now strictly pinned to the left
+    // Left Dock (Titles) - full bleed to left
     let dockHtml = '<div class="projects-dock-left" style="flex: 0 0 350px; border-right: 1px solid rgba(255,157,227,0.2);">';
     projectsData.forEach((project, index) => {
-        const isActive = index === selectedIndex ? 'active liquid-glass' : '';
+        const isActive = index === selectedIndex ? 'active' : 'opacity-70';
         dockHtml += `
-            <div class="dock-item ${isActive} bg-white/5 border border-white/10" onclick="renderProjectsSplitView(${index})">
+            <div class="dock-item ${isActive} liquid-glass w-full border border-white/10" onclick="renderProjectsSplitView(${index})">
                 <p class="font-bold text-sm text-white">${project.title}</p>
             </div>
         `;
@@ -184,7 +211,7 @@ function buildSplitViewHTML(container, selectedIndex) {
     
     dockHtml += `
         <div class="mt-8 text-center">
-            <button onclick="renderProjectsCarousel()" class="top-nav-button text-sm w-full py-4 border border-secondary-pink/50 rounded-lg hover:bg-secondary-pink/20 transition">
+            <button onclick="renderProjectsCarousel(true)" class="liquid-glass text-white font-bold text-sm w-full py-4 transition hover:bg-secondary-pink/20">
                 <i class="ph ph-arrow-left"></i> Back to Folders
             </button>
         </div>
@@ -199,7 +226,7 @@ function buildSplitViewHTML(container, selectedIndex) {
     `).join('');
 
     let previewHtml = `
-        <div class="projects-preview-right liquid-glass" style="flex: 1;">
+        <div class="projects-preview-right liquid-glass" style="flex: 1; min-height: 500px;">
             <div class="flex justify-between items-start mb-6 border-b border-white/20 pb-4">
                 <div>
                     <h2 class="text-4xl font-extrabold text-secondary-pink mb-2">${selectedProject.title}</h2>
@@ -221,21 +248,24 @@ function buildSplitViewHTML(container, selectedIndex) {
             </div>
             
             <div class="mt-auto">
-                <a href="${selectedProject.link}" target="_blank" class="project-button inline-flex text-lg px-8 py-4">
-                    Access File Data <span class="arrow-icon">➜</span>
+                <a href="${selectedProject.link}" target="_blank" class="liquid-glass inline-flex text-lg px-8 py-4 text-white font-bold hover:bg-secondary-pink/20 transition">
+                    Access File Data <span class="arrow-icon ml-2">➜</span>
                 </a>
             </div>
         </div>
     `;
 
     let html = `
-        <div class="projects-layout projects-dock-layout" style="width: 100%;">
+        <div class="projects-layout projects-dock-layout w-full max-w-full">
             ${dockHtml}
             ${previewHtml}
         </div>
     `;
 
     container.innerHTML = html;
+
+    // Force reflow
+    void container.offsetWidth;
 
     // Animate in
     container.classList.remove('fade-out');

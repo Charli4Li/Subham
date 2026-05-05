@@ -2,12 +2,12 @@ const softwareData = [
     { name: "Unity", icon: "devicon-unity-original" },
     { name: "Unreal Engine 5", icon: "devicon-unrealengine-original" },
     { name: "Godot", icon: "devicon-godot-plain" },
-    { name: "Maya", icon: "devicon-maya-plain" },
-    { name: "3D Substance Painter", icon: "ph ph-cube" },
+    { name: "Maya", icon: "ph ph-cube" },
+    { name: "3D Substance Painter", icon: "ph ph-paint-brush-broad" },
     { name: "Blender", icon: "devicon-blender-original" },
     { name: "Github", icon: "devicon-github-original" },
     { name: "Adobe Photoshop", icon: "devicon-photoshop-plain" },
-    { name: "Aseprite", icon: "ph ph-paint-brush" },
+    { name: "Aseprite", icon: "ph ph-pencil" },
     { name: "C#", icon: "devicon-csharp-plain" },
     { name: "Tailwind Css", icon: "devicon-tailwindcss-original" },
     { name: "GD script", icon: "devicon-godot-plain" },
@@ -20,15 +20,12 @@ function renderSoftwares() {
 
     container.className = "w-full mx-auto";
 
-    let html = '<div class="marquee-container" style="gap: 2rem;">';
+    // Extra padding on container prevents clipping of box-shadow
+    let html = '<div class="marquee-container" style="gap: 2.5rem; padding-top: 2rem; padding-bottom: 2rem;">';
     
-    // We will create 4 rows.
-    // Let's divide our items into 4 somewhat randomized chunks.
     const chunks = [[], [], [], []];
     
-    // Fill chunks to ensure there are plenty of items
     for(let i = 0; i < 4; i++) {
-        // Just push all items but shuffled or offset
         let offsetItems = [...softwareData].sort(() => 0.5 - Math.random());
         chunks[i] = offsetItems;
     }
@@ -41,8 +38,7 @@ function renderSoftwares() {
             </div>
         `).join('');
         
-        // 8 duplicates to guarantee no blank spaces
-        return `<div class="marquee-track ${directionClass}" style="animation-duration: 60s;">
+        return `<div class="marquee-track ${directionClass}" style="animation-duration: 60s; padding: 0.5rem 0;">
             ${trackItemsHtml}
             ${trackItemsHtml}
             ${trackItemsHtml}

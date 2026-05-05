@@ -88,57 +88,51 @@
 
 
 
-    <section id="projects" class="portfolio-section w-full px-4 mb-48">
+    <section id="projects" class="portfolio-section w-full mb-32 min-h-screen flex flex-col justify-center relative overflow-hidden">
+        <div id="projects-anchor" class="scroll-anchor" style="top: -4rem;"></div>
 
-        <div id="projects-anchor" class="scroll-anchor"></div>
-
-
-        <div class="section-title-bar liquid-glass">
+        <div class="section-title-bar liquid-glass max-w-6xl mx-auto w-full z-10 relative">
             <h2 class="text-4xl font-extrabold text-center text-secondary-pink m-0">PROJECT ARTIFACTS</h2>
         </div>
-        <div id="projects-container"></div>
+        <div id="projects-container" class="w-full relative z-10"></div>
     </section>
 
 
-    <section id="skills" class="portfolio-section max-w-6xl mx-auto mb-48">
+    <section id="skills" class="portfolio-section max-w-6xl mx-auto w-full mb-32 min-h-screen flex flex-col justify-center relative">
+        <div id="skills-anchor" class="scroll-anchor" style="top: -4rem;"></div>
 
-        <div id="skills-anchor" class="scroll-anchor"></div>
-
-
-        <div class="section-title-bar liquid-glass">
+        <div class="section-title-bar liquid-glass w-full">
             <h2 class="text-4xl font-extrabold text-center text-secondary-pink m-0">TECHNICAL SKILLS</h2>
         </div>
-        <div class="max-w-4xl mx-auto mb-16" id="skills-container"></div>
-        <div id="softwares-anchor" class="scroll-anchor" style="top: -2rem;"></div>
-        <div class="section-title-bar liquid-glass">
+        <div class="max-w-4xl mx-auto mb-16 w-full" id="skills-container"></div>
+        
+        <div id="softwares-anchor" class="scroll-anchor" style="top: -4rem;"></div>
+        <div class="section-title-bar liquid-glass w-full">
             <h2 class="text-4xl font-extrabold text-center text-secondary-pink m-0">SOFTWARE PROFICIENCIES</h2>
         </div>
-        <div class="max-w-md mx-auto" id="softwares-container"></div>
+        
+        <!-- Break out of max-w-6xl for marquee -->
+        <div style="width: 100vw; margin-left: calc(-50vw + 50%);" id="softwares-container"></div>
     </section>
 
 
-    <section id="competitions" class="portfolio-section max-w-6xl mx-auto mb-48">
-        <div id="competitions-anchor" class="scroll-anchor"></div> 
-        <div class="section-title-bar liquid-glass">
+    <section id="competitions" class="portfolio-section max-w-6xl mx-auto w-full mb-32 min-h-screen flex flex-col justify-center relative">
+        <div id="competitions-anchor" class="scroll-anchor" style="top: -4rem;"></div> 
+        <div class="section-title-bar liquid-glass w-full">
             <h2 class="text-4xl font-extrabold text-center text-secondary-pink m-0">COMPETITIONS</h2>
         </div>
-        <div id="competitions-container"></div>
+        <div id="competitions-container" class="w-full"></div>
     </section>
 
 
-    <section id="about" class="portfolio-section max-w-6xl mx-auto mb-48">
+    <section id="about" class="portfolio-section max-w-6xl mx-auto w-full mb-32 min-h-screen flex flex-col justify-center relative">
+        <div id="about-anchor" class="scroll-anchor" style="top: -4rem;"></div>
 
-        <div id="about-anchor" class="scroll-anchor"></div>
-
-
-        <div class="section-title-bar liquid-glass">
+        <div class="section-title-bar liquid-glass w-full">
             <h2 class="text-4xl font-extrabold text-center text-secondary-pink m-0">ABOUT ME</h2>
         </div>
 
-
-        <div class="about-content-wrapper mx-auto max-w-4xl flex flex-col md:flex-row">
-
-
+        <div class="about-content-wrapper mx-auto max-w-4xl flex flex-col md:flex-row w-full">
             <div class="about-text-block liquid-glass p-8 flex items-center justify-center">
                 <p class="text-lg text-white/90 text-justify">
                     I am Subham, and I am a <b>Level Designer</b>, <b>3D Artist</b>, and <b>Technical Artist</b> who
@@ -150,9 +144,7 @@
                 </p>
             </div>
 
-
             <div class="about-image-container liquid-glass">
-
                 <img src="https://raw.githubusercontent.com/Charli4Li/Subham/24fd575b3223a2082d86183bd6c725d98de1b2f5/sdfghjkl.jpeg"
                     alt="Profile Picture" class="w-full h-full object-cover"
                     onerror="this.onerror=null; this.src='https://placehold.co/400x400/141414/FF9DE3?text=Profile+Image+Not+Found';">
