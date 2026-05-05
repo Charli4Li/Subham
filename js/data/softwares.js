@@ -1,19 +1,11 @@
 const softwareData = [
     {
-        category: "Game Engines",
-        items: ["Unity", "Unreal Engine 5"]
+        category: "Game Engines & Softwares",
+        items: ["Unity", "Unreal Engine 5", "Godot", "Maya", "3D Substance Painter", "Blender", "Github", "Adobe Photoshop", "Aseprite"]
     },
     {
-        category: "3D Softwares",
-        items: ["Maya", "3DS Max", "3D Substance Painter", "Blender"]
-    },
-    {
-        category: "Art Softwares",
-        items: ["Adobe Photoshop", "Adobe Illustrator"]
-    },
-    {
-        category: "SCM Softwares",
-        items: ["GitHub", "GitLab", "Unity Version Control"]
+        category: "Languages",
+        items: ["C#", "Tailwind Css", "GD script", "HLSL"]
     }
 ];
 
@@ -22,7 +14,7 @@ function renderSoftwares() {
     if (!container) return;
 
     let html = '<div class="software-grid-container w-full">';
-
+    
     softwareData.forEach(group => {
         let itemsHtml = group.items.map(item => `
             <li>
@@ -47,7 +39,7 @@ function renderSoftwares() {
         </div>
         `;
     });
-
+    
     html += '</div>';
     container.innerHTML = html;
 }
